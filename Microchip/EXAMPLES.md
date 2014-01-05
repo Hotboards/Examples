@@ -43,4 +43,12 @@ Ejemplos
 - [Ejemplo 5: Encendido y apagado de leds con recepción de cadenas por puerto serial a 9600](http://github.com/Hotboards/Examples/blob/master/Microchip/uart5.X/main.c)
 - [Ejemplo 6: Transmicion de una cadena de caracteres a 115200 usando uart2](http://github.com/Hotboards/Examples/blob/master/Microchip/uart6.X/main.c)
 
+**(printf) Salidas por pantalla formateadas**
+
+- [Ejemplo 1: Trasnmicion de cadenas formateadas con la función xprintf](http://github.com/Hotboards/Examples/blob/master/Microchip/printf1.X/main.c)
+- [Ejemplo 2: Transmicion de una cadena formateada con xsprintf por interrupciones](http://github.com/Hotboards/Examples/blob/master/Microchip/printf2.X/main.c)
+- [Ejemplo 3: Printf como herramienta de depuración](http://github.com/Hotboards/Examples/blob/master/Microchip/printf3.X/main.c)
+
+
+
  
