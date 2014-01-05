@@ -1,5 +1,5 @@
 MPLINK 4.46, Linker
-Linker Map File - Created Sat Dec 28 14:47:08 2013
+Linker Map File - Created Sun Jan 05 04:03:59 2014
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
@@ -23,15 +23,15 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
          .code_fxd0808u.o       code   0x001d82    program   0x00001c
            .code___init.o       code   0x001d9e    program   0x000002
       .romdata_fxd0808u.o    romdata   0x001da0    program   0x000000
-        .romdata___init.o    romdata   0x001da0    program   0x000000
-        .romdata_system.o    romdata   0x001da0    program   0x000000
       .romdata_fxd1616u.o    romdata   0x001da0    program   0x000000
-        .idata_system.o_i    romdata   0x001da0    program   0x000050
-      .romdata_swtimers.o    romdata   0x001da0    program   0x000000
+        .romdata___init.o    romdata   0x001da0    program   0x000000
+         .romdata_c018i.o    romdata   0x001da0    program   0x000000
          .romdata_gpios.o    romdata   0x001da0    program   0x000000
+      .romdata_swtimers.o    romdata   0x001da0    program   0x000000
+        .idata_system.o_i    romdata   0x001da0    program   0x000050
+        .romdata_system.o    romdata   0x001da0    program   0x000000
           .romdata_gpis.o    romdata   0x001da0    program   0x000000
           .romdata_main.o    romdata   0x001da0    program   0x000000
-         .romdata_c018i.o    romdata   0x001da0    program   0x000000
       .idata_swtimers.o_i    romdata   0x001df0    program   0x000004
           .idata_gpis.o_i    romdata   0x001df4    program   0x000007
           .idata_main.o_i    romdata   0x001df4    program   0x000000
@@ -50,18 +50,18 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
            .udata_c018i.o      udata   0x0000e0       data   0x00000a
             .idata_gpis.o      idata   0x0000ea       data   0x000007
         .idata_swtimers.o      idata   0x0000f1       data   0x000004
-            .idata_main.o      idata   0x0000f5       data   0x000000
-            .udata_gpis.o      udata   0x0000f5       data   0x000000
-           .udata_gpios.o      udata   0x0000f5       data   0x000000
-            .udata_main.o      udata   0x0000f5       data   0x000000
-           .idata_c018i.o      idata   0x0000f5       data   0x000000
-          .udata_system.o      udata   0x0000f5       data   0x000000
-          .idata___init.o      idata   0x0000f5       data   0x000000
-          .udata___init.o      udata   0x0000f5       data   0x000000
-        .idata_fxd1616u.o      idata   0x0000f5       data   0x000000
-        .udata_fxd1616u.o      udata   0x0000f5       data   0x000000
-        .idata_fxd0808u.o      idata   0x0000f5       data   0x000000
         .udata_fxd0808u.o      udata   0x0000f5       data   0x000000
+        .idata_fxd0808u.o      idata   0x0000f5       data   0x000000
+        .udata_fxd1616u.o      udata   0x0000f5       data   0x000000
+        .idata_fxd1616u.o      idata   0x0000f5       data   0x000000
+          .udata___init.o      udata   0x0000f5       data   0x000000
+          .idata___init.o      idata   0x0000f5       data   0x000000
+            .idata_main.o      idata   0x0000f5       data   0x000000
+            .udata_main.o      udata   0x0000f5       data   0x000000
+            .udata_gpis.o      udata   0x0000f5       data   0x000000
+          .udata_system.o      udata   0x0000f5       data   0x000000
+           .udata_gpios.o      udata   0x0000f5       data   0x000000
+           .idata_c018i.o      idata   0x0000f5       data   0x000000
                    .stack      udata   0x000d00       data   0x000100
               SFR_BANKED0      udata   0x000ec6       data   0x00000e
               SFR_BANKED1      udata   0x000ed7       data   0x000008
@@ -131,9 +131,9 @@ System_PeripheralPinSelect   0x001bd0    program     extern C:\hotboards\CodeBan
   YourHighPriorityISRCode   0x001974    program     extern C:\hotboards\Examples\Microchip\gpis3.X\main.c
    YourLowPriorityISRCode   0x001982    program     extern C:\hotboards\Examples\Microchip\gpis3.X\main.c
        ___return_lbl00000   0x001004    program     static                          
-       ___return_lbl00000   0x001d9c    program     static                          
-       ___return_lbl00000   0x000004    program     static                          
        ___return_lbl00000   0x001d44    program     static                          
+       ___return_lbl00000   0x000004    program     static                          
+       ___return_lbl00000   0x001d9c    program     static                          
        ___return_lbl00001   0x00100c    program     static                          
        ___return_lbl00001   0x001d80    program     static                          
        ___return_lbl00002   0x00101c    program     static                          
@@ -157,12 +157,12 @@ System_PeripheralPinSelect   0x001bd0    program     extern C:\hotboards\CodeBan
                      done   0x001d18    program     static                          
              done_copying   0x001d02    program     static                          
            edge_detection   0x00149a    program     static C:\hotboards\CodeBank8\middleware\gpis\gpis.c
-                  endloop   0x001d98    program     static                          
                   endloop   0x001d40    program     static                          
+                  endloop   0x001d98    program     static                          
                      lock   0x001c6c    program     static C:\hotboards\CodeBank8\bsp\Microchip\system\system.c
-                     loop   0x001d8a    program     static                          
-                     loop   0x001d76    program     static                          
                      loop   0x001d24    program     static                          
+                     loop   0x001d76    program     static                          
+                     loop   0x001d8a    program     static                          
                    loop_h   0x001d54    program     static E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
                    loop_l   0x001d5e    program     static E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
                      main   0x00189e    program     extern C:\hotboards\Examples\Microchip\gpis3.X\main.c
@@ -614,11 +614,11 @@ System_PeripheralPinSelect   0x001bd0    program     extern C:\hotboards\CodeBan
                   __REMB1   0x000002       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\aarg.asm
                   __REMB2   0x000001       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\aarg.asm
                   __REMB3   0x000000       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\aarg.asm
+                  __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
+                  __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\swtimers\swtimers.c
+                  __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\system\system.c
                   __tmp_0   0x000010       data     static C:\hotboards\Examples\Microchip\gpis3.X\main.c
                   __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\middleware\gpis\gpis.c
-                  __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
-                  __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\system\system.c
-                  __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\swtimers\swtimers.c
                 curr_byte   0x0000e3       data     static E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
                curr_entry   0x0000e5       data     static E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
                  data_ptr   0x0000e7       data     static E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
@@ -739,11 +739,11 @@ System_PeripheralPinSelect   0x001bd0    program     extern C:\hotboards\CodeBan
                      SIGN   0x00000e       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\cmath18.asm
             __FPFLAGSbits   0x00000f       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\cmath18.asm
                 __FPFLAGS   0x00000f       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\cmath18.asm
-                  __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\swtimers\swtimers.c
-                  __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\system\system.c
-                  __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
                   __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\middleware\gpis\gpis.c
                   __tmp_0   0x000010       data     static C:\hotboards\Examples\Microchip\gpis3.X\main.c
+                  __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\system\system.c
+                  __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\swtimers\swtimers.c
+                  __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
               guap8Inputs   0x000060       data     static C:\hotboards\CodeBank8\bsp\Microchip\system\system.c
              guap8Outputs   0x00007e       data     static C:\hotboards\CodeBank8\bsp\Microchip\system\system.c
            guap8Direction   0x0000b0       data     static C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c

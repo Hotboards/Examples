@@ -1,5 +1,5 @@
 MPLINK 4.46, Linker
-Linker Map File - Created Fri Dec 27 21:12:10 2013
+Linker Map File - Created Sun Jan 05 03:52:13 2014
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
@@ -21,15 +21,15 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
              _startup_scn       code   0x0018e6    program   0x00001c
          .code_fxd0808u.o       code   0x001902    program   0x00001c
            .code___init.o       code   0x00191e    program   0x000002
-        .romdata___init.o    romdata   0x001920    program   0x000000
-      .romdata_fxd1616u.o    romdata   0x001920    program   0x000000
       .romdata_fxd0808u.o    romdata   0x001920    program   0x000000
+         .romdata_c018i.o    romdata   0x001920    program   0x000000
+      .romdata_fxd1616u.o    romdata   0x001920    program   0x000000
+         .romdata_gpios.o    romdata   0x001920    program   0x000000
+          .romdata_main.o    romdata   0x001920    program   0x000000
+        .romdata___init.o    romdata   0x001920    program   0x000000
         .romdata_system.o    romdata   0x001920    program   0x000000
         .idata_system.o_i    romdata   0x001920    program   0x000050
       .romdata_swtimers.o    romdata   0x001920    program   0x000000
-         .romdata_c018i.o    romdata   0x001920    program   0x000000
-         .romdata_gpios.o    romdata   0x001920    program   0x000000
-          .romdata_main.o    romdata   0x001920    program   0x000000
       .idata_swtimers.o_i    romdata   0x001970    program   0x000004
          .idata_gpios.o_i    romdata   0x001974    program   0x00001e
           .idata_main.o_i    romdata   0x001974    program   0x000000
@@ -46,11 +46,11 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
         .udata_swtimers.o      udata   0x0000ce       data   0x000012
            .udata_c018i.o      udata   0x0000e0       data   0x00000a
         .idata_swtimers.o      idata   0x0000ea       data   0x000004
-           .udata_gpios.o      udata   0x0000ee       data   0x000000
-            .idata_main.o      idata   0x0000ee       data   0x000000
-            .udata_main.o      udata   0x0000ee       data   0x000000
-          .udata_system.o      udata   0x0000ee       data   0x000000
            .idata_c018i.o      idata   0x0000ee       data   0x000000
+           .udata_gpios.o      udata   0x0000ee       data   0x000000
+          .udata_system.o      udata   0x0000ee       data   0x000000
+            .udata_main.o      udata   0x0000ee       data   0x000000
+            .idata_main.o      idata   0x0000ee       data   0x000000
           .idata___init.o      idata   0x0000ee       data   0x000000
           .udata___init.o      udata   0x0000ee       data   0x000000
         .idata_fxd1616u.o      idata   0x0000ee       data   0x000000
@@ -125,8 +125,8 @@ System_PeripheralPinSelect   0x001750    program     extern C:\hotboards\CodeBan
        ___return_lbl00000   0x0018c4    program     static                          
        ___return_lbl00001   0x00100c    program     static                          
        ___return_lbl00001   0x001900    program     static                          
-       ___return_lbl00002   0x00101c    program     static                          
        ___return_lbl00002   0x001898    program     static                          
+       ___return_lbl00002   0x00101c    program     static                          
        ___return_lbl00003   0x00000c    program     static                          
        ___return_lbl00004   0x00001c    program     static                          
        ___return_lbl00010   0x0017ea    program     static                          
@@ -143,12 +143,12 @@ System_PeripheralPinSelect   0x001750    program     extern C:\hotboards\CodeBan
             copy_one_byte   0x001874    program     static                          
                      done   0x001898    program     static                          
              done_copying   0x001882    program     static                          
-                  endloop   0x001918    program     static                          
                   endloop   0x0018c0    program     static                          
+                  endloop   0x001918    program     static                          
                      lock   0x0017ec    program     static C:\hotboards\CodeBank8\bsp\Microchip\system\system.c
+                     loop   0x0018a4    program     static                          
                      loop   0x00190a    program     static                          
                      loop   0x0018f6    program     static                          
-                     loop   0x0018a4    program     static                          
                    loop_h   0x0018d4    program     static E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
                    loop_l   0x0018de    program     static E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
                      main   0x001312    program     extern C:\hotboards\Examples\Microchip\swtimers2.X\main.c
@@ -599,10 +599,10 @@ System_PeripheralPinSelect   0x001750    program     extern C:\hotboards\CodeBan
                   __REMB1   0x000002       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\aarg.asm
                   __REMB2   0x000001       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\aarg.asm
                   __REMB3   0x000000       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\aarg.asm
+                  __tmp_0   0x000010       data     static C:\hotboards\Examples\Microchip\swtimers2.X\main.c
                   __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\system\system.c
                   __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\swtimers\swtimers.c
                   __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
-                  __tmp_0   0x000010       data     static C:\hotboards\Examples\Microchip\swtimers2.X\main.c
                 curr_byte   0x0000e3       data     static E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
                curr_entry   0x0000e5       data     static E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
                  data_ptr   0x0000e7       data     static E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
@@ -706,10 +706,10 @@ System_PeripheralPinSelect   0x001750    program     extern C:\hotboards\CodeBan
                      SIGN   0x00000e       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\cmath18.asm
             __FPFLAGSbits   0x00000f       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\cmath18.asm
                 __FPFLAGS   0x00000f       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\cmath18.asm
+                  __tmp_0   0x000010       data     static C:\hotboards\Examples\Microchip\swtimers2.X\main.c
                   __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\system\system.c
                   __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\swtimers\swtimers.c
                   __tmp_0   0x000010       data     static C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
-                  __tmp_0   0x000010       data     static C:\hotboards\Examples\Microchip\swtimers2.X\main.c
               guap8Inputs   0x000060       data     static C:\hotboards\CodeBank8\bsp\Microchip\system\system.c
              guap8Outputs   0x00007e       data     static C:\hotboards\CodeBank8\bsp\Microchip\system\system.c
            guap8Direction   0x0000b0       data     static C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c

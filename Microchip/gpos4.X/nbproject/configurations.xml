@@ -4,10 +4,9 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>C:/hotboards/Examples/Microchip/gpos4.X/bsp_profile.h</itemPath>
-      <itemPath>C:/hotboards/Examples/Microchip/gpos4.X/middleware_profile.h</itemPath>
       <itemPath>C:/hotboards/Examples/Microchip/gpos4.X/vectors.h</itemPath>
       <itemPath>C:/hotboards/CodeBank8/types.h</itemPath>
+      <itemPath>C:/hotboards/Examples/Microchip/gpos4.X/hardware_profile.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"

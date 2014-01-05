@@ -2,7 +2,7 @@
  * encenderemos led en RA1 por 300ms cada que presionemos el boton que esta puesto 
  * en la tarjeta (RA0) polearemos las entradas cada 10ms y evaluaremos si se
  * presiono un boton con un tiempo de debounce de 50ms.
- * en el archivo middleware_profile.h declaramos las siguientes definiciones
+ * en el archivo hardware_profile.h declaramos las siguientes definiciones
  * #define GPIS_N_INPUTS        1 //usaremos un boton
  * el boton estara situado en el puerto A en el pin 0
  * #define GPIS_B0_P            GPIOS_PORTA

@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=C:/hotboards/CodeBank8/middleware/gpos/gpos.c C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c C:/hotboards/CodeBank8/bsp/Microchip/system/system.c C:/hotboards/Examples/Microchip/gpos4.X/main.c
+SOURCEFILES_QUOTED_IF_SPACED=C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c C:/hotboards/CodeBank8/bsp/Microchip/system/system.c C:/hotboards/CodeBank8/middleware/gpos/gpos.c C:/hotboards/Examples/Microchip/gpos4.X/main.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/503702409/gpos.o ${OBJECTDIR}/_ext/1251158516/gpios.o ${OBJECTDIR}/_ext/1092064318/swtimers.o ${OBJECTDIR}/_ext/483372223/system.o ${OBJECTDIR}/_ext/1566208051/main.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/503702409/gpos.o.d ${OBJECTDIR}/_ext/1251158516/gpios.o.d ${OBJECTDIR}/_ext/1092064318/swtimers.o.d ${OBJECTDIR}/_ext/483372223/system.o.d ${OBJECTDIR}/_ext/1566208051/main.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1251158516/gpios.o ${OBJECTDIR}/_ext/1092064318/swtimers.o ${OBJECTDIR}/_ext/483372223/system.o ${OBJECTDIR}/_ext/503702409/gpos.o ${OBJECTDIR}/_ext/1566208051/main.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1251158516/gpios.o.d ${OBJECTDIR}/_ext/1092064318/swtimers.o.d ${OBJECTDIR}/_ext/483372223/system.o.d ${OBJECTDIR}/_ext/503702409/gpos.o.d ${OBJECTDIR}/_ext/1566208051/main.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/503702409/gpos.o ${OBJECTDIR}/_ext/1251158516/gpios.o ${OBJECTDIR}/_ext/1092064318/swtimers.o ${OBJECTDIR}/_ext/483372223/system.o ${OBJECTDIR}/_ext/1566208051/main.o
+OBJECTFILES=${OBJECTDIR}/_ext/1251158516/gpios.o ${OBJECTDIR}/_ext/1092064318/swtimers.o ${OBJECTDIR}/_ext/483372223/system.o ${OBJECTDIR}/_ext/503702409/gpos.o ${OBJECTDIR}/_ext/1566208051/main.o
 
 # Source Files
-SOURCEFILES=C:/hotboards/CodeBank8/middleware/gpos/gpos.c C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c C:/hotboards/CodeBank8/bsp/Microchip/system/system.c C:/hotboards/Examples/Microchip/gpos4.X/main.c
+SOURCEFILES=C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c C:/hotboards/CodeBank8/bsp/Microchip/system/system.c C:/hotboards/CodeBank8/middleware/gpos/gpos.c C:/hotboards/Examples/Microchip/gpos4.X/main.c
 
 
 CFLAGS=
@@ -86,14 +86,6 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/_ext/503702409/gpos.o: C:/hotboards/CodeBank8/middleware/gpos/gpos.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/503702409 
-	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.o.d 
-	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/503702409/gpos.o   C:/hotboards/CodeBank8/middleware/gpos/gpos.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/503702409/gpos.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/503702409/gpos.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
 ${OBJECTDIR}/_ext/1251158516/gpios.o: C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1251158516 
 	@${RM} ${OBJECTDIR}/_ext/1251158516/gpios.o.d 
@@ -118,6 +110,14 @@ ${OBJECTDIR}/_ext/483372223/system.o: C:/hotboards/CodeBank8/bsp/Microchip/syste
 	@${DEP_GEN} -d ${OBJECTDIR}/_ext/483372223/system.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/483372223/system.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
+${OBJECTDIR}/_ext/503702409/gpos.o: C:/hotboards/CodeBank8/middleware/gpos/gpos.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/503702409 
+	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.o.d 
+	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/503702409/gpos.o   C:/hotboards/CodeBank8/middleware/gpos/gpos.c 
+	@${DEP_GEN} -d ${OBJECTDIR}/_ext/503702409/gpos.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/503702409/gpos.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
+	
 ${OBJECTDIR}/_ext/1566208051/main.o: C:/hotboards/Examples/Microchip/gpos4.X/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1566208051 
 	@${RM} ${OBJECTDIR}/_ext/1566208051/main.o.d 
@@ -127,14 +127,6 @@ ${OBJECTDIR}/_ext/1566208051/main.o: C:/hotboards/Examples/Microchip/gpos4.X/mai
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1566208051/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
 else
-${OBJECTDIR}/_ext/503702409/gpos.o: C:/hotboards/CodeBank8/middleware/gpos/gpos.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/503702409 
-	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.o.d 
-	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/503702409/gpos.o   C:/hotboards/CodeBank8/middleware/gpos/gpos.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/503702409/gpos.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/503702409/gpos.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
 ${OBJECTDIR}/_ext/1251158516/gpios.o: C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1251158516 
 	@${RM} ${OBJECTDIR}/_ext/1251158516/gpios.o.d 
@@ -158,6 +150,14 @@ ${OBJECTDIR}/_ext/483372223/system.o: C:/hotboards/CodeBank8/bsp/Microchip/syste
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/483372223/system.o   C:/hotboards/CodeBank8/bsp/Microchip/system/system.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/_ext/483372223/system.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/483372223/system.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
+	
+${OBJECTDIR}/_ext/503702409/gpos.o: C:/hotboards/CodeBank8/middleware/gpos/gpos.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/503702409 
+	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.o.d 
+	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/503702409/gpos.o   C:/hotboards/CodeBank8/middleware/gpos/gpos.c 
+	@${DEP_GEN} -d ${OBJECTDIR}/_ext/503702409/gpos.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/503702409/gpos.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
 ${OBJECTDIR}/_ext/1566208051/main.o: C:/hotboards/Examples/Microchip/gpos4.X/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1566208051 

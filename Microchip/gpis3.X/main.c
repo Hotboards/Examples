@@ -1,7 +1,7 @@
 /*
  * Encendemos el led en la tarjeta cuando presionemos el boton, y apagamos el led cuando dejemos de
  * presionar el boton
- * en el archivo middleware_profile.h declaramos las siguientes definiciones
+ * en el archivo hardware_profile.h declaramos las siguientes definiciones
  * #define GPIS_N_INPUTS        1 //usaremos un boton
  * el boton estara situado en el puerto A en el pin 0
  * #define GPIS_B0_P            GPIOS_PORTA

@@ -5,9 +5,8 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>vectors.h</itemPath>
-      <itemPath>bsp_profile.h</itemPath>
-      <itemPath>middleware_profile.h</itemPath>
       <itemPath>../../../CodeBank8/types.h</itemPath>
+      <itemPath>hardware_profile.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"

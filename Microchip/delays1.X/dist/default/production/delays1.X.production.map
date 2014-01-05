@@ -1,5 +1,5 @@
 MPLINK 4.46, Linker
-Linker Map File - Created Thu Dec 26 20:43:50 2013
+Linker Map File - Created Sun Jan 05 03:39:59 2014
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
@@ -19,30 +19,30 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
                     .code       code   0x00168e    program   0x000020
              _startup_scn       code   0x0016ae    program   0x00001c
            .code___init.o       code   0x0016ca    program   0x000002
-       .romdata_fxm3232.o    romdata   0x0016cc    program   0x000000
+          .idata_main.o_i    romdata   0x0016cc    program   0x000000
+          .romdata_main.o    romdata   0x0016cc    program   0x000000
         .romdata_delays.o    romdata   0x0016cc    program   0x000000
          .romdata_gpios.o    romdata   0x0016cc    program   0x000000
          .idata_gpios.o_i    romdata   0x0016cc    program   0x00001e
         .romdata___init.o    romdata   0x0016cc    program   0x000000
+       .romdata_fxm3232.o    romdata   0x0016cc    program   0x000000
          .romdata_c018i.o    romdata   0x0016cc    program   0x000000
-          .romdata_main.o    romdata   0x0016cc    program   0x000000
-          .idata_main.o_i    romdata   0x0016cc    program   0x000000
+         .idata_c018i.o_i    romdata   0x0016ea    program   0x000000
         .idata___init.o_i    romdata   0x0016ea    program   0x000000
        .idata_fxm3232.o_i    romdata   0x0016ea    program   0x000000
-        .idata_delays.o_i    romdata   0x0016ea    program   0x000000
             .code_c018i.o       code   0x0016ea    program   0x000000
-         .idata_c018i.o_i    romdata   0x0016ea    program   0x000000
+        .idata_delays.o_i    romdata   0x0016ea    program   0x000000
       .config_7ff8_main.o    romdata   0x007ff8    program   0x000001
                 MATH_DATA      udata   0x000000       data   0x000010
                  .tmpdata      udata   0x000010       data   0x000004
            .idata_gpios.o      idata   0x000060       data   0x00001e
            .udata_c018i.o      udata   0x00007e       data   0x00000a
            .idata_c018i.o      idata   0x000088       data   0x000000
-            .udata_main.o      udata   0x000088       data   0x000000
-            .idata_main.o      idata   0x000088       data   0x000000
            .udata_gpios.o      udata   0x000088       data   0x000000
           .udata_delays.o      udata   0x000088       data   0x000000
           .idata_delays.o      idata   0x000088       data   0x000000
+            .udata_main.o      udata   0x000088       data   0x000000
+            .idata_main.o      idata   0x000088       data   0x000000
           .idata___init.o      idata   0x000088       data   0x000000
           .udata___init.o      udata   0x000088       data   0x000000
          .idata_fxm3232.o      idata   0x000088       data   0x000000
@@ -113,8 +113,8 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
        ___return_lbl00000   0x001004    program     static                          
        ___return_lbl00001   0x0016c8    program     static                          
        ___return_lbl00001   0x00100c    program     static                          
-       ___return_lbl00002   0x0015ba    program     static                          
        ___return_lbl00002   0x00101c    program     static                          
+       ___return_lbl00002   0x0015ba    program     static                          
        ___return_lbl00003   0x00000c    program     static                          
        ___return_lbl00004   0x00001c    program     static                          
        ___return_lbl00007   0x00150a    program     static                          

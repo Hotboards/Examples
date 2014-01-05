@@ -34,4 +34,13 @@ Ejemplos
 - [Ejemplo 3: Parpadeo un led a 50ms por un lapso de 1s](http://github.com/Hotboards/Examples/blob/master/Microchip/gpos3.X/main.c)
 - [Ejemplo 4: Parpadeo de 4 leds a diferentes timepos](http://github.com/Hotboards/Examples/blob/master/Microchip/gpos4.X/main.c)
 
+**(uart) Puerto serial**
+
+- [Ejemplo 1: Transmicion de una cadena de caracteres a 115200](http://github.com/Hotboards/Examples/blob/master/Microchip/uart1.X/main.c)
+- [Ejemplo 2: Transmicion de una cadena de caracteres con interrupciones a 115200](http://github.com/Hotboards/Examples/blob/master/Microchip/uart2.X/main.c)
+- [Ejemplo 3: Transmicion de una cadena cada que se presiona un botón a 9600](http://github.com/Hotboards/Examples/blob/master/Microchip/uart3.X/main.c)
+- [Ejemplo 4: Simple eco de un caracter escrito en una terminal a 9600](http://github.com/Hotboards/Examples/blob/master/Microchip/uart4.X/main.c)
+- [Ejemplo 5: Encendido y apagado de leds con recepción de cadenas por puerto serial a 9600](http://github.com/Hotboards/Examples/blob/master/Microchip/uart5.X/main.c)
+- [Ejemplo 6: Transmicion de una cadena de caracteres a 115200 usando uart2](http://github.com/Hotboards/Examples/blob/master/Microchip/uart6.X/main.c)
+
  

@@ -1,11 +1,11 @@
 /*
  * Ivertimos el estado del led en RA1 cada 200ms usando una salida oscilante
- * en el archivo middleware_profile.h declaramos las siguientes definiciones
+ * en el archivo hardware_profile.h declaramos las siguientes definiciones
  * #define GPOS_N_PINS          1 //usaremos un boton
  * el led estara situado en el puerto A en el pin 0
  * #define GPOS_P0_P            GPIOS_PORTA
  * #define GPOS_P0_B            1
- * Recuerda revisar el archivo bsp_profile.h donde se define escribe
+ * Recuerda revisar el archivo hardware_profile.h donde se define escribe
  * la velocidad de reloj a 48MHz
  */
 

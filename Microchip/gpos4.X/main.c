@@ -1,6 +1,6 @@
 /*
  * Ivertimos el estado de 3 leds conectados al puerto B (RB0, RB2 y RB4)
- * en el archivo middleware_profile.h declaramos las siguientes definiciones
+ * en el archivo hardware_profile.h declaramos las siguientes definiciones
  * #define GPOS_N_PINS          3 //usaremos 3 salidas
  * el led estara situado en el puerto B en el pin 0, 2 y 4
  * #define GPOS_P0_P            GPIOS_PORTB

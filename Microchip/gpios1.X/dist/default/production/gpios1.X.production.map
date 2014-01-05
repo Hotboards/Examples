@@ -1,5 +1,5 @@
 MPLINK 4.46, Linker
-Linker Map File - Created Mon Dec 09 19:30:31 2013
+Linker Map File - Created Sun Jan 05 03:46:45 2014
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
@@ -19,9 +19,9 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
            .code___init.o       code   0x001464    program   0x000002
           .romdata_main.o    romdata   0x001466    program   0x000000
           .idata_main.o_i    romdata   0x001466    program   0x000000
-         .romdata_c018i.o    romdata   0x001466    program   0x000000
-         .idata_gpios.o_i    romdata   0x001466    program   0x00001e
          .romdata_gpios.o    romdata   0x001466    program   0x000000
+         .idata_gpios.o_i    romdata   0x001466    program   0x00001e
+         .romdata_c018i.o    romdata   0x001466    program   0x000000
         .romdata___init.o    romdata   0x001466    program   0x000000
             .code_c018i.o       code   0x001484    program   0x000000
         .idata___init.o_i    romdata   0x001484    program   0x000000
@@ -32,9 +32,9 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
            .idata_gpios.o      idata   0x000060       data   0x00001e
            .udata_c018i.o      udata   0x00007e       data   0x00000a
            .idata_c018i.o      idata   0x000088       data   0x000000
+           .udata_gpios.o      udata   0x000088       data   0x000000
             .udata_main.o      udata   0x000088       data   0x000000
             .idata_main.o      idata   0x000088       data   0x000000
-           .udata_gpios.o      udata   0x000088       data   0x000000
           .idata___init.o      idata   0x000088       data   0x000000
           .udata___init.o      udata   0x000088       data   0x000000
                    .stack      udata   0x000d00       data   0x000100
@@ -82,26 +82,26 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
          Gpios_u8ReadPort   0x001252    program     extern C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
       Gpios_u8ReadPullups   0x0012ec    program     extern C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
          Gpios_u8ReadTris   0x0012b2    program     extern C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
-                 High_ISR   0x000008    program     extern C:\hotboards\examples\gpios1.X\vectors.h
-                  Low_ISR   0x000018    program     extern C:\hotboards\examples\gpios1.X\vectors.h
-        Remapped_High_ISR   0x001008    program     extern C:\hotboards\examples\gpios1.X\vectors.h
-         Remapped_Low_ISR   0x001018    program     extern C:\hotboards\examples\gpios1.X\vectors.h
-  YourHighPriorityISRCode   0x0013f8    program     extern C:\hotboards\examples\gpios1.X\main.c
-   YourLowPriorityISRCode   0x001406    program     extern C:\hotboards\examples\gpios1.X\main.c
-       ___return_lbl00000   0x000004    program     static                          
+                 High_ISR   0x000008    program     extern C:\hotboards\Examples\Microchip\gpios1.X\vectors.h
+                  Low_ISR   0x000018    program     extern C:\hotboards\Examples\Microchip\gpios1.X\vectors.h
+        Remapped_High_ISR   0x001008    program     extern C:\hotboards\Examples\Microchip\gpios1.X\vectors.h
+         Remapped_Low_ISR   0x001018    program     extern C:\hotboards\Examples\Microchip\gpios1.X\vectors.h
+  YourHighPriorityISRCode   0x0013f8    program     extern C:\hotboards\Examples\Microchip\gpios1.X\main.c
+   YourLowPriorityISRCode   0x001406    program     extern C:\hotboards\Examples\Microchip\gpios1.X\main.c
        ___return_lbl00000   0x001004    program     static                          
-       ___return_lbl00001   0x001462    program     static                          
+       ___return_lbl00000   0x000004    program     static                          
        ___return_lbl00001   0x00100c    program     static                          
+       ___return_lbl00001   0x001462    program     static                          
        ___return_lbl00002   0x001396    program     static                          
        ___return_lbl00002   0x00101c    program     static                          
        ___return_lbl00003   0x00000c    program     static                          
        ___return_lbl00004   0x00001c    program     static                          
-               __config_0   0x007ff8    program     static C:\hotboards\examples\gpios1.X\main.c
+               __config_0   0x007ff8    program     static C:\hotboards\Examples\Microchip\gpios1.X\main.c
                    __init   0x001464    program     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\stdclib\__init.c
             __zero_memory   0x001428    program     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
                 _do_cinit   0x0012fa    program     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
                    _entry   0x000000    program     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
-                   _reset   0x001000    program     extern C:\hotboards\examples\gpios1.X\vectors.h
+                   _reset   0x001000    program     extern C:\hotboards\Examples\Microchip\gpios1.X\vectors.h
                  _startup   0x001448    program     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
                 compare_l   0x00143e    program     static E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
                 copy_loop   0x00136c    program     static                          
@@ -111,7 +111,7 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
                      loop   0x001458    program     static                          
                    loop_h   0x001436    program     static E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
                    loop_l   0x001440    program     static E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
-                     main   0x001398    program     extern C:\hotboards\examples\gpios1.X\main.c
+                     main   0x001398    program     extern C:\hotboards\Examples\Microchip\gpios1.X\main.c
                      test   0x001314    program     static                          
                zero_block   0x001436    program     static E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
                    ADCON0   0x000fc2       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
@@ -540,8 +540,8 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
                      WREG   0x000fe8       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
                 __FPFLAGS   0x000004       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\cmath18.asm
             __FPFLAGSbits   0x000004       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\cmath18.asm
+                  __tmp_0   0x000000       data     static C:\hotboards\Examples\Microchip\gpios1.X\main.c
                   __tmp_0   0x000000       data     static C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
-                  __tmp_0   0x000000       data     static C:\hotboards\examples\gpios1.X\main.c
                 curr_byte   0x000081       data     static E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
                curr_entry   0x000083       data     static E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
                  data_ptr   0x000085       data     static E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
@@ -557,15 +557,15 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
                 ---------  ---------  ---------  --------- ---------                
                    _entry   0x000000    program     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\startup\c018i.c
        ___return_lbl00000   0x000004    program     static                          
-                 High_ISR   0x000008    program     extern C:\hotboards\examples\gpios1.X\vectors.h
+                 High_ISR   0x000008    program     extern C:\hotboards\Examples\Microchip\gpios1.X\vectors.h
        ___return_lbl00003   0x00000c    program     static                          
-                  Low_ISR   0x000018    program     extern C:\hotboards\examples\gpios1.X\vectors.h
+                  Low_ISR   0x000018    program     extern C:\hotboards\Examples\Microchip\gpios1.X\vectors.h
        ___return_lbl00004   0x00001c    program     static                          
-                   _reset   0x001000    program     extern C:\hotboards\examples\gpios1.X\vectors.h
+                   _reset   0x001000    program     extern C:\hotboards\Examples\Microchip\gpios1.X\vectors.h
        ___return_lbl00000   0x001004    program     static                          
-        Remapped_High_ISR   0x001008    program     extern C:\hotboards\examples\gpios1.X\vectors.h
+        Remapped_High_ISR   0x001008    program     extern C:\hotboards\Examples\Microchip\gpios1.X\vectors.h
        ___return_lbl00001   0x00100c    program     static                          
-         Remapped_Low_ISR   0x001018    program     extern C:\hotboards\examples\gpios1.X\vectors.h
+         Remapped_Low_ISR   0x001018    program     extern C:\hotboards\Examples\Microchip\gpios1.X\vectors.h
        ___return_lbl00002   0x00101c    program     static                          
        Gpios_PinDirection   0x001038    program     extern C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
            Gpios_WritePin   0x0010d6    program     extern C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
@@ -585,9 +585,9 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
              done_copying   0x001380    program     static                          
                      done   0x001396    program     static                          
        ___return_lbl00002   0x001396    program     static                          
-                     main   0x001398    program     extern C:\hotboards\examples\gpios1.X\main.c
-  YourHighPriorityISRCode   0x0013f8    program     extern C:\hotboards\examples\gpios1.X\main.c
-   YourLowPriorityISRCode   0x001406    program     extern C:\hotboards\examples\gpios1.X\main.c
+                     main   0x001398    program     extern C:\hotboards\Examples\Microchip\gpios1.X\main.c
+  YourHighPriorityISRCode   0x0013f8    program     extern C:\hotboards\Examples\Microchip\gpios1.X\main.c
+   YourLowPriorityISRCode   0x001406    program     extern C:\hotboards\Examples\Microchip\gpios1.X\main.c
             __zero_memory   0x001428    program     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
                    loop_h   0x001436    program     static E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
                zero_block   0x001436    program     static E:\3.45\pic18-lt\cxx-framework\src\traditional\proc\p18f45j50.asm
@@ -597,9 +597,9 @@ REMAPPED_LOW_INTERRUPT_VECTOR       code   0x001018    program   0x000006
                      loop   0x001458    program     static                          
        ___return_lbl00001   0x001462    program     static                          
                    __init   0x001464    program     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\stdclib\__init.c
-               __config_0   0x007ff8    program     static C:\hotboards\examples\gpios1.X\main.c
-                  __tmp_0   0x000000       data     static C:\hotboards\examples\gpios1.X\main.c
+               __config_0   0x007ff8    program     static C:\hotboards\Examples\Microchip\gpios1.X\main.c
                   __tmp_0   0x000000       data     static C:\hotboards\CodeBank8\bsp\Microchip\gpios\gpios.c
+                  __tmp_0   0x000000       data     static C:\hotboards\Examples\Microchip\gpios1.X\main.c
                      SIGN   0x000003       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\cmath18.asm
             __FPFLAGSbits   0x000004       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\cmath18.asm
                 __FPFLAGS   0x000004       data     extern E:\3.45\pic18-lt\cxx-framework\src\traditional\math\cmath18.asm
