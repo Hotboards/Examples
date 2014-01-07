@@ -49,6 +49,9 @@ Ejemplos
 - [Ejemplo 2: Transmicion de una cadena formateada con xsprintf por interrupciones](http://github.com/Hotboards/Examples/blob/master/Microchip/printf2.X/main.c)
 - [Ejemplo 3: Printf como herramienta de depuración](http://github.com/Hotboards/Examples/blob/master/Microchip/printf3.X/main.c)
 
+**(adc) Convertidor analogo digital**
 
+- [Ejemplo 1: lectura simple de una canal de adc](http://github.com/Hotboards/Examples/blob/master/Microchip/adc1.X/main.c)
+- [Ejemplo 2: lectura múltiple de diferentes canales de adc](http://github.com/Hotboards/Examples/blob/master/Microchip/adc2.X/main.c)
 
  
