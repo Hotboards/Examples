@@ -54,4 +54,8 @@ Ejemplos
 - [Ejemplo 1: lectura simple de una canal de adc](http://github.com/Hotboards/Examples/blob/master/Microchip/adc1.X/main.c)
 - [Ejemplo 2: lectura múltiple de diferentes canales de adc](http://github.com/Hotboards/Examples/blob/master/Microchip/adc2.X/main.c)
 
- 
+**(Keyboard) Teclado Matricial** 
+
+- [Ejemplo 1: Simple lectura de teclado y despliegue con leds](http://github.com/Hotboards/Examples/blob/master/Microchip/keyboard1.X/main.c)
+- [Ejemplo 2: Teclas con diferente tiempo de presionado](http://github.com/Hotboards/Examples/blob/master/Microchip/keyboard2.X/main.c)
+
