@@ -59,3 +59,8 @@ Ejemplos
 - [Ejemplo 1: Simple lectura de teclado y despliegue con leds](http://github.com/Hotboards/Examples/blob/master/Microchip/keyboard1.X/main.c)
 - [Ejemplo 2: Teclas con diferente tiempo de presionado](http://github.com/Hotboards/Examples/blob/master/Microchip/keyboard2.X/main.c)
 
+**(6800) Interfaz paralela 6800**
+
+- [Ejemplo 1: Inicilizacion de un controlador hd44780](http://github.com/Hotboards/Examples/blob/master/Microchip/68001.X/main.c)
+- [Ejemplo 2: Escritura de un dato a un controlador hd44780](http://github.com/Hotboards/Examples/blob/master/Microchip/68002.X/main.c)
+- [Ejemplo 3: Escritura de un dato a un controlador hd44780 en modo 4 bits a 48MHz](http://github.com/Hotboards/Examples/blob/master/Microchip/68003.X/main.c)
