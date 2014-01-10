@@ -64,3 +64,9 @@ Ejemplos
 - [Ejemplo 1: Inicilizacion de un controlador hd44780](http://github.com/Hotboards/Examples/blob/master/Microchip/68001.X/main.c)
 - [Ejemplo 2: Escritura de un dato a un controlador hd44780](http://github.com/Hotboards/Examples/blob/master/Microchip/68002.X/main.c)
 - [Ejemplo 3: Escritura de un dato a un controlador hd44780 en modo 4 bits a 48MHz](http://github.com/Hotboards/Examples/blob/master/Microchip/68003.X/main.c)
+
+**(hd44780) LCD alfanumerico**
+
+- [Ejemplo 1: Envió de mensajes en diferentes posiciones del lcd](http://github.com/Hotboards/Examples/blob/master/Microchip/hd447801.X/main.c)
+- [Ejemplo 2: Uso de la funciones printf con el lcd](http://github.com/Hotboards/Examples/blob/master/Microchip/hd447802.X/main.c)
+
