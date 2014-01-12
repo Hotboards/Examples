@@ -70,3 +70,8 @@ Ejemplos
 - [Ejemplo 1: Envió de mensajes en diferentes posiciones del lcd](http://github.com/Hotboards/Examples/blob/master/Microchip/hd447801.X/main.c)
 - [Ejemplo 2: Uso de la funciones printf con el lcd](http://github.com/Hotboards/Examples/blob/master/Microchip/hd447802.X/main.c)
 
+**(usb cdc) Universal Serial Bus, clase CDC**
+- [Ejemplo 1: Transmicion continua de una cadena de caracteres](http://github.com/Hotboards/Examples/blob/master/Microchip/usb_cdc1.X/main.c)
+- [Ejemplo 2: Simple eco de caracteres](http://github.com/Hotboards/Examples/blob/master/Microchip/usb_cdc2.X/main.c)
+- [Ejemplo 3: Transmicion continua de una cadena de caracteres usando interrupciones](http://github.com/Hotboards/Examples/blob/master/Microchip/usb_cdc3.X/main.c)
+
