@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=main.c usb_descriptors.c ../../../CodeBank8/bsp/Microchip/system/system.c ../../../CodeBank8/bsp/Microchip/usb/cdc/usb_function_cdc.c ../../../CodeBank8/bsp/Microchip/usb/usb_device.c
+SOURCEFILES_QUOTED_IF_SPACED=../../../CodeBank8/bsp/Microchip/system/system.c ../../../CodeBank8/bsp/Microchip/usb/cdc/usb_function_cdc.c ../../../CodeBank8/bsp/Microchip/usb/usb_device.c main.c usb_descriptors.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/usb_descriptors.o ${OBJECTDIR}/_ext/644714797/system.o ${OBJECTDIR}/_ext/96797145/usb_function_cdc.o ${OBJECTDIR}/_ext/1984378694/usb_device.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/usb_descriptors.o.d ${OBJECTDIR}/_ext/644714797/system.o.d ${OBJECTDIR}/_ext/96797145/usb_function_cdc.o.d ${OBJECTDIR}/_ext/1984378694/usb_device.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/644714797/system.o ${OBJECTDIR}/_ext/96797145/usb_function_cdc.o ${OBJECTDIR}/_ext/1984378694/usb_device.o ${OBJECTDIR}/main.o ${OBJECTDIR}/usb_descriptors.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/644714797/system.o.d ${OBJECTDIR}/_ext/96797145/usb_function_cdc.o.d ${OBJECTDIR}/_ext/1984378694/usb_device.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/usb_descriptors.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/usb_descriptors.o ${OBJECTDIR}/_ext/644714797/system.o ${OBJECTDIR}/_ext/96797145/usb_function_cdc.o ${OBJECTDIR}/_ext/1984378694/usb_device.o
+OBJECTFILES=${OBJECTDIR}/_ext/644714797/system.o ${OBJECTDIR}/_ext/96797145/usb_function_cdc.o ${OBJECTDIR}/_ext/1984378694/usb_device.o ${OBJECTDIR}/main.o ${OBJECTDIR}/usb_descriptors.o
 
 # Source Files
-SOURCEFILES=main.c usb_descriptors.c ../../../CodeBank8/bsp/Microchip/system/system.c ../../../CodeBank8/bsp/Microchip/usb/cdc/usb_function_cdc.c ../../../CodeBank8/bsp/Microchip/usb/usb_device.c
+SOURCEFILES=../../../CodeBank8/bsp/Microchip/system/system.c ../../../CodeBank8/bsp/Microchip/usb/cdc/usb_function_cdc.c ../../../CodeBank8/bsp/Microchip/usb/usb_device.c main.c usb_descriptors.c
 
 
 CFLAGS=
@@ -86,22 +86,6 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/main.o.d 
-	@${RM} ${OBJECTDIR}/main.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
-	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-${OBJECTDIR}/usb_descriptors.o: usb_descriptors.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/usb_descriptors.o.d 
-	@${RM} ${OBJECTDIR}/usb_descriptors.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/usb_descriptors.o   usb_descriptors.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/usb_descriptors.o 
-	@${FIXDEPS} "${OBJECTDIR}/usb_descriptors.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
 ${OBJECTDIR}/_ext/644714797/system.o: ../../../CodeBank8/bsp/Microchip/system/system.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/644714797 
 	@${RM} ${OBJECTDIR}/_ext/644714797/system.o.d 
@@ -126,12 +110,11 @@ ${OBJECTDIR}/_ext/1984378694/usb_device.o: ../../../CodeBank8/bsp/Microchip/usb/
 	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1984378694/usb_device.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1984378694/usb_device.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
-else
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/main.o.d 
 	@${RM} ${OBJECTDIR}/main.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
 	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
@@ -139,10 +122,11 @@ ${OBJECTDIR}/usb_descriptors.o: usb_descriptors.c  nbproject/Makefile-${CND_CONF
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/usb_descriptors.o.d 
 	@${RM} ${OBJECTDIR}/usb_descriptors.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/usb_descriptors.o   usb_descriptors.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/usb_descriptors.o   usb_descriptors.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/usb_descriptors.o 
 	@${FIXDEPS} "${OBJECTDIR}/usb_descriptors.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
+else
 ${OBJECTDIR}/_ext/644714797/system.o: ../../../CodeBank8/bsp/Microchip/system/system.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/644714797 
 	@${RM} ${OBJECTDIR}/_ext/644714797/system.o.d 
@@ -166,6 +150,22 @@ ${OBJECTDIR}/_ext/1984378694/usb_device.o: ../../../CodeBank8/bsp/Microchip/usb/
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/1984378694/usb_device.o   ../../../CodeBank8/bsp/Microchip/usb/usb_device.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1984378694/usb_device.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1984378694/usb_device.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
+	
+${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/main.o.d 
+	@${RM} ${OBJECTDIR}/main.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
+	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
+	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
+	
+${OBJECTDIR}/usb_descriptors.o: usb_descriptors.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/usb_descriptors.o.d 
+	@${RM} ${OBJECTDIR}/usb_descriptors.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/usb_descriptors.o   usb_descriptors.c 
+	@${DEP_GEN} -d ${OBJECTDIR}/usb_descriptors.o 
+	@${FIXDEPS} "${OBJECTDIR}/usb_descriptors.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
 endif
 

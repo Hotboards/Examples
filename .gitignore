@@ -6,3 +6,5 @@
 *.lib
 *.a
 
+Microchip/spi1.X
+Microchip/spi2.X
