@@ -1,17 +1,17 @@
 Ejemplos
 =======
 
-En este repositorio puedes encontrar una larga serie de ejemplos de las piezas de codigo que encontraras en el repositorio CodeBank8.
+En este repositorio puedes encontrar una larga serie de ejemplos de las piezas de codigo que encontraras en el repositorio [CodeBank8](https://github.com/Hotboards/CodeBank8).
 
 Es muy sencillo compilar estos ejemplos, te recomendamos clonar este repositorio en el mismo directorio en donde clonaste el repositorio codebank8
 
 ```
-$ cd tu_repositorio
+$ cd tu_directorio
 $ git clone http://github.com/hotboards/codebank8.git
 $ git clone http://github.com/hotboards/examples.git
 ```
 
-y eso seria todo, ahora solo tienes que habrir cada ejemplo con MPLABX, compilar y grabar mediante el bootloader en tu board pepper o si lo prefieres grabar directamente con algun programador.
+Y eso seria todo, ahora solo tienes que habrir cada ejemplo con MPLABX, compilar y grabar mediante el bootloader en tu board pepper o si lo prefieres grabar directamente con algun programador.
 
 En caso de que no tengan el mismo directorio ambos repositorios, tendras que modificar la ruta de inclusion en tu compilador.
 
