@@ -5,6 +5,6 @@ nivel dentro de la carpeta "bsp"
 #ifndef __HARDWARE_PROFILE_H__
 #define	__HARDWARE_PROFILE_H__
 
-    #define UART1_ENABLE_RX      1
+    #define UART_ENABLE_RX1      1
 
 #endif	

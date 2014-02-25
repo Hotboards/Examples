@@ -12,7 +12,7 @@
 #include <p18cxxx.h>
 #include "vectors.h"
 #include "types.h"
-#include "uart/uart1.h"
+#include "uart/uart.h"
 #include "system/system.h"
 #include "swtimers/swtimers.h"
 #include "gpios/gpios.h"
@@ -32,7 +32,7 @@ void main(void)
     Timers_SetTime(0, 1000/timers_ms);  /*cargamos el canal 0 con un tiempo de 1 seg*/
     Gpios_PinDirection(GPIOS_PORTC, 6, GPIOS_OUTPUT); /*pin de tx como salida*/
 
-    baudrate = Uart1_Init(115200);   /*se iniclaiza el puerto serial a 115200 baudios*/
+    baudrate = Uart_Init(UART_PORT1, 115200);   /*se iniclaiza el puerto serial a 115200 baudios*/
     __ENABLE_INTERRUPTS();          /*habilitamos interrupciones globales*/
 
     while (1)
@@ -40,10 +40,10 @@ void main(void)
         if(Timers_u16GetTime(0) == 0) /*trascurriero el segundo*/
         {
             Timers_SetTime(0, 1000/timers_ms);/*recargamos el mismo canal con 1 seg*/
-            if(Uart1_TxBusy() == 0)              /*preguntamos si esta libre para transmitir*/
+            if(Uart_TxBusy(UART_PORT1) == 0)              /*preguntamos si esta libre para transmitir*/
             {
                 /*transmitimos una cadena de datos almacenada en flash*/
-                Uart1_TxFlashBuffer((rom _U08*)"Hola mundo\n\r", sizeof("Hola mundo\n\r")-1);
+                Uart_TxFlashBuffer(UART_PORT1, (rom _U08*)"Hola mundo\n\r", sizeof("Hola mundo\n\r")-1);
             }
         }
     }

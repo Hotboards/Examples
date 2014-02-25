@@ -19,10 +19,10 @@
       <logicalFolder name="f1" displayName="bsp" projectFiles="true">
         <itemPath>H:/CodeBank8/bsp/Microchip/gpios/gpios.c</itemPath>
         <itemPath>H:/CodeBank8/bsp/Microchip/gpios/gpios.h</itemPath>
-        <itemPath>H:/CodeBank8/bsp/Microchip/uart/uart1.c</itemPath>
-        <itemPath>H:/CodeBank8/bsp/Microchip/uart/uart1.h</itemPath>
         <itemPath>H:/CodeBank8/bsp/Microchip/delays/delays.c</itemPath>
         <itemPath>H:/CodeBank8/bsp/Microchip/delays/delays.h</itemPath>
+        <itemPath>H:/CodeBank8/bsp/Microchip/uart/uart.c</itemPath>
+        <itemPath>H:/CodeBank8/bsp/Microchip/uart/uart.h</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
     </logicalFolder>
@@ -46,7 +46,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>Simulator</platformTool>
         <languageToolchain>C18</languageToolchain>
-        <languageToolchainVersion>3.45</languageToolchainVersion>
+        <languageToolchainVersion>3.47</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <compileType>

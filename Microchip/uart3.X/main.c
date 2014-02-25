@@ -17,7 +17,7 @@
 #include <p18cxxx.h>
 #include "vectors.h"
 #include "types.h"
-#include "uart/uart1.h"
+#include "uart/uart.h"
 #include "system/system.h"
 #include "swtimers/swtimers.h"
 #include "gpios/gpios.h"
@@ -37,7 +37,7 @@ void main(void)
     Timers_SetTime(0, 10/timers_ms);  /*cargamos el canal 0 con un tiempo de 1 seg*/
     Gpis_Init();                     /*iniciamos la entrada conectada al boton*/
     Gpios_PinDirection(GPIOS_PORTC, 6, GPIOS_OUTPUT); /*pin de tx como salida*/
-    baudrate = Uart1_Init(9600);   /*se iniclaiza el puerto serial a 9600 baudios*/
+    baudrate = Uart_Init(UART_PORT1, 9600);   /*se iniclaiza el puerto serial a 9600 baudios*/
     __ENABLE_INTERRUPTS();          /*habilitamos interrupciones globales*/
 
     while (1)
@@ -50,10 +50,10 @@ void main(void)
         
         if(Gpis_bGetInput(0) == _TRUE)      /*preguntamos si se presiono el boton*/
         {
-            if(Uart1_TxBusy() == 0)              /*preguntamos si esta libre para transmitir*/
+            if(Uart_TxBusy(UART_PORT1) == 0)              /*preguntamos si esta libre para transmitir*/
             {
                 /*transmitimos una cadena de datos almacenada en flash*/
-                Uart1_TxFlashBuffer((rom _U08*)"Boton uno\n\r", sizeof("Boton uno\n\r")-1);
+                Uart_TxFlashBuffer(UART_PORT1, (rom _U08*)"Boton uno\n\r", sizeof("Boton uno\n\r")-1);
             }
         }
         

@@ -3,7 +3,7 @@
  * para correr este demo debes habrir en tu PC una terminal por serial y setear su velocidad a 9600
  * no flow control y transferencia de 8 bits sin paridad
  * en bsp_profile se indica que se usara la Rx del puerto serial
- * #define UART1_ENABLE_RX      1
+ * #define UART_ENABLE_RX1      1
  * recuerda que dentro de tu aplicacion debes definir lo que hara la funcion
  * void Uart1_CallbackRx(_U08 u8Data)
  */
@@ -11,7 +11,7 @@
 #include <p18cxxx.h>
 #include "vectors.h"
 #include "types.h"
-#include "uart/uart1.h"
+#include "uart/uart.h"
 #include "system/system.h"
 #include "gpios/gpios.h"
 
@@ -28,7 +28,7 @@ void main(void)
 
     Gpios_PinDirection(GPIOS_PORTC, 6, GPIOS_OUTPUT); /*pin de tx como salida*/
     Gpios_PinDirection(GPIOS_PORTC, 7, GPIOS_INPUT); /*pin de rx como entrada*/
-    baudrate = Uart1_Init(9600);   /*se iniclaiza el puerto serial a 9600 baudios*/
+    baudrate = Uart_Init(UART_PORT1, 9600);   /*se iniclaiza el puerto serial a 9600 baudios*/
     __ENABLE_INTERRUPTS();          /*habilitamos interrupciones globales*/
 
     while (1)
@@ -36,7 +36,7 @@ void main(void)
         if(gbFlag == 1) /*llego un caracter por teclado*/
         {
             gbFlag = 0; /*limpiamos la bandera*/
-            Uart1_PutChar(gu8RxData);/*lo enviamos de regreso para tener feedback visual*/
+            Uart_PutChar(UART_PORT1, gu8RxData);/*lo enviamos de regreso para tener feedback visual*/
         }
     }
 }

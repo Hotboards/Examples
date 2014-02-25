@@ -8,7 +8,7 @@
 #include <p18cxxx.h>
 #include "vectors.h"
 #include "types.h"
-#include "uart/uart1.h"
+#include "uart/uart.h"
 #include "delays/delays.h"
 #include "gpios/gpios.h"
 
@@ -22,11 +22,11 @@ void main(void)
 
     Gpios_PinDirection(GPIOS_PORTC, 6, GPIOS_OUTPUT); /*pin de tx como salida*/
 
-    baudrate = Uart1_Init(115200); /*se iniclaiza el puerto serial a 115200 baudios*/
+    baudrate = Uart_Init(UART_PORT1, 115200); /*se iniclaiza el puerto serial a 115200 baudios*/
     
     while (1)
     {
-        Uart1_PutString("Hola mundo\n\r");   /*se manda mensaje por puerto serial*/
+        Uart_PutString(UART_PORT1, "Hola mundo\n\r");   /*se manda mensaje por puerto serial*/
         Delays_ms(1000);                    /*se cicla por 1 seg*/
     }
 }
