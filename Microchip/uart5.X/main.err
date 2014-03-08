@@ -1,0 +1,4 @@
+Warning[2054] H:\Examples\Microchip\uart5.X\main.c 42 : suspicious pointer conversion
+Warning[2066] H:\Examples\Microchip\uart5.X\main.c 42 : type qualifier mismatch in assignment
+Warning[2054] H:\Examples\Microchip\uart5.X\main.c 46 : suspicious pointer conversion
+Warning[2066] H:\Examples\Microchip\uart5.X\main.c 46 : type qualifier mismatch in assignment

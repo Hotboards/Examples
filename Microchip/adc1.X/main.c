@@ -9,10 +9,15 @@
 #include "vectors.h"
 #include "types.h"
 #include "gpios/gpios.h"
-#include "uart/uart1.h"
+#include "uart/uart.h"
 #include "printf/printf.h"
 #include "adc/adc.h"
 #include "delays/delays.h"
+
+void putc(unsigned char c)
+{
+    Uart_PutChar(UART_PORT1, c);
+}
 
 #pragma code
 void main(void)
@@ -25,8 +30,8 @@ void main(void)
     Adc_Init(ADC_10BITS);           /*se inciliza el adc con resolucion de 10bits*/
     Gpios_PinDirection(GPIOS_PORTC, 6, GPIOS_OUTPUT); /*puerto de tx como salida*/
 
-    (void)Uart1_Init(115200);       /*velocidad a 115200 bauds*/
-    xdev_out(Uart1_PutChar);        /*funcion Uart1_PutChar como salida*/
+    (void)Uart_Init(UART_PORT1, 115200);       /*velocidad a 115200 bauds*/
+    xdev_out(putc);                            /*funcion Uart_PutChar como salida*/
 
     while (1)
     {

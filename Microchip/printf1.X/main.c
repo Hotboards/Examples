@@ -8,8 +8,13 @@
 #include "vectors.h"
 #include "types.h"
 #include "gpios/gpios.h"
-#include "uart/uart1.h"
+#include "uart/uart.h"
 #include "printf/printf.h"
+
+void putc(unsigned char c)
+{
+    Uart_PutChar(UART_PORT1, c);
+}
 
 #pragma code
 void main(void)
@@ -20,8 +25,8 @@ void main(void)
 
     Gpios_PinDirection(GPIOS_PORTC, 6, GPIOS_OUTPUT); /*puerto de tx como salida*/
 
-    (void)Uart1_Init(115200); /*velocidad a 115200 bauds*/
-    xdev_out(Uart1_PutChar);  /*funcion Uart1_PutChar como salida*/
+    (void)Uart_Init(UART_PORT1, 115200); /*velocidad a 115200 bauds*/
+    xdev_out(putc);  /*funcion Uart1_PutChar como salida*/
 
     /*Se recomienda manejar siempre parametros arriba de 16 bits para un correcto funcionamiento*/
     /*cuando se usan constantes se debe forzosamente realizar un castaje, como en este ejemplo*/
