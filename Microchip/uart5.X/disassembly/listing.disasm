@@ -1,0 +1,3108 @@
+Disassembly Listing for uart5
+Generated From:
+H:/Examples/Microchip/uart5.X/dist/default/production/uart5.X.production.cof
+12/03/2014 12:35:24 AM
+
+---  H:/Examples/Microchip/uart5.X/vectors.h  -----------------------------------------------------------
+1:             /*------------------------------------------------------------------------------
+2:              * Las siguientes directivas pragmas son las que están programadas por defaul
+3:              * en la tarjeta pepper-8m, aunque se activaran en este código, por seguridad
+4:              * el programa HIDBootloader.exe no te dejara grabarlas en el microcontrolador
+5:              * ya que el programa bootloader podría llegar a dañarse.
+6:              * En caso de que la aplicación requiera activarlas deberan descomentarse
+7:              * modificarse con las opciones deseadas, entrar al programa HIDBootloader.exe
+8:              * y en el menú Program->Settings, activar la opción de "Config Bits" y
+9:              * descargar el programa en la memoria del micro.
+10:             * La única directiva pragma sin comentar es la de XINST=OFF, solamente para
+11:             * qué C18 te permita compilar tu programa
+12:             -----------------------------------------------------------------------------*/
+13:            #pragma config XINST = OFF          //Extended instruction set disabled
+14:            /*#pragma config WDTEN = OFF        //WDT disabled (enabled by SWDTEN bit)
+15:            #pragma config PLLDIV = 5           //Divide by 3 (12 MHz oscillator input)
+16:            #pragma config STVREN = ON          //stack overflow/underflow reset enabled
+17:            #pragma config CPUDIV = OSC1        //No CPU system clock divide
+18:            #pragma config CP0 = OFF            //Program memory is not code-protected
+19:            #pragma config OSC = HSPLL          //HS oscillator, PLL enabled, HSPLL used by USB
+20:            #pragma config T1DIG = OFF          //Sec Osc clock source may not be selected, unless T1OSCEN = 1
+21:            #pragma config LPT1OSC = OFF        //high power Timer1 mode
+22:            #pragma config FCMEN = OFF          //Fail-Safe Clock Monitor disabled
+23:            #pragma config IESO = OFF           //Two-Speed Start-up disabled
+24:            #pragma config WDTPS = 32768        //1:32768
+25:            #pragma config DSWDTOSC = INTOSCREF //DSWDT uses INTOSC/INTRC as clock
+26:            #pragma config RTCOSC = T1OSCREF    //RTCC uses T1OSC/T1CKI as clock
+27:            #pragma config DSBOREN = OFF        //Zero-Power BOR disabled in Deep Sleep
+28:            #pragma config DSWDTEN = OFF        //Disabled
+29:            #pragma config DSWDTPS = 8192       //1:8,192 (8.5 seconds)
+30:            #pragma config IOL1WAY = OFF        //IOLOCK bit can be set and cleared
+31:            #pragma config MSSP7B_EN = MSK7     //7 Bit address masking
+32:            #pragma config WPFP = PAGE_1        //Write Protect Program Flash Page 0
+33:            #pragma config WPEND = PAGE_0       //Start protection at page 0
+34:            #pragma config WPCFG = OFF          //Write/Erase last page protect Disabled
+35:            #pragma config WPDIS = OFF          //WPFP[5:0], WPEND, and WPCFG bits ignored
+36:            */
+37:            
+38:            /*------------------------------------------------------------------------------
+39:             * La siguiente sección declara los vectores reubicados de tus interrupciónes
+40:             * NO es necesario que modifiques esta seccion de codigo
+41:             -----------------------------------------------------------------------------*/
+42:            #define REMAPPED_RESET_VECTOR_ADDRESS			0x1000
+43:            #define REMAPPED_HIGH_INTERRUPT_VECTOR_ADDRESS          0x1008
+44:            #define REMAPPED_LOW_INTERRUPT_VECTOR_ADDRESS           0x1018
+45:            
+46:            void YourHighPriorityISRCode(void);
+47:            void YourLowPriorityISRCode(void);
+48:            
+49:            extern void _startup (void);        // See c018i.c in your C18 compiler dir
+50:            #pragma code REMAPPED_RESET_VECTOR = REMAPPED_RESET_VECTOR_ADDRESS
+51:            void _reset (void)
+52:            {
+53:                _asm goto _startup _endasm
+1000  EFA7     GOTO 0x214E
+1002  F010     NOP
+54:            }
+1004  0012     RETURN 0
+55:            
+56:            #pragma code REMAPPED_HIGH_INTERRUPT_VECTOR = REMAPPED_HIGH_INTERRUPT_VECTOR_ADDRESS
+57:            void Remapped_High_ISR (void)	{
+58:                 _asm goto YourHighPriorityISRCode _endasm
+1008  EFCF     GOTO 0x1D9E
+100A  F00E     NOP
+59:            }
+100C  0012     RETURN 0
+60:            #pragma code REMAPPED_LOW_INTERRUPT_VECTOR = REMAPPED_LOW_INTERRUPT_VECTOR_ADDRESS
+61:            void Remapped_Low_ISR (void){
+62:                 _asm goto YourLowPriorityISRCode _endasm
+1018  EFD6     GOTO 0x1DAC
+101A  F00E     NOP
+63:            }
+101C  0012     RETURN 0
+64:            
+65:            #pragma code HIGH_INTERRUPT_VECTOR = 0x08
+66:            void High_ISR (void)	{
+67:                 _asm goto REMAPPED_HIGH_INTERRUPT_VECTOR_ADDRESS _endasm
+0008  EF04     GOTO 0x1008
+000A  F008     NOP
+68:            }
+000C  0012     RETURN 0
+69:            #pragma code LOW_INTERRUPT_VECTOR = 0x18
+70:            void Low_ISR (void){
+71:                 _asm goto REMAPPED_LOW_INTERRUPT_VECTOR_ADDRESS _endasm
+0018  EF0C     GOTO 0x1018
+001A  F008     NOP
+72:            }
+001C  0012     RETURN 0
+73:            #pragma code
+74:            
+---  H:/Examples/Microchip/uart5.X/main.c  --------------------------------------------------------------
+1:             /*
+2:              * Simple programa que retrasmite un eco cada que presionas una tecla,
+3:              * para correr este demo debes habrir en tu PC una terminal por serial y setear su velocidad a 9600
+4:              * no flow control y transferencia de 8 bits sin paridad
+5:              * en bsp_profile se indica que se usara la Rx del puerto serial
+6:              * #define UART_ENABLE_RX1      1
+7:              * recuerda que dentro de tu aplicacion debes definir lo que hara la funcion
+8:              * void Uart1_CallbackRx(_U08 u8Data)
+9:              */
+10:            
+11:            #include <p18cxxx.h>
+12:            #include "vectors.h"
+13:            #include "types.h"
+14:            #include "uart/uart.h"
+15:            #include "system/system.h"
+16:            #include "gpios/gpios.h"
+17:            #include <string.h>
+18:            
+19:            static _U08 gu8Buffer[100];
+20:            static _BOOL gbFlag = _FALSE;
+21:            
+22:            #pragma code
+23:            void main(void)
+1C90  CFD9     MOVFF FSR2L, POSTINC1
+1C92  FFE6     NOP
+1C94  CFE1     MOVFF FSR1L, FSR2L
+1C96  FFD9     NOP
+1C98  0E04     MOVLW 0x4
+1C9A  26E1     ADDWF FSR1L, F, ACCESS
+24:            {
+25:                _U32 baudrate;
+26:            
+27:                ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
+1C9C  010F     MOVLB 0xF
+1C9E  6948     SETF 0x48, BANKED
+28:                ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
+1CA0  6949     SETF 0x49, BANKED
+29:            
+30:                Gpios_PinDirection(GPIOS_PORTC, 6, GPIOS_OUTPUT); /*pin de tx como salida*/
+1CA2  6AE6     CLRF POSTINC1, ACCESS
+1CA4  0E06     MOVLW 0x6
+1CA6  6EE6     MOVWF POSTINC1, ACCESS
+1CA8  0E02     MOVLW 0x2
+1CAA  6EE6     MOVWF POSTINC1, ACCESS
+1CAC  ECE7     CALL 0x19CE, 0
+1CAE  F00C     NOP
+1CB0  52E5     MOVF POSTDEC1, F, ACCESS
+1CB2  52E5     MOVF POSTDEC1, F, ACCESS
+1CB4  52E5     MOVF POSTDEC1, F, ACCESS
+31:                Gpios_PinDirection(GPIOS_PORTC, 7, GPIOS_INPUT); /*pin de rx como entrada*/
+1CB6  0E01     MOVLW 0x1
+1CB8  6EE6     MOVWF POSTINC1, ACCESS
+1CBA  0E07     MOVLW 0x7
+1CBC  6EE6     MOVWF POSTINC1, ACCESS
+1CBE  0E02     MOVLW 0x2
+1CC0  6EE6     MOVWF POSTINC1, ACCESS
+1CC2  ECE7     CALL 0x19CE, 0
+1CC4  F00C     NOP
+1CC6  52E5     MOVF POSTDEC1, F, ACCESS
+1CC8  52E5     MOVF POSTDEC1, F, ACCESS
+1CCA  52E5     MOVF POSTDEC1, F, ACCESS
+32:                Gpios_PinDirection(GPIOS_PORTB, 1, GPIOS_OUTPUT); /*pin de rx como entrada*/
+1CCC  6AE6     CLRF POSTINC1, ACCESS
+1CCE  0E01     MOVLW 0x1
+1CD0  6EE6     MOVWF POSTINC1, ACCESS
+1CD2  6EE6     MOVWF POSTINC1, ACCESS
+1CD4  ECE7     CALL 0x19CE, 0
+1CD6  F00C     NOP
+1CD8  52E5     MOVF POSTDEC1, F, ACCESS
+1CDA  52E5     MOVF POSTDEC1, F, ACCESS
+1CDC  52E5     MOVF POSTDEC1, F, ACCESS
+33:                Gpios_PinDirection(GPIOS_PORTB, 3, GPIOS_OUTPUT); /*pin de rx como entrada*/
+1CDE  6AE6     CLRF POSTINC1, ACCESS
+1CE0  0E03     MOVLW 0x3
+1CE2  6EE6     MOVWF POSTINC1, ACCESS
+1CE4  0E01     MOVLW 0x1
+1CE6  6EE6     MOVWF POSTINC1, ACCESS
+1CE8  ECE7     CALL 0x19CE, 0
+1CEA  F00C     NOP
+1CEC  52E5     MOVF POSTDEC1, F, ACCESS
+1CEE  52E5     MOVF POSTDEC1, F, ACCESS
+1CF0  52E5     MOVF POSTDEC1, F, ACCESS
+34:                baudrate = Uart_Init(UART_PORT1, 9600);   /*se iniclaiza el puerto serial a 9600 baudios*/
+1CF2  0E80     MOVLW 0x80
+1CF4  6EE6     MOVWF POSTINC1, ACCESS
+1CF6  0E25     MOVLW 0x25
+1CF8  6EE6     MOVWF POSTINC1, ACCESS
+1CFA  6AE6     CLRF POSTINC1, ACCESS
+1CFC  6AE6     CLRF POSTINC1, ACCESS
+1CFE  0E01     MOVLW 0x1
+1D00  6EE6     MOVWF POSTINC1, ACCESS
+1D02  EC2E     CALL 0x105C, 0
+1D04  F008     NOP
+1D06  6E10     MOVWF __tmp_0, ACCESS
+1D08  0E05     MOVLW 0x5
+1D0A  5EE1     SUBWF FSR1L, F, ACCESS
+1D0C  5010     MOVF __tmp_0, W, ACCESS
+1D0E  C004     MOVFF u32Mul, POSTINC2
+1D10  FFDE     NOP
+1D12  C005     MOVFF 0x5, POSTINC2
+1D14  FFDE     NOP
+1D16  C006     MOVFF 0x6, POSTINC2
+1D18  FFDE     NOP
+1D1A  C007     MOVFF 0x7, POSTDEC2
+1D1C  FFDD     NOP
+1D1E  52DD     MOVF POSTDEC2, F, ACCESS
+1D20  52DD     MOVF POSTDEC2, F, ACCESS
+35:                __ENABLE_INTERRUPTS();          /*habilitamos interrupciones globales*/
+1D22  EC78     CALL 0x1EF0, 0
+1D24  F00F     NOP
+36:            
+37:                while (1)
+1D9C  D7C4     BRA 0x1D26
+38:                {
+39:                    if(gbFlag == _TRUE) /*llego un caracter por teclado*/
+1D26  0100     MOVLB 0x0
+1D28  05F8     DECF gbFlag, W, BANKED
+1D2A  E1FD     BNZ 0x1D26
+40:                    {
+41:                        gbFlag = _FALSE; /*limpiamos la bandera*/
+1D2C  6BF8     CLRF gbFlag, BANKED
+42:                        if(strcmppgm2ram(&gu8Buffer[0], "led1\r") == 0)
+1D2E  0E8C     MOVLW 0x8C
+1D30  6E10     MOVWF __tmp_0, ACCESS
+1D32  0E21     MOVLW 0x21
+1D34  6E11     MOVWF 0x11, ACCESS
+1D36  6A12     CLRF 0x12, ACCESS
+1D38  C010     MOVFF __tmp_0, POSTINC1
+1D3A  FFE6     NOP
+1D3C  6EE6     MOVWF POSTINC1, ACCESS
+1D3E  C012     MOVFF 0x12, POSTINC1
+1D40  FFE6     NOP
+1D42  0E60     MOVLW 0x60
+1D44  6EE6     MOVWF POSTINC1, ACCESS
+1D46  0E00     MOVLW 0x0
+1D48  6EE6     MOVWF POSTINC1, ACCESS
+1D4A  EC81     CALL 0x2102, 0
+1D4C  F010     NOP
+1D4E  6E13     MOVWF 0x13, ACCESS
+1D50  0E05     MOVLW 0x5
+1D52  5EE1     SUBWF FSR1L, F, ACCESS
+1D54  5013     MOVF 0x13, W, ACCESS
+1D56  0900     IORLW 0x0
+1D58  E103     BNZ 0x1D60
+43:                        {
+44:                            Gpios_TogglePin(GPIOS_PORTB, 1);
+1D5A  0E01     MOVLW 0x1
+1D5C  6EE6     MOVWF POSTINC1, ACCESS
+45:                        }
+46:                        else if(strcmppgm2ram(&gu8Buffer[0], "led3\r") == 0)
+1D5E  D019     BRA 0x1D92
+1D60  0E86     MOVLW 0x86
+1D62  6E10     MOVWF __tmp_0, ACCESS
+1D64  0E21     MOVLW 0x21
+1D66  6E11     MOVWF 0x11, ACCESS
+1D68  6A12     CLRF 0x12, ACCESS
+1D6A  C010     MOVFF __tmp_0, POSTINC1
+1D6C  FFE6     NOP
+1D6E  6EE6     MOVWF POSTINC1, ACCESS
+1D70  C012     MOVFF 0x12, POSTINC1
+1D72  FFE6     NOP
+1D74  0E60     MOVLW 0x60
+1D76  6EE6     MOVWF POSTINC1, ACCESS
+1D78  0E00     MOVLW 0x0
+1D7A  6EE6     MOVWF POSTINC1, ACCESS
+1D7C  EC81     CALL 0x2102, 0
+1D7E  F010     NOP
+1D80  6E13     MOVWF 0x13, ACCESS
+1D82  0E05     MOVLW 0x5
+1D84  5EE1     SUBWF FSR1L, F, ACCESS
+1D86  5013     MOVF 0x13, W, ACCESS
+1D88  0900     IORLW 0x0
+1D8A  E1CD     BNZ 0x1D26
+47:                        {
+48:                            Gpios_TogglePin(GPIOS_PORTB, 3);
+1D8C  0E03     MOVLW 0x3
+1D8E  6EE6     MOVWF POSTINC1, ACCESS
+1D90  0E01     MOVLW 0x1
+1D92  6EE6     MOVWF POSTINC1, ACCESS
+1D94  EC8B     CALL 0x1B16, 0
+1D96  F00D     NOP
+1D98  52E5     MOVF POSTDEC1, F, ACCESS
+1D9A  52E5     MOVF POSTDEC1, F, ACCESS
+49:                        }
+50:                    }
+51:                }
+52:            }
+53:            
+54:            
+55:            #pragma interrupt YourHighPriorityISRCode
+56:            void YourHighPriorityISRCode(void)
+1D9E  CFDA     MOVFF FSR2H, PREINC1
+1DA0  FFE4     NOP
+1DA2  52E6     MOVF POSTINC1, F, ACCESS
+57:            {
+58:                /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
+59:            }
+1DA4  52E5     MOVF POSTDEC1, F, ACCESS
+1DA6  CFE5     MOVFF POSTDEC1, FSR2H
+1DA8  FFDA     NOP
+1DAA  0011     RETFIE 1
+60:            
+61:            #pragma interruptlow YourLowPriorityISRCode
+62:            void YourLowPriorityISRCode(void)
+1DAC  CFD8     MOVFF STATUS, PREINC1
+1DAE  FFE4     NOP
+1DB0  CFE0     MOVFF BSR, PREINC1
+1DB2  FFE4     NOP
+1DB4  6EE4     MOVWF PREINC1, ACCESS
+1DB6  CFDA     MOVFF FSR2H, PREINC1
+1DB8  FFE4     NOP
+1DBA  CFE2     MOVFF FSR1H, FSR2H
+1DBC  FFDA     NOP
+1DBE  CFE9     MOVFF FSR0L, PREINC1
+1DC0  FFE4     NOP
+1DC2  CFEA     MOVFF FSR0H, PREINC1
+1DC4  FFE4     NOP
+1DC6  CFF6     MOVFF TBLPTRL, PREINC1
+1DC8  FFE4     NOP
+1DCA  CFF7     MOVFF TBLPTRH, PREINC1
+1DCC  FFE4     NOP
+1DCE  CFF5     MOVFF TABLAT, PREINC1
+1DD0  FFE4     NOP
+1DD2  CFF3     MOVFF PRODL, PREINC1
+1DD4  FFE4     NOP
+1DD6  CFF4     MOVFF PRODH, PREINC1
+1DD8  FFE4     NOP
+1DDA  CFFA     MOVFF PCLATH, PREINC1
+1DDC  FFE4     NOP
+1DDE  EE00     LFSR 0, 0x0
+1DE0  F000     NOP
+1DE2  0E10     MOVLW 0x10
+1DE4  04E8     DECF WREG, W, ACCESS
+1DE6  E303     BNC 0x1DEE
+1DE8  CFEE     MOVFF POSTINC0, PREINC1
+1DEA  FFE4     NOP
+1DEC  D7FB     BRA 0x1DE4
+1DEE  EE00     LFSR 0, 0x10
+1DF0  F010     NOP
+1DF2  0E0C     MOVLW 0xC
+1DF4  04E8     DECF WREG, W, ACCESS
+1DF6  E303     BNC 0x1DFE
+1DF8  CFEE     MOVFF POSTINC0, PREINC1
+1DFA  FFE4     NOP
+1DFC  D7FB     BRA 0x1DF4
+1DFE  52E6     MOVF POSTINC1, F, ACCESS
+63:            {
+64:                Uart1_RxIsr();/*en esta funcion se capturan los datos de llegada*/
+1E00  EC26     CALL 0x164C, 0
+1E02  F00B     NOP
+65:                /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
+66:            }
+1E04  52E5     MOVF POSTDEC1, F, ACCESS
+1E06  EE00     LFSR 0, 0x1B
+1E08  F01B     NOP
+1E0A  0E0C     MOVLW 0xC
+1E0C  04E8     DECF WREG, W, ACCESS
+1E0E  E303     BNC 0x1E16
+1E10  CFE5     MOVFF POSTDEC1, POSTDEC0
+1E12  FFED     NOP
+1E14  D7FB     BRA 0x1E0C
+1E16  EE00     LFSR 0, 0xF
+1E18  F00F     NOP
+1E1A  0E10     MOVLW 0x10
+1E1C  04E8     DECF WREG, W, ACCESS
+1E1E  E303     BNC 0x1E26
+1E20  CFE5     MOVFF POSTDEC1, POSTDEC0
+1E22  FFED     NOP
+1E24  D7FB     BRA 0x1E1C
+1E26  CFE5     MOVFF POSTDEC1, PCLATH
+1E28  FFFA     NOP
+1E2A  CFE5     MOVFF POSTDEC1, PRODH
+1E2C  FFF4     NOP
+1E2E  CFE5     MOVFF POSTDEC1, PRODL
+1E30  FFF3     NOP
+1E32  CFE5     MOVFF POSTDEC1, TABLAT
+1E34  FFF5     NOP
+1E36  CFE5     MOVFF POSTDEC1, TBLPTRH
+1E38  FFF7     NOP
+1E3A  CFE5     MOVFF POSTDEC1, TBLPTRL
+1E3C  FFF6     NOP
+1E3E  CFE5     MOVFF POSTDEC1, FSR0H
+1E40  FFEA     NOP
+1E42  CFE5     MOVFF POSTDEC1, FSR0L
+1E44  FFE9     NOP
+1E46  CFE5     MOVFF POSTDEC1, FSR2H
+1E48  FFDA     NOP
+1E4A  50E5     MOVF POSTDEC1, W, ACCESS
+1E4C  CFE5     MOVFF POSTDEC1, BSR
+1E4E  FFE0     NOP
+1E50  CFE5     MOVFF POSTDEC1, STATUS
+1E52  FFD8     NOP
+1E54  0010     RETFIE 0
+67:            
+68:            /*esta funcion es llamda dentro de la funcion Uart_RxIsr() y se encarga de pasar a la aplicacion
+69:             los datos llegados por puerto serial*/
+70:            void Uart1_CallbackRx(_U08 u8Data)
+1E56  CFD9     MOVFF FSR2L, POSTINC1
+1E58  FFE6     NOP
+1E5A  CFE1     MOVFF FSR1L, FSR2L
+1E5C  FFD9     NOP
+71:            {
+72:                static unsigned short i = 0;
+73:            
+74:                gu8Buffer[i] = u8Data; /*se respalda dato*/
+1E5E  0E60     MOVLW 0x60
+1E60  0100     MOVLB 0x0
+1E62  25F9     ADDWF i, W, BANKED
+1E64  6EE9     MOVWF FSR0L, ACCESS
+1E66  0E00     MOVLW 0x0
+1E68  21FA     ADDWFC 0xFA, W, BANKED
+1E6A  6EEA     MOVWF FSR0H, ACCESS
+1E6C  0EFE     MOVLW 0xFE
+1E6E  CFDB     MOVFF PLUSW2, INDF0
+1E70  FFEF     NOP
+75:                i++;
+1E72  2BF9     INCF i, F, BANKED
+1E74  0E00     MOVLW 0x0
+1E76  23FA     ADDWFC 0xFA, F, BANKED
+76:                if(gu8Buffer[i-1] == '\r') /*fin de cadena?*/
+1E78  C0F9     MOVFF i, FSR0L
+1E7A  FFE9     NOP
+1E7C  C0FA     MOVFF 0xFA, FSR0H
+1E7E  FFEA     NOP
+1E80  06E9     DECF FSR0L, F, ACCESS
+1E82  5AEA     SUBWFB FSR0H, F, ACCESS
+1E84  0E60     MOVLW 0x60
+1E86  26E9     ADDWF FSR0L, F, ACCESS
+1E88  0E00     MOVLW 0x0
+1E8A  22EA     ADDWFC FSR0H, F, ACCESS
+1E8C  50EF     MOVF INDF0, W, ACCESS
+1E8E  080D     SUBLW 0xD
+1E90  E10B     BNZ 0x1EA8
+77:                {
+78:                    gbFlag = 1;
+1E92  0E01     MOVLW 0x1
+1E94  6FF8     MOVWF gbFlag, BANKED
+79:                    gu8Buffer[i] = '\0';   /*caracter nulo*/
+1E96  0E60     MOVLW 0x60
+1E98  25F9     ADDWF i, W, BANKED
+1E9A  6EE9     MOVWF FSR0L, ACCESS
+1E9C  0E00     MOVLW 0x0
+1E9E  21FA     ADDWFC 0xFA, W, BANKED
+1EA0  6EEA     MOVWF FSR0H, ACCESS
+1EA2  6AEF     CLRF INDF0, ACCESS
+80:                    i = 0;           /*reinicia indice*/
+1EA4  6BF9     CLRF i, BANKED
+1EA6  6BFA     CLRF 0xFA, BANKED
+81:                }
+82:            }
+1EA8  52E5     MOVF POSTDEC1, F, ACCESS
+1EAA  CFE7     MOVFF INDF1, FSR2L
+1EAC  FFD9     NOP
+1EAE  0012     RETURN 0
+83:            
+---  H:/CodeBank8/bsp/Microchip/uart/uart.c  ------------------------------------------------------------
+1:             /*--------------------------------------------------------------------------------------------------
+2:               "THE BEER-WARE LICENSE" (Revision 42):
+3:               <phk@FreeBSD.ORG> wrote this file. As long as you retain this notice you
+4:               can do whatever you want with this stuff. If we meet some day, and you think
+5:               this stuff is worth it, you can buy me a beer in return to Hotboards crew 
+6:               (Beer-ware license created by Poul-Henning Kamp)
+7:             
+8:               \file         uart.c
+9:               \author       Diego
+10:              \email        diego.perez@hotboards.org
+11:              \ver          1.0
+12:              \date         August 5, 2013
+13:              \target       PIC18FJ series
+14:            
+15:              \brief        El driver de puerto serial maneja el periférico EUART para que realize transmisiones
+16:                            de 8 y 9 bits. El driver fue creado principalmente para que este funcione mediante
+17:                            interrupciones y no sea necesario ciclar al uC de manera innecesaria, sin embargo se
+18:                            crearon un par de funciones de tx de caracteres y cadenas, para cuando se requiera
+19:                            implementar una prueba rápida o si la aplicación no requiere demasiado procesamiento
+20:                            multitarea.
+21:             -------------------------------------------------------------------------------------------------*/
+22:            /*-- Includes --*/
+23:            #include "uart.h"
+24:            #include <p18cxxx.h>
+25:            #include <string.h>
+26:            #include "hardware_profile.h"
+27:            
+28:            
+29:            /*-- Private Definitions--*/
+30:            #ifndef BSP_CLOCK
+31:                #define UART_CLOCK              12000000
+32:            #else
+33:                #define UART_CLOCK              BSP_CLOCK
+34:            #endif
+35:            #ifndef UART_ENABLE_RX1
+36:                #define UART_ENABLE_RX1          0
+37:            #endif
+38:            #ifndef UART_ENABLE_RX2
+39:                #define UART_ENABLE_RX2          0
+40:            #endif
+41:            
+42:            typedef struct
+43:            {
+44:                _BOOL bTxFlag;
+45:                _U08 u8Counter;
+46:                rom _U08 *pu8TxBufferFlash;
+47:                _U08 *pu8TxBufferRam;
+48:                _BOOL bRam;
+49:            }_sUART;
+50:            
+51:            
+52:            /*-- Global variables --*/
+53:            static volatile near unsigned char *gau8SPBRGH[3]  = {NULL, &SPBRGH1, &SPBRGH2};
+54:            static volatile near unsigned char *gau8SPBRG[3]   = {NULL, &SPBRG1, &SPBRG2};
+55:            static volatile near unsigned char *gau8TXSTA[3]   = {NULL, &TXSTA1, &TXSTA2};
+56:            static volatile near unsigned char *gau8RCSTA[3]   = {NULL, &RCSTA1, &RCSTA2};
+57:            static volatile near unsigned char *gau8TXREG[3]   = {NULL, &TXREG1, &TXREG2};
+58:            static volatile near unsigned char *gau8RCREG[3]   = {NULL, &RCREG1, &RCREG2};
+59:            static volatile near unsigned char *gau8BAUDCON[3] = {NULL, &BAUDCON1, &BAUDCON2};
+60:            static _sUART gasUarts[3];
+61:            
+62:            
+63:            /*-- Private Macros --*/
+64:            
+65:            
+66:            /*-- Private functions prototypes --*/
+67:            static _U16 u16BaudRateL(const _U08 u8Uart, const _U32 u32BaudRate);
+68:            static _U16 u16BaudRateH(const _U08 u8Uart, const _U32 u32BaudRate);
+69:            static _U32 u32GetBaudRate(const _U08 u8Uart);
+70:            
+71:            
+72:            /*-- External functions --*/
+73:            /**-----------------------------------------------------------------------------------------------*/
+74:            _U32 Uart_Init(const _U08 u8Uart, const _U32 u32BaudRate)
+105C  CFD9     MOVFF FSR2L, POSTINC1
+105E  FFE6     NOP
+1060  CFE1     MOVFF FSR1L, FSR2L
+1062  FFD9     NOP
+1064  0E02     MOVLW 0x2
+1066  26E1     ADDWF FSR1L, F, ACCESS
+75:            {
+76:                _U16 u16Baud;
+77:            
+78:                u16Baud = u16BaudRateL(u8Uart, u32BaudRate);
+1068  50D9     MOVF FSR2L, W, ACCESS
+106A  0FFA     ADDLW 0xFA
+106C  6EE9     MOVWF FSR0L, ACCESS
+106E  0EFF     MOVLW 0xFF
+1070  20DA     ADDWFC FSR2H, W, ACCESS
+1072  6EEA     MOVWF FSR0H, ACCESS
+1074  CFEE     MOVFF POSTINC0, POSTINC1
+1076  FFE6     NOP
+1078  CFEE     MOVFF POSTINC0, POSTINC1
+107A  FFE6     NOP
+107C  CFEE     MOVFF POSTINC0, POSTINC1
+107E  FFE6     NOP
+1080  CFEF     MOVFF INDF0, POSTINC1
+1082  FFE6     NOP
+1084  0EFE     MOVLW 0xFE
+1086  CFDB     MOVFF PLUSW2, POSTINC1
+1088  FFE6     NOP
+108A  DB1D     RCALL u16BaudRateL
+108C  6E10     MOVWF __tmp_0, ACCESS
+108E  0E05     MOVLW 0x5
+1090  5EE1     SUBWF FSR1L, F, ACCESS
+1092  5010     MOVF __tmp_0, W, ACCESS
+1094  CFF3     MOVFF PRODL, POSTINC2
+1096  FFDE     NOP
+1098  CFF4     MOVFF PRODH, POSTDEC2
+109A  FFDD     NOP
+79:                if(u16Baud < 10)
+109C  CFDE     MOVFF POSTINC2, __tmp_0
+109E  F010     NOP
+10A0  CFDD     MOVFF POSTDEC2, 0x11
+10A2  F011     NOP
+10A4  0E0A     MOVLW 0xA
+10A6  5C10     SUBWF __tmp_0, W, ACCESS
+10A8  0E00     MOVLW 0x0
+10AA  5811     SUBWFB 0x11, W, ACCESS
+10AC  E226     BC 0x10FA
+80:                {
+81:                    u16Baud = u16BaudRateH(u8Uart, u32BaudRate);
+10AE  50D9     MOVF FSR2L, W, ACCESS
+10B0  0FFA     ADDLW 0xFA
+10B2  6EE9     MOVWF FSR0L, ACCESS
+10B4  0EFF     MOVLW 0xFF
+10B6  20DA     ADDWFC FSR2H, W, ACCESS
+10B8  6EEA     MOVWF FSR0H, ACCESS
+10BA  CFEE     MOVFF POSTINC0, POSTINC1
+10BC  FFE6     NOP
+10BE  CFEE     MOVFF POSTINC0, POSTINC1
+10C0  FFE6     NOP
+10C2  CFEE     MOVFF POSTINC0, POSTINC1
+10C4  FFE6     NOP
+10C6  CFEF     MOVFF INDF0, POSTINC1
+10C8  FFE6     NOP
+10CA  0EFE     MOVLW 0xFE
+10CC  CFDB     MOVFF PLUSW2, POSTINC1
+10CE  FFE6     NOP
+10D0  DB5D     RCALL u16BaudRateH
+10D2  6E10     MOVWF __tmp_0, ACCESS
+10D4  0E05     MOVLW 0x5
+10D6  5EE1     SUBWF FSR1L, F, ACCESS
+10D8  5010     MOVF __tmp_0, W, ACCESS
+10DA  CFF3     MOVFF PRODL, POSTINC2
+10DC  FFDE     NOP
+10DE  CFF4     MOVFF PRODH, POSTDEC2
+10E0  FFDD     NOP
+82:                    if(u16Baud == 0)
+10E2  CFD9     MOVFF FSR2L, FSR0L
+10E4  FFE9     NOP
+10E6  CFDA     MOVFF FSR2H, FSR0H
+10E8  FFEA     NOP
+10EA  50EE     MOVF POSTINC0, W, ACCESS
+10EC  10ED     IORWF POSTDEC0, W, ACCESS
+10EE  E105     BNZ 0x10FA
+83:                    {
+84:                        return 0;
+10F0  6A04     CLRF u32Mul, ACCESS
+10F2  6A05     CLRF 0x5, ACCESS
+10F4  6A06     CLRF 0x6, ACCESS
+10F6  6A07     CLRF 0x7, ACCESS
+10F8  D080     BRA 0x11FA
+85:                    }
+86:                }
+87:                
+88:                gasUarts[u8Uart].bTxFlag = _FALSE;
+10FA  0EFE     MOVLW 0xFE
+10FC  50DB     MOVF PLUSW2, W, ACCESS
+10FE  0D07     MULLW 0x7
+1100  CFF3     MOVFF PRODL, FSR0L
+1102  FFE9     NOP
+1104  CFF4     MOVFF PRODH, FSR0H
+1106  FFEA     NOP
+1108  0E6E     MOVLW 0x6E
+110A  26E9     ADDWF FSR0L, F, ACCESS
+110C  0E0E     MOVLW 0xE
+110E  22EA     ADDWFC FSR0H, F, ACCESS
+1110  6AEF     CLRF INDF0, ACCESS
+89:                SET_8BIT(*gau8BAUDCON[u8Uart], 3);  /*set 16 bit baudreg mode*/
+1112  0EFE     MOVLW 0xFE
+1114  6AEA     CLRF FSR0H, ACCESS
+1116  34DB     RLCF PLUSW2, W, ACCESS
+1118  0BFE     ANDLW 0xFE
+111A  36EA     RLCF FSR0H, F, ACCESS
+111C  6EE9     MOVWF FSR0L, ACCESS
+111E  0EE8     MOVLW 0xE8
+1120  26E9     ADDWF FSR0L, F, ACCESS
+1122  0E00     MOVLW 0x0
+1124  22EA     ADDWFC FSR0H, F, ACCESS
+1126  50EE     MOVF POSTINC0, W, ACCESS
+1128  CFEF     MOVFF INDF0, FSR0H
+112A  FFEA     NOP
+112C  6EE9     MOVWF FSR0L, ACCESS
+112E  86EF     BSF INDF0, 3, ACCESS
+90:                *gau8SPBRGH[u8Uart] = u16Baud>>(_U16)8;
+1130  CFDE     MOVFF POSTINC2, __tmp_0
+1132  F010     NOP
+1134  CFDD     MOVFF POSTDEC2, 0x11
+1136  F011     NOP
+1138  C011     MOVFF 0x11, __tmp_0
+113A  F010     NOP
+113C  6A11     CLRF 0x11, ACCESS
+113E  0EFE     MOVLW 0xFE
+1140  6AEA     CLRF FSR0H, ACCESS
+1142  34DB     RLCF PLUSW2, W, ACCESS
+1144  0BFE     ANDLW 0xFE
+1146  36EA     RLCF FSR0H, F, ACCESS
+1148  6EE9     MOVWF FSR0L, ACCESS
+114A  0EC4     MOVLW 0xC4
+114C  26E9     ADDWF FSR0L, F, ACCESS
+114E  0E00     MOVLW 0x0
+1150  22EA     ADDWFC FSR0H, F, ACCESS
+1152  50EE     MOVF POSTINC0, W, ACCESS
+1154  CFEF     MOVFF INDF0, FSR0H
+1156  FFEA     NOP
+1158  6EE9     MOVWF FSR0L, ACCESS
+115A  C010     MOVFF __tmp_0, INDF0
+115C  FFEF     NOP
+91:                *gau8SPBRG[u8Uart] = (_U08)u16Baud;     /*set baud register*/
+115E  0EFE     MOVLW 0xFE
+1160  6AEA     CLRF FSR0H, ACCESS
+1162  34DB     RLCF PLUSW2, W, ACCESS
+1164  0BFE     ANDLW 0xFE
+1166  36EA     RLCF FSR0H, F, ACCESS
+1168  6EE9     MOVWF FSR0L, ACCESS
+116A  0ECA     MOVLW 0xCA
+116C  26E9     ADDWF FSR0L, F, ACCESS
+116E  0E00     MOVLW 0x0
+1170  22EA     ADDWFC FSR0H, F, ACCESS
+1172  50EE     MOVF POSTINC0, W, ACCESS
+1174  CFEF     MOVFF INDF0, FSR0H
+1176  FFEA     NOP
+1178  6EE9     MOVWF FSR0L, ACCESS
+117A  CFDF     MOVFF INDF2, INDF0
+117C  FFEF     NOP
+92:                if(u8Uart == UART_PORT1)
+117E  0EFE     MOVLW 0xFE
+1180  04DB     DECF PLUSW2, W, ACCESS
+1182  E102     BNZ 0x1188
+93:                {
+94:                    CLEAR_8BIT(IPR1, 4);    /*set tx interrupt to low priority*/
+1184  989F     BCF IPR1, 4, ACCESS
+95:                }
+96:                else if(u8Uart == UART_PORT1)
+1186  D004     BRA 0x1190
+1188  0EFE     MOVLW 0xFE
+118A  04DB     DECF PLUSW2, W, ACCESS
+118C  E101     BNZ 0x1190
+97:                {
+98:                    CLEAR_8BIT(IPR3, 4);    /*set tx interrupt to low priority*/
+118E  98A5     BCF IPR3, 4, ACCESS
+99:                }
+100:               CLEAR_8BIT(IPR3, 4);    /*set tx interrupt to low priority*/
+1190  98A5     BCF IPR3, 4, ACCESS
+101:               SET_8BIT(*gau8RCSTA[u8Uart], 7);    /*uart on*/
+1192  0EFE     MOVLW 0xFE
+1194  6AEA     CLRF FSR0H, ACCESS
+1196  34DB     RLCF PLUSW2, W, ACCESS
+1198  0BFE     ANDLW 0xFE
+119A  36EA     RLCF FSR0H, F, ACCESS
+119C  6EE9     MOVWF FSR0L, ACCESS
+119E  0ED6     MOVLW 0xD6
+11A0  26E9     ADDWF FSR0L, F, ACCESS
+11A2  0E00     MOVLW 0x0
+11A4  22EA     ADDWFC FSR0H, F, ACCESS
+11A6  50EE     MOVF POSTINC0, W, ACCESS
+11A8  CFEF     MOVFF INDF0, FSR0H
+11AA  FFEA     NOP
+11AC  6EE9     MOVWF FSR0L, ACCESS
+11AE  8EEF     BSF INDF0, 7, ACCESS
+102:               SET_8BIT(*gau8TXSTA[u8Uart], 5);    /*trasnmitter enable*/
+11B0  0EFE     MOVLW 0xFE
+11B2  6AEA     CLRF FSR0H, ACCESS
+11B4  34DB     RLCF PLUSW2, W, ACCESS
+11B6  0BFE     ANDLW 0xFE
+11B8  36EA     RLCF FSR0H, F, ACCESS
+11BA  6EE9     MOVWF FSR0L, ACCESS
+11BC  0ED0     MOVLW 0xD0
+11BE  26E9     ADDWF FSR0L, F, ACCESS
+11C0  0E00     MOVLW 0x0
+11C2  22EA     ADDWFC FSR0H, F, ACCESS
+11C4  50EE     MOVF POSTINC0, W, ACCESS
+11C6  CFEF     MOVFF INDF0, FSR0H
+11C8  FFEA     NOP
+11CA  6EE9     MOVWF FSR0L, ACCESS
+11CC  8AEF     BSF INDF0, 5, ACCESS
+103:           
+104:               #if UART_ENABLE_RX1 == 1
+105:                   SET_8BIT(*gau8RCSTA[u8Uart], 4);    /*enable rx*/
+11CE  0EFE     MOVLW 0xFE
+11D0  6AEA     CLRF FSR0H, ACCESS
+11D2  34DB     RLCF PLUSW2, W, ACCESS
+11D4  0BFE     ANDLW 0xFE
+11D6  36EA     RLCF FSR0H, F, ACCESS
+11D8  6EE9     MOVWF FSR0L, ACCESS
+11DA  0ED6     MOVLW 0xD6
+11DC  26E9     ADDWF FSR0L, F, ACCESS
+11DE  0E00     MOVLW 0x0
+11E0  22EA     ADDWFC FSR0H, F, ACCESS
+11E2  50EE     MOVF POSTINC0, W, ACCESS
+11E4  CFEF     MOVFF INDF0, FSR0H
+11E6  FFEA     NOP
+11E8  6EE9     MOVWF FSR0L, ACCESS
+11EA  88EF     BSF INDF0, 4, ACCESS
+106:                   SET_8BIT(PIE1, 5);      /*enable tx interrupt*/
+11EC  8A9D     BSF PIE1, 5, ACCESS
+107:                   CLEAR_8BIT(IPR1, 5);    /*set rx interrupt to low priority*/
+11EE  9A9F     BCF IPR1, 5, ACCESS
+108:               #endif
+109:           
+110:               #if UART2_ENABLE_RX == 1
+111:                   SET_8BIT(*gau8RCSTA[u8Uart], 4);    /*enable rx*/
+112:                   SET_8BIT(PIE3, 5);      /*enable tx interrupt*/
+113:                   CLEAR_8BIT(IPR3, 5);    /*set rx interrupt to low priority*/
+114:               #endif
+115:           
+116:               return u32GetBaudRate(u8Uart);
+11F0  0EFE     MOVLW 0xFE
+11F2  CFDB     MOVFF PLUSW2, POSTINC1
+11F4  FFE6     NOP
+11F6  DB2D     RCALL u32GetBaudRate
+11F8  52E5     MOVF POSTDEC1, F, ACCESS
+117:           }
+11FA  0E02     MOVLW 0x2
+11FC  5CE1     SUBWF FSR1L, W, ACCESS
+11FE  E202     BC 0x1204
+1200  6AE1     CLRF FSR1L, ACCESS
+1202  52E5     MOVF POSTDEC1, F, ACCESS
+1204  6EE1     MOVWF FSR1L, ACCESS
+1206  52E5     MOVF POSTDEC1, F, ACCESS
+1208  CFE7     MOVFF INDF1, FSR2L
+120A  FFD9     NOP
+120C  0012     RETURN 0
+118:           /**-----------------------------------------------------------------------------------------------*/
+119:           
+120:           /**-----------------------------------------------------------------------------------------------*/
+121:           void Uart1_TxInterruptProprity(const _U08 u8Uart, const _BOOL bPriority)
+120E  CFD9     MOVFF FSR2L, POSTINC1
+1210  FFE6     NOP
+1212  CFE1     MOVFF FSR1L, FSR2L
+1214  FFD9     NOP
+122:           {
+123:               if((bPriority == _LOW) && (u8Uart == UART_PORT1))
+1216  0EFD     MOVLW 0xFD
+1218  50DB     MOVF PLUSW2, W, ACCESS
+121A  E105     BNZ 0x1226
+121C  0EFE     MOVLW 0xFE
+121E  04DB     DECF PLUSW2, W, ACCESS
+1220  E102     BNZ 0x1226
+124:               {
+125:                   CLEAR_8BIT(IPR1, 4);
+1222  989F     BCF IPR1, 4, ACCESS
+126:               }
+127:               else if((bPriority == _HIGH) && (u8Uart == UART_PORT1))
+1224  D019     BRA 0x1258
+1226  0EFD     MOVLW 0xFD
+1228  04DB     DECF PLUSW2, W, ACCESS
+122A  E105     BNZ 0x1236
+122C  0EFE     MOVLW 0xFE
+122E  04DB     DECF PLUSW2, W, ACCESS
+1230  E102     BNZ 0x1236
+128:               {
+129:                   SET_8BIT(IPR1, 4);
+1232  889F     BSF IPR1, 4, ACCESS
+130:               }
+131:               else if((bPriority == _LOW) && (u8Uart == UART_PORT2))
+1234  D011     BRA 0x1258
+1236  0EFD     MOVLW 0xFD
+1238  50DB     MOVF PLUSW2, W, ACCESS
+123A  E106     BNZ 0x1248
+123C  0EFE     MOVLW 0xFE
+123E  50DB     MOVF PLUSW2, W, ACCESS
+1240  0802     SUBLW 0x2
+1242  E102     BNZ 0x1248
+132:               {
+133:                   CLEAR_8BIT(IPR3, 4);
+1244  98A5     BCF IPR3, 4, ACCESS
+134:               }
+135:               else if((bPriority == _HIGH) && (u8Uart == UART_PORT2))
+1246  D008     BRA 0x1258
+1248  0EFD     MOVLW 0xFD
+124A  04DB     DECF PLUSW2, W, ACCESS
+124C  E105     BNZ 0x1258
+124E  0EFE     MOVLW 0xFE
+1250  50DB     MOVF PLUSW2, W, ACCESS
+1252  0802     SUBLW 0x2
+1254  E101     BNZ 0x1258
+136:               {
+137:                   SET_8BIT(IPR3, 4);
+1256  88A5     BSF IPR3, 4, ACCESS
+138:               }
+139:           }
+1258  52E5     MOVF POSTDEC1, F, ACCESS
+125A  CFE7     MOVFF INDF1, FSR2L
+125C  FFD9     NOP
+125E  0012     RETURN 0
+140:           /**-----------------------------------------------------------------------------------------------*/
+141:           
+142:           /**-----------------------------------------------------------------------------------------------*/
+143:           void Uart_RxInterruptProprity(const _U08 u8Uart, const _BOOL bPriority)
+1260  CFD9     MOVFF FSR2L, POSTINC1
+1262  FFE6     NOP
+1264  CFE1     MOVFF FSR1L, FSR2L
+1266  FFD9     NOP
+144:           {
+145:               if((bPriority == _LOW) && (u8Uart == UART_PORT1))
+1268  0EFD     MOVLW 0xFD
+126A  50DB     MOVF PLUSW2, W, ACCESS
+126C  E105     BNZ 0x1278
+126E  0EFE     MOVLW 0xFE
+1270  04DB     DECF PLUSW2, W, ACCESS
+1272  E102     BNZ 0x1278
+146:               {
+147:                   CLEAR_8BIT(IPR1, 5);
+1274  9A9F     BCF IPR1, 5, ACCESS
+148:               }
+149:               else if((bPriority == _HIGH) && (u8Uart == UART_PORT1))
+1276  D019     BRA 0x12AA
+1278  0EFD     MOVLW 0xFD
+127A  04DB     DECF PLUSW2, W, ACCESS
+127C  E105     BNZ 0x1288
+127E  0EFE     MOVLW 0xFE
+1280  04DB     DECF PLUSW2, W, ACCESS
+1282  E102     BNZ 0x1288
+150:               {
+151:                   SET_8BIT(IPR1, 5);
+1284  8A9F     BSF IPR1, 5, ACCESS
+152:               }
+153:               else if((bPriority == _LOW) && (u8Uart == UART_PORT2))
+1286  D011     BRA 0x12AA
+1288  0EFD     MOVLW 0xFD
+128A  50DB     MOVF PLUSW2, W, ACCESS
+128C  E106     BNZ 0x129A
+128E  0EFE     MOVLW 0xFE
+1290  50DB     MOVF PLUSW2, W, ACCESS
+1292  0802     SUBLW 0x2
+1294  E102     BNZ 0x129A
+154:               {
+155:                   CLEAR_8BIT(IPR3, 5);
+1296  9AA5     BCF IPR3, 5, ACCESS
+156:               }
+157:               else if((bPriority == _HIGH) && (u8Uart == UART_PORT2))
+1298  D008     BRA 0x12AA
+129A  0EFD     MOVLW 0xFD
+129C  04DB     DECF PLUSW2, W, ACCESS
+129E  E105     BNZ 0x12AA
+12A0  0EFE     MOVLW 0xFE
+12A2  50DB     MOVF PLUSW2, W, ACCESS
+12A4  0802     SUBLW 0x2
+12A6  E101     BNZ 0x12AA
+158:               {
+159:                   SET_8BIT(IPR3, 5);
+12A8  8AA5     BSF IPR3, 5, ACCESS
+160:               }
+161:           }
+12AA  52E5     MOVF POSTDEC1, F, ACCESS
+12AC  CFE7     MOVFF INDF1, FSR2L
+12AE  FFD9     NOP
+12B0  0012     RETURN 0
+162:           /**-----------------------------------------------------------------------------------------------*/
+163:           
+164:           /**-----------------------------------------------------------------------------------------------*/
+165:           void Uart_PutChar(const _U08 u8Uart, const _U08 u8Char)
+12B2  CFD9     MOVFF FSR2L, POSTINC1
+12B4  FFE6     NOP
+12B6  CFE1     MOVFF FSR1L, FSR2L
+12B8  FFD9     NOP
+166:           {
+167:               while(QUERY_8BIT(*gau8TXSTA[u8Uart], 1)==0){}
+12BA  0EFE     MOVLW 0xFE
+12BC  6AEA     CLRF FSR0H, ACCESS
+12BE  34DB     RLCF PLUSW2, W, ACCESS
+12C0  0BFE     ANDLW 0xFE
+12C2  36EA     RLCF FSR0H, F, ACCESS
+12C4  6EE9     MOVWF FSR0L, ACCESS
+12C6  0ED0     MOVLW 0xD0
+12C8  26E9     ADDWF FSR0L, F, ACCESS
+12CA  0E00     MOVLW 0x0
+12CC  22EA     ADDWFC FSR0H, F, ACCESS
+12CE  50EE     MOVF POSTINC0, W, ACCESS
+12D0  CFEF     MOVFF INDF0, FSR0H
+12D2  FFEA     NOP
+12D4  6EE9     MOVWF FSR0L, ACCESS
+12D6  40EF     RRNCF INDF0, W, ACCESS
+12D8  0B7F     ANDLW 0x7F
+12DA  0B01     ANDLW 0x1
+12DC  E0EE     BZ 0x12BA
+168:               *gau8TXREG[u8Uart] = u8Char;
+12DE  0EFE     MOVLW 0xFE
+12E0  6AEA     CLRF FSR0H, ACCESS
+12E2  34DB     RLCF PLUSW2, W, ACCESS
+12E4  0BFE     ANDLW 0xFE
+12E6  36EA     RLCF FSR0H, F, ACCESS
+12E8  6EE9     MOVWF FSR0L, ACCESS
+12EA  0EDC     MOVLW 0xDC
+12EC  26E9     ADDWF FSR0L, F, ACCESS
+12EE  0E00     MOVLW 0x0
+12F0  22EA     ADDWFC FSR0H, F, ACCESS
+12F2  50EE     MOVF POSTINC0, W, ACCESS
+12F4  CFEF     MOVFF INDF0, FSR0H
+12F6  FFEA     NOP
+12F8  6EE9     MOVWF FSR0L, ACCESS
+12FA  0EFD     MOVLW 0xFD
+12FC  CFDB     MOVFF PLUSW2, INDF0
+12FE  FFEF     NOP
+169:           }
+1300  52E5     MOVF POSTDEC1, F, ACCESS
+1302  CFE7     MOVFF INDF1, FSR2L
+1304  FFD9     NOP
+1306  0012     RETURN 0
+170:           /**-----------------------------------------------------------------------------------------------*/
+171:           
+172:           /**-----------------------------------------------------------------------------------------------*/
+173:           void Uart_PutString(const _U08 u8Uart, const rom _S08 *strString)
+1308  CFD9     MOVFF FSR2L, POSTINC1
+130A  FFE6     NOP
+130C  CFE1     MOVFF FSR1L, FSR2L
+130E  FFD9     NOP
+174:           {
+175:               while(*strString != 0)
+1310  0EFC     MOVLW 0xFC
+1312  CFDB     MOVFF PLUSW2, TBLPTRL
+1314  FFF6     NOP
+1316  0EFD     MOVLW 0xFD
+1318  CFDB     MOVFF PLUSW2, TBLPTRH
+131A  FFF7     NOP
+131C  0008     TBLRD*
+131E  50F5     MOVF TABLAT, W, ACCESS
+1320  E015     BZ 0x134C
+134A  D7E2     BRA 0x1310
+176:               {
+177:                   Uart_PutChar(u8Uart, (_U08)*strString);
+1322  0EFC     MOVLW 0xFC
+1324  CFDB     MOVFF PLUSW2, TBLPTRL
+1326  FFF6     NOP
+1328  0EFD     MOVLW 0xFD
+132A  CFDB     MOVFF PLUSW2, TBLPTRH
+132C  FFF7     NOP
+132E  0008     TBLRD*
+1330  50F5     MOVF TABLAT, W, ACCESS
+1332  6EE6     MOVWF POSTINC1, ACCESS
+1334  0EFE     MOVLW 0xFE
+1336  CFDB     MOVFF PLUSW2, POSTINC1
+1338  FFE6     NOP
+133A  DFBB     RCALL Uart_PutChar
+133C  52E5     MOVF POSTDEC1, F, ACCESS
+133E  52E5     MOVF POSTDEC1, F, ACCESS
+178:                   strString++;
+1340  0EFC     MOVLW 0xFC
+1342  2ADB     INCF PLUSW2, F, ACCESS
+1344  0EFD     MOVLW 0xFD
+1346  E3E4     BNC 0x1310
+1348  2ADB     INCF PLUSW2, F, ACCESS
+179:               }
+180:           }
+134C  52E5     MOVF POSTDEC1, F, ACCESS
+134E  CFE7     MOVFF INDF1, FSR2L
+1350  FFD9     NOP
+1352  0012     RETURN 0
+181:           /**-----------------------------------------------------------------------------------------------*/
+182:           
+183:           /**-----------------------------------------------------------------------------------------------*/
+184:           void Uart_TxBuffer(const _U08 u8Uart, const _U08 *pu8Data, const _U08 u8Lenght)
+1354  CFD9     MOVFF FSR2L, POSTINC1
+1356  FFE6     NOP
+1358  CFE1     MOVFF FSR1L, FSR2L
+135A  FFD9     NOP
+185:           {
+186:               if((gasUarts[u8Uart].bTxFlag == _FALSE) && (u8Lenght != 0u))
+135C  0EFE     MOVLW 0xFE
+135E  50DB     MOVF PLUSW2, W, ACCESS
+1360  0D07     MULLW 0x7
+1362  CFF3     MOVFF PRODL, FSR0L
+1364  FFE9     NOP
+1366  CFF4     MOVFF PRODH, FSR0H
+1368  FFEA     NOP
+136A  0E6E     MOVLW 0x6E
+136C  26E9     ADDWF FSR0L, F, ACCESS
+136E  0E0E     MOVLW 0xE
+1370  22EA     ADDWFC FSR0H, F, ACCESS
+1372  50EF     MOVF INDF0, W, ACCESS
+1374  E175     BNZ 0x1460
+1376  0EFB     MOVLW 0xFB
+1378  50DB     MOVF PLUSW2, W, ACCESS
+137A  E072     BZ 0x1460
+187:               {
+188:                   gasUarts[u8Uart].bTxFlag = _TRUE;
+137C  0EFE     MOVLW 0xFE
+137E  50DB     MOVF PLUSW2, W, ACCESS
+1380  0D07     MULLW 0x7
+1382  CFF3     MOVFF PRODL, FSR0L
+1384  FFE9     NOP
+1386  CFF4     MOVFF PRODH, FSR0H
+1388  FFEA     NOP
+138A  0E6E     MOVLW 0x6E
+138C  26E9     ADDWF FSR0L, F, ACCESS
+138E  0E0E     MOVLW 0xE
+1390  22EA     ADDWFC FSR0H, F, ACCESS
+1392  0E01     MOVLW 0x1
+1394  6EEF     MOVWF INDF0, ACCESS
+189:                   gasUarts[u8Uart].u8Counter = u8Lenght;
+1396  0EFE     MOVLW 0xFE
+1398  50DB     MOVF PLUSW2, W, ACCESS
+139A  0D07     MULLW 0x7
+139C  CFF3     MOVFF PRODL, FSR0L
+139E  FFE9     NOP
+13A0  CFF4     MOVFF PRODH, FSR0H
+13A2  FFEA     NOP
+13A4  0E6E     MOVLW 0x6E
+13A6  26E9     ADDWF FSR0L, F, ACCESS
+13A8  0E0E     MOVLW 0xE
+13AA  22EA     ADDWFC FSR0H, F, ACCESS
+13AC  52EE     MOVF POSTINC0, F, ACCESS
+13AE  0EFB     MOVLW 0xFB
+13B0  CFDB     MOVFF PLUSW2, INDF0
+13B2  FFEF     NOP
+190:                   gasUarts[u8Uart].pu8TxBufferRam = (_U08 *)pu8Data;
+13B4  0EFE     MOVLW 0xFE
+13B6  50DB     MOVF PLUSW2, W, ACCESS
+13B8  0D07     MULLW 0x7
+13BA  CFF3     MOVFF PRODL, FSR0L
+13BC  FFE9     NOP
+13BE  CFF4     MOVFF PRODH, FSR0H
+13C0  FFEA     NOP
+13C2  0E6E     MOVLW 0x6E
+13C4  26E9     ADDWF FSR0L, F, ACCESS
+13C6  0E0E     MOVLW 0xE
+13C8  22EA     ADDWFC FSR0H, F, ACCESS
+13CA  0E04     MOVLW 0x4
+13CC  26E9     ADDWF FSR0L, F, ACCESS
+13CE  0E00     MOVLW 0x0
+13D0  22EA     ADDWFC FSR0H, F, ACCESS
+13D2  0EFC     MOVLW 0xFC
+13D4  CFDB     MOVFF PLUSW2, POSTINC0
+13D6  FFEE     NOP
+13D8  0EFD     MOVLW 0xFD
+13DA  CFDB     MOVFF PLUSW2, POSTDEC0
+13DC  FFED     NOP
+191:                   gasUarts[u8Uart].bRam = _TRUE;
+13DE  0EFE     MOVLW 0xFE
+13E0  50DB     MOVF PLUSW2, W, ACCESS
+13E2  0D07     MULLW 0x7
+13E4  CFF3     MOVFF PRODL, FSR0L
+13E6  FFE9     NOP
+13E8  CFF4     MOVFF PRODH, FSR0H
+13EA  FFEA     NOP
+13EC  0E6E     MOVLW 0x6E
+13EE  26E9     ADDWF FSR0L, F, ACCESS
+13F0  0E0E     MOVLW 0xE
+13F2  22EA     ADDWFC FSR0H, F, ACCESS
+13F4  0E06     MOVLW 0x6
+13F6  26E9     ADDWF FSR0L, F, ACCESS
+13F8  0E00     MOVLW 0x0
+13FA  22EA     ADDWFC FSR0H, F, ACCESS
+13FC  0E01     MOVLW 0x1
+13FE  6EEF     MOVWF INDF0, ACCESS
+192:                   *gau8TXREG[u8Uart] = *gasUarts[u8Uart].pu8TxBufferRam;
+1400  0EFE     MOVLW 0xFE
+1402  50DB     MOVF PLUSW2, W, ACCESS
+1404  0D07     MULLW 0x7
+1406  CFF3     MOVFF PRODL, FSR0L
+1408  FFE9     NOP
+140A  CFF4     MOVFF PRODH, FSR0H
+140C  FFEA     NOP
+140E  0E6E     MOVLW 0x6E
+1410  26E9     ADDWF FSR0L, F, ACCESS
+1412  0E0E     MOVLW 0xE
+1414  22EA     ADDWFC FSR0H, F, ACCESS
+1416  0E04     MOVLW 0x4
+1418  26E9     ADDWF FSR0L, F, ACCESS
+141A  0E00     MOVLW 0x0
+141C  22EA     ADDWFC FSR0H, F, ACCESS
+141E  50EE     MOVF POSTINC0, W, ACCESS
+1420  CFEF     MOVFF INDF0, FSR0H
+1422  FFEA     NOP
+1424  6EE9     MOVWF FSR0L, ACCESS
+1426  50EF     MOVF INDF0, W, ACCESS
+1428  6EE6     MOVWF POSTINC1, ACCESS
+142A  0EFE     MOVLW 0xFE
+142C  6AEA     CLRF FSR0H, ACCESS
+142E  34DB     RLCF PLUSW2, W, ACCESS
+1430  0BFE     ANDLW 0xFE
+1432  36EA     RLCF FSR0H, F, ACCESS
+1434  6EE9     MOVWF FSR0L, ACCESS
+1436  0EDC     MOVLW 0xDC
+1438  26E9     ADDWF FSR0L, F, ACCESS
+143A  0E00     MOVLW 0x0
+143C  22EA     ADDWFC FSR0H, F, ACCESS
+143E  50EE     MOVF POSTINC0, W, ACCESS
+1440  CFEF     MOVFF INDF0, FSR0H
+1442  FFEA     NOP
+1444  6EE9     MOVWF FSR0L, ACCESS
+1446  52E5     MOVF POSTDEC1, F, ACCESS
+1448  50E7     MOVF INDF1, W, ACCESS
+144A  6EEF     MOVWF INDF0, ACCESS
+193:                   if(u8Uart == UART_PORT1)
+144C  0EFE     MOVLW 0xFE
+144E  04DB     DECF PLUSW2, W, ACCESS
+1450  E102     BNZ 0x1456
+194:                   {
+195:                       SET_8BIT(PIE1, 4);
+1452  889D     BSF PIE1, 4, ACCESS
+196:                   }
+197:                   else if(u8Uart == UART_PORT2)
+1454  D005     BRA 0x1460
+1456  0EFE     MOVLW 0xFE
+1458  50DB     MOVF PLUSW2, W, ACCESS
+145A  0802     SUBLW 0x2
+145C  E101     BNZ 0x1460
+198:                   {
+199:                       SET_8BIT(PIE3, 4);
+145E  88A3     BSF PIE3, 4, ACCESS
+200:                   }
+201:               }
+202:           }
+1460  52E5     MOVF POSTDEC1, F, ACCESS
+1462  CFE7     MOVFF INDF1, FSR2L
+1464  FFD9     NOP
+1466  0012     RETURN 0
+203:           /**-----------------------------------------------------------------------------------------------*/
+204:           
+205:           /**-----------------------------------------------------------------------------------------------*/
+206:           void Uart_TxFlashBuffer(const _U08 u8Uart, const rom _U08 *pu8Data, const _U08 u8Lenght)
+1468  CFD9     MOVFF FSR2L, POSTINC1
+146A  FFE6     NOP
+146C  CFE1     MOVFF FSR1L, FSR2L
+146E  FFD9     NOP
+207:           {
+208:               if((gasUarts[u8Uart].bTxFlag == _FALSE) && (u8Lenght != 0u))
+1470  0EFE     MOVLW 0xFE
+1472  50DB     MOVF PLUSW2, W, ACCESS
+1474  0D07     MULLW 0x7
+1476  CFF3     MOVFF PRODL, FSR0L
+1478  FFE9     NOP
+147A  CFF4     MOVFF PRODH, FSR0H
+147C  FFEA     NOP
+147E  0E6E     MOVLW 0x6E
+1480  26E9     ADDWF FSR0L, F, ACCESS
+1482  0E0E     MOVLW 0xE
+1484  22EA     ADDWFC FSR0H, F, ACCESS
+1486  50EF     MOVF INDF0, W, ACCESS
+1488  E175     BNZ 0x1574
+148A  0EFB     MOVLW 0xFB
+148C  50DB     MOVF PLUSW2, W, ACCESS
+148E  E072     BZ 0x1574
+209:               {
+210:                   gasUarts[u8Uart].bTxFlag = _TRUE;
+1490  0EFE     MOVLW 0xFE
+1492  50DB     MOVF PLUSW2, W, ACCESS
+1494  0D07     MULLW 0x7
+1496  CFF3     MOVFF PRODL, FSR0L
+1498  FFE9     NOP
+149A  CFF4     MOVFF PRODH, FSR0H
+149C  FFEA     NOP
+149E  0E6E     MOVLW 0x6E
+14A0  26E9     ADDWF FSR0L, F, ACCESS
+14A2  0E0E     MOVLW 0xE
+14A4  22EA     ADDWFC FSR0H, F, ACCESS
+14A6  0E01     MOVLW 0x1
+14A8  6EEF     MOVWF INDF0, ACCESS
+211:                   gasUarts[u8Uart].u8Counter = u8Lenght;
+14AA  0EFE     MOVLW 0xFE
+14AC  50DB     MOVF PLUSW2, W, ACCESS
+14AE  0D07     MULLW 0x7
+14B0  CFF3     MOVFF PRODL, FSR0L
+14B2  FFE9     NOP
+14B4  CFF4     MOVFF PRODH, FSR0H
+14B6  FFEA     NOP
+14B8  0E6E     MOVLW 0x6E
+14BA  26E9     ADDWF FSR0L, F, ACCESS
+14BC  0E0E     MOVLW 0xE
+14BE  22EA     ADDWFC FSR0H, F, ACCESS
+14C0  52EE     MOVF POSTINC0, F, ACCESS
+14C2  0EFB     MOVLW 0xFB
+14C4  CFDB     MOVFF PLUSW2, INDF0
+14C6  FFEF     NOP
+212:                   gasUarts[u8Uart].pu8TxBufferFlash = (rom _U08 *)pu8Data;
+14C8  0EFE     MOVLW 0xFE
+14CA  50DB     MOVF PLUSW2, W, ACCESS
+14CC  0D07     MULLW 0x7
+14CE  CFF3     MOVFF PRODL, FSR0L
+14D0  FFE9     NOP
+14D2  CFF4     MOVFF PRODH, FSR0H
+14D4  FFEA     NOP
+14D6  0E6E     MOVLW 0x6E
+14D8  26E9     ADDWF FSR0L, F, ACCESS
+14DA  0E0E     MOVLW 0xE
+14DC  22EA     ADDWFC FSR0H, F, ACCESS
+14DE  0E02     MOVLW 0x2
+14E0  26E9     ADDWF FSR0L, F, ACCESS
+14E2  0E00     MOVLW 0x0
+14E4  22EA     ADDWFC FSR0H, F, ACCESS
+14E6  0EFC     MOVLW 0xFC
+14E8  CFDB     MOVFF PLUSW2, POSTINC0
+14EA  FFEE     NOP
+14EC  0EFD     MOVLW 0xFD
+14EE  CFDB     MOVFF PLUSW2, POSTDEC0
+14F0  FFED     NOP
+213:                   gasUarts[u8Uart].bRam = _FALSE;
+14F2  0EFE     MOVLW 0xFE
+14F4  50DB     MOVF PLUSW2, W, ACCESS
+14F6  0D07     MULLW 0x7
+14F8  CFF3     MOVFF PRODL, FSR0L
+14FA  FFE9     NOP
+14FC  CFF4     MOVFF PRODH, FSR0H
+14FE  FFEA     NOP
+1500  0E6E     MOVLW 0x6E
+1502  26E9     ADDWF FSR0L, F, ACCESS
+1504  0E0E     MOVLW 0xE
+1506  22EA     ADDWFC FSR0H, F, ACCESS
+1508  0E06     MOVLW 0x6
+150A  26E9     ADDWF FSR0L, F, ACCESS
+150C  0E00     MOVLW 0x0
+150E  22EA     ADDWFC FSR0H, F, ACCESS
+1510  6AEF     CLRF INDF0, ACCESS
+214:                   *gau8TXREG[u8Uart] = *gasUarts[u8Uart].pu8TxBufferFlash;
+1512  0EFE     MOVLW 0xFE
+1514  50DB     MOVF PLUSW2, W, ACCESS
+1516  0D07     MULLW 0x7
+1518  CFF3     MOVFF PRODL, FSR0L
+151A  FFE9     NOP
+151C  CFF4     MOVFF PRODH, FSR0H
+151E  FFEA     NOP
+1520  0E6E     MOVLW 0x6E
+1522  26E9     ADDWF FSR0L, F, ACCESS
+1524  0E0E     MOVLW 0xE
+1526  22EA     ADDWFC FSR0H, F, ACCESS
+1528  0E02     MOVLW 0x2
+152A  26E9     ADDWF FSR0L, F, ACCESS
+152C  0E00     MOVLW 0x0
+152E  22EA     ADDWFC FSR0H, F, ACCESS
+1530  CFEE     MOVFF POSTINC0, TBLPTRL
+1532  FFF6     NOP
+1534  CFEF     MOVFF INDF0, TBLPTRH
+1536  FFF7     NOP
+1538  0008     TBLRD*
+153A  50F5     MOVF TABLAT, W, ACCESS
+153C  6EE6     MOVWF POSTINC1, ACCESS
+153E  0EFE     MOVLW 0xFE
+1540  6AEA     CLRF FSR0H, ACCESS
+1542  34DB     RLCF PLUSW2, W, ACCESS
+1544  0BFE     ANDLW 0xFE
+1546  36EA     RLCF FSR0H, F, ACCESS
+1548  6EE9     MOVWF FSR0L, ACCESS
+154A  0EDC     MOVLW 0xDC
+154C  26E9     ADDWF FSR0L, F, ACCESS
+154E  0E00     MOVLW 0x0
+1550  22EA     ADDWFC FSR0H, F, ACCESS
+1552  50EE     MOVF POSTINC0, W, ACCESS
+1554  CFEF     MOVFF INDF0, FSR0H
+1556  FFEA     NOP
+1558  6EE9     MOVWF FSR0L, ACCESS
+155A  52E5     MOVF POSTDEC1, F, ACCESS
+155C  50E7     MOVF INDF1, W, ACCESS
+155E  6EEF     MOVWF INDF0, ACCESS
+215:                   if(u8Uart == UART_PORT1)
+1560  0EFE     MOVLW 0xFE
+1562  04DB     DECF PLUSW2, W, ACCESS
+1564  E102     BNZ 0x156A
+216:                   {
+217:                       SET_8BIT(PIE1, 4);
+1566  889D     BSF PIE1, 4, ACCESS
+218:                   }
+219:                   else if(u8Uart == UART_PORT2)
+1568  D005     BRA 0x1574
+156A  0EFE     MOVLW 0xFE
+156C  50DB     MOVF PLUSW2, W, ACCESS
+156E  0802     SUBLW 0x2
+1570  E101     BNZ 0x1574
+220:                   {
+221:                       SET_8BIT(PIE3, 4);
+1572  88A3     BSF PIE3, 4, ACCESS
+222:                   }
+223:               }
+224:           }
+1574  52E5     MOVF POSTDEC1, F, ACCESS
+1576  CFE7     MOVFF INDF1, FSR2L
+1578  FFD9     NOP
+157A  0012     RETURN 0
+225:           /**-----------------------------------------------------------------------------------------------*/
+226:           
+227:           /**-----------------------------------------------------------------------------------------------*/
+228:           _BOOL Uart_TxBusy(const _U08 u8Uart)
+157C  CFD9     MOVFF FSR2L, POSTINC1
+157E  FFE6     NOP
+1580  CFE1     MOVFF FSR1L, FSR2L
+1582  FFD9     NOP
+229:           {
+230:               return gasUarts[u8Uart].bTxFlag;
+1584  0EFE     MOVLW 0xFE
+1586  50DB     MOVF PLUSW2, W, ACCESS
+1588  0D07     MULLW 0x7
+158A  CFF3     MOVFF PRODL, FSR0L
+158C  FFE9     NOP
+158E  CFF4     MOVFF PRODH, FSR0H
+1590  FFEA     NOP
+1592  0E6E     MOVLW 0x6E
+1594  26E9     ADDWF FSR0L, F, ACCESS
+1596  0E0E     MOVLW 0xE
+1598  22EA     ADDWFC FSR0H, F, ACCESS
+159A  50EF     MOVF INDF0, W, ACCESS
+231:           }
+159C  52E5     MOVF POSTDEC1, F, ACCESS
+159E  CFE7     MOVFF INDF1, FSR2L
+15A0  FFD9     NOP
+15A2  0012     RETURN 0
+232:           /**-----------------------------------------------------------------------------------------------*/
+233:           
+234:           /**-----------------------------------------------------------------------------------------------*/
+235:           void Uart1_TxIsr(void)
+236:           {
+237:               if((QUERY_8BIT(PIR1, 4) != 0u) && (gasUarts[1].bTxFlag == _TRUE)) /*enter this interrupt only if the int was cause by the EUSART tx*/
+15A4  389E     SWAPF PIR1, W, ACCESS
+15A6  0B0F     ANDLW 0xF
+15A8  0B01     ANDLW 0x1
+15AA  E025     BZ 0x15F6
+15AC  010E     MOVLB 0xE
+15AE  0575     DECF 0x75, W, BANKED
+15B0  E122     BNZ 0x15F6
+238:               {
+239:                   gasUarts[1].u8Counter--;
+15B2  0776     DECF 0x76, F, BANKED
+240:                   if(gasUarts[1].u8Counter != 0u)
+15B4  5176     MOVF 0x76, W, BANKED
+15B6  E01D     BZ 0x15F2
+241:                   {
+242:                       if(gasUarts[1].bRam == _TRUE)
+15B8  057B     DECF 0x7B, W, BANKED
+15BA  E109     BNZ 0x15CE
+243:                       {
+244:                           gasUarts[1].pu8TxBufferRam++;
+15BC  2B79     INCF 0x79, F, BANKED
+15BE  0E00     MOVLW 0x0
+15C0  237A     ADDWFC 0x7A, F, BANKED
+245:                           *gau8TXREG[1] = *gasUarts[1].pu8TxBufferRam;
+15C2  CE79     MOVFF 0xE79, FSR0L
+15C4  FFE9     NOP
+15C6  CE7A     MOVFF 0xE7A, FSR0H
+15C8  FFEA     NOP
+15CA  50EF     MOVF INDF0, W, ACCESS
+246:                       }
+247:                       else
+15CC  D009     BRA 0x15E0
+248:                       {
+249:                           gasUarts[1].pu8TxBufferFlash++;
+15CE  2B77     INCF 0x77, F, BANKED
+15D0  0E00     MOVLW 0x0
+15D2  2378     ADDWFC 0x78, F, BANKED
+250:                           *gau8TXREG[1] = *gasUarts[1].pu8TxBufferFlash;
+15D4  CE77     MOVFF 0xE77, TBLPTRL
+15D6  FFF6     NOP
+15D8  CE78     MOVFF 0xE78, TBLPTRH
+15DA  FFF7     NOP
+15DC  0008     TBLRD*
+15DE  50F5     MOVF TABLAT, W, ACCESS
+15E0  6EE6     MOVWF POSTINC1, ACCESS
+15E2  C0DE     MOVFF 0xDE, FSR0L
+15E4  FFE9     NOP
+15E6  C0DF     MOVFF 0xDF, FSR0H
+15E8  FFEA     NOP
+15EA  52E5     MOVF POSTDEC1, F, ACCESS
+15EC  50E7     MOVF INDF1, W, ACCESS
+15EE  6EEF     MOVWF INDF0, ACCESS
+251:                       }
+252:                   }
+253:                   else
+15F0  0012     RETURN 0
+254:                   {
+255:                       CLEAR_8BIT(PIE1, 4);
+15F2  989D     BCF PIE1, 4, ACCESS
+256:                       gasUarts[1].bTxFlag = _FALSE;
+15F4  6B75     CLRF 0x75, BANKED
+257:                   }
+258:               }
+259:           }
+15F6  0012     RETURN 0
+260:           /**-----------------------------------------------------------------------------------------------*/
+261:           
+262:           /**-----------------------------------------------------------------------------------------------*/
+263:           void Uart2_TxIsr(void)
+264:           {
+265:               if((QUERY_8BIT(PIR3, 4) != 0u) && (gasUarts[2].bTxFlag == _TRUE)) /*enter this interrupt only if the int was cause by the EUSART tx*/
+15F8  38A4     SWAPF PIR3, W, ACCESS
+15FA  0B0F     ANDLW 0xF
+15FC  0B01     ANDLW 0x1
+15FE  E025     BZ 0x164A
+1600  010E     MOVLB 0xE
+1602  057C     DECF 0x7C, W, BANKED
+1604  E122     BNZ 0x164A
+266:               {
+267:                   gasUarts[2].u8Counter--;
+1606  077D     DECF 0x7D, F, BANKED
+268:                   if(gasUarts[2].u8Counter != 0u)
+1608  517D     MOVF 0x7D, W, BANKED
+160A  E01D     BZ 0x1646
+269:                   {
+270:                       if(gasUarts[2].bRam == _TRUE)
+160C  0582     DECF 0x82, W, BANKED
+160E  E109     BNZ 0x1622
+271:                       {
+272:                           gasUarts[2].pu8TxBufferRam++;
+1610  2B80     INCF 0x80, F, BANKED
+1612  0E00     MOVLW 0x0
+1614  2381     ADDWFC 0x81, F, BANKED
+273:                           *gau8TXREG[2] = *gasUarts[2].pu8TxBufferRam;
+1616  CE80     MOVFF 0xE80, FSR0L
+1618  FFE9     NOP
+161A  CE81     MOVFF 0xE81, FSR0H
+161C  FFEA     NOP
+161E  50EF     MOVF INDF0, W, ACCESS
+274:                       }
+275:                       else
+1620  D009     BRA 0x1634
+276:                       {
+277:                           gasUarts[2].pu8TxBufferFlash++;
+1622  2B7E     INCF 0x7E, F, BANKED
+1624  0E00     MOVLW 0x0
+1626  237F     ADDWFC 0x7F, F, BANKED
+278:                           *gau8TXREG[2] = *gasUarts[2].pu8TxBufferFlash;
+1628  CE7E     MOVFF 0xE7E, TBLPTRL
+162A  FFF6     NOP
+162C  CE7F     MOVFF 0xE7F, TBLPTRH
+162E  FFF7     NOP
+1630  0008     TBLRD*
+1632  50F5     MOVF TABLAT, W, ACCESS
+1634  6EE6     MOVWF POSTINC1, ACCESS
+1636  C0E0     MOVFF 0xE0, FSR0L
+1638  FFE9     NOP
+163A  C0E1     MOVFF 0xE1, FSR0H
+163C  FFEA     NOP
+163E  52E5     MOVF POSTDEC1, F, ACCESS
+1640  50E7     MOVF INDF1, W, ACCESS
+1642  6EEF     MOVWF INDF0, ACCESS
+279:                       }
+280:                   }
+281:                   else
+1644  0012     RETURN 0
+282:                   {
+283:                       CLEAR_8BIT(PIE3, 4);
+1646  98A3     BCF PIE3, 4, ACCESS
+284:                       gasUarts[2].bTxFlag = _FALSE;
+1648  6B7C     CLRF 0x7C, BANKED
+285:                   }
+286:               }
+287:           }
+164A  0012     RETURN 0
+288:           /**-----------------------------------------------------------------------------------------------*/
+289:           
+290:           /**-----------------------------------------------------------------------------------------------*/
+291:           void Uart1_RxIsr(void)
+292:           {
+293:               if(QUERY_8BIT(PIR1, 5) != 0u) /*enter this interrupt only if the int was cause by the EUSART rx*/
+164C  509E     MOVF PIR1, W, ACCESS
+164E  0BE0     ANDLW 0xE0
+1650  38E8     SWAPF WREG, W, ACCESS
+1652  40E8     RRNCF WREG, W, ACCESS
+1654  0B01     ANDLW 0x1
+1656  E009     BZ 0x166A
+294:               {
+295:               #if UART_ENABLE_RX1 == 1
+296:                   Uart1_CallbackRx(*gau8RCREG[1]);
+1658  C0E4     MOVFF 0xE4, FSR0L
+165A  FFE9     NOP
+165C  C0E5     MOVFF 0xE5, FSR0H
+165E  FFEA     NOP
+1660  50EF     MOVF INDF0, W, ACCESS
+1662  6EE6     MOVWF POSTINC1, ACCESS
+1664  EC2B     CALL 0x1E56, 0
+1666  F00F     NOP
+1668  52E5     MOVF POSTDEC1, F, ACCESS
+297:               #endif
+298:               }
+299:           }
+166A  0012     RETURN 0
+300:           /**-----------------------------------------------------------------------------------------------*/
+301:           
+302:           /**-----------------------------------------------------------------------------------------------*/
+303:           void Uart2_RxIsr(void)
+304:           {
+305:               if(QUERY_8BIT(PIR3, 5) != 0u) /*enter this interrupt only if the int was cause by the EUSART rx*/
+166C  50A4     MOVF PIR3, W, ACCESS
+306:               {
+307:               #if UART_ENABLE_RX2 == 1
+308:                   Uart2_CallbackRx(*gau8RCREG[2]);
+309:               #endif
+310:               }
+311:           }
+166E  0012     RETURN 0
+312:           /**-----------------------------------------------------------------------------------------------*/
+313:           
+314:           /**-----------------------------------------------------------------------------------------------*/
+315:           _U08 Uart_u8GetChar(const _U08 u8Uart)
+1670  CFD9     MOVFF FSR2L, POSTINC1
+1672  FFE6     NOP
+1674  CFE1     MOVFF FSR1L, FSR2L
+1676  FFD9     NOP
+316:           {
+317:               if(u8Uart == UART_PORT1)
+1678  0EFE     MOVLW 0xFE
+167A  04DB     DECF PLUSW2, W, ACCESS
+167C  E107     BNZ 0x168C
+318:               {
+319:                   while(QUERY_8BIT(PIR1, 5) == 0){}
+167E  509E     MOVF PIR1, W, ACCESS
+1680  0BE0     ANDLW 0xE0
+1682  38E8     SWAPF WREG, W, ACCESS
+1684  40E8     RRNCF WREG, W, ACCESS
+1686  0B01     ANDLW 0x1
+1688  E10B     BNZ 0x16A0
+168A  D7F9     BRA 0x167E
+320:               }
+321:               else if(u8Uart == UART_PORT2)
+168C  0EFE     MOVLW 0xFE
+168E  50DB     MOVF PLUSW2, W, ACCESS
+1690  0802     SUBLW 0x2
+1692  E106     BNZ 0x16A0
+322:               {
+323:                   while(QUERY_8BIT(PIR3, 5) == 0){}
+1694  50A4     MOVF PIR3, W, ACCESS
+1696  0BE0     ANDLW 0xE0
+1698  38E8     SWAPF WREG, W, ACCESS
+169A  40E8     RRNCF WREG, W, ACCESS
+169C  0B01     ANDLW 0x1
+169E  E0FA     BZ 0x1694
+324:               }
+325:           
+326:               return *gau8RCREG[u8Uart];
+16A0  0EFE     MOVLW 0xFE
+16A2  6AEA     CLRF FSR0H, ACCESS
+16A4  34DB     RLCF PLUSW2, W, ACCESS
+16A6  0BFE     ANDLW 0xFE
+16A8  36EA     RLCF FSR0H, F, ACCESS
+16AA  6EE9     MOVWF FSR0L, ACCESS
+16AC  0EE2     MOVLW 0xE2
+16AE  26E9     ADDWF FSR0L, F, ACCESS
+16B0  0E00     MOVLW 0x0
+16B2  22EA     ADDWFC FSR0H, F, ACCESS
+16B4  50EE     MOVF POSTINC0, W, ACCESS
+16B6  CFEF     MOVFF INDF0, FSR0H
+16B8  FFEA     NOP
+16BA  6EE9     MOVWF FSR0L, ACCESS
+16BC  50EF     MOVF INDF0, W, ACCESS
+327:           }
+16BE  52E5     MOVF POSTDEC1, F, ACCESS
+16C0  CFE7     MOVFF INDF1, FSR2L
+16C2  FFD9     NOP
+16C4  0012     RETURN 0
+328:           /**-----------------------------------------------------------------------------------------------*/
+329:           
+330:           /*-- Private functions --*/
+331:           /**-------------------------------------------------------------------------------------------------    
+332:             \brief        Regresa el calculo del baud rate con un preescaler de 16
+333:             \param        u32BaudRate.- valor de baudrate deseado
+334:             \return       None
+335:             \warning      Valor del registro que ira en BAUDREG
+336:           --------------------------------------------------------------------------------------------------*/
+337:           static _U16 u16BaudRateL(const _U08 u8Uart, const _U32 u32BaudRate)
+16C6  CFD9     MOVFF FSR2L, POSTINC1
+16C8  FFE6     NOP
+16CA  CFE1     MOVFF FSR1L, FSR2L
+16CC  FFD9     NOP
+16CE  0E02     MOVLW 0x2
+16D0  26E1     ADDWF FSR1L, F, ACCESS
+338:           {
+339:               _U16 u16Baud;
+340:           
+341:               CLEAR_8BIT(*gau8TXSTA[u8Uart], 2);
+16D2  0EFE     MOVLW 0xFE
+16D4  6AEA     CLRF FSR0H, ACCESS
+16D6  34DB     RLCF PLUSW2, W, ACCESS
+16D8  0BFE     ANDLW 0xFE
+16DA  36EA     RLCF FSR0H, F, ACCESS
+16DC  6EE9     MOVWF FSR0L, ACCESS
+16DE  0ED0     MOVLW 0xD0
+16E0  26E9     ADDWF FSR0L, F, ACCESS
+16E2  0E00     MOVLW 0x0
+16E4  22EA     ADDWFC FSR0H, F, ACCESS
+16E6  50EE     MOVF POSTINC0, W, ACCESS
+16E8  CFEF     MOVFF INDF0, FSR0H
+16EA  FFEA     NOP
+16EC  6EE9     MOVWF FSR0L, ACCESS
+16EE  94EF     BCF INDF0, 2, ACCESS
+342:               u16Baud = (_U16)((UART_CLOCK/(u32BaudRate*(_U32)16))-(_U32)1);
+16F0  0EFA     MOVLW 0xFA
+16F2  CFDB     MOVFF PLUSW2, 0x18
+16F4  F018     NOP
+16F6  0EFB     MOVLW 0xFB
+16F8  CFDB     MOVFF PLUSW2, 0x19
+16FA  F019     NOP
+16FC  0EFC     MOVLW 0xFC
+16FE  CFDB     MOVFF PLUSW2, 0x1A
+1700  F01A     NOP
+1702  0EFD     MOVLW 0xFD
+1704  CFDB     MOVFF PLUSW2, 0x1B
+1706  F01B     NOP
+1708  0E04     MOVLW 0x4
+170A  90D8     BCF STATUS, 0, ACCESS
+170C  3618     RLCF 0x18, F, ACCESS
+170E  3619     RLCF 0x19, F, ACCESS
+1710  361A     RLCF 0x1A, F, ACCESS
+1712  361B     RLCF 0x1B, F, ACCESS
+1714  06E8     DECF WREG, F, ACCESS
+1716  E1F9     BNZ 0x170A
+1718  6A14     CLRF 0x14, ACCESS
+171A  0E1B     MOVLW 0x1B
+171C  6E15     MOVWF 0x15, ACCESS
+171E  0EB7     MOVLW 0xB7
+1720  6E16     MOVWF 0x16, ACCESS
+1722  6A17     CLRF 0x17, ACCESS
+1724  C014     MOVFF 0x14, u32Mul
+1726  F004     NOP
+1728  C015     MOVFF 0x15, 0x5
+172A  F005     NOP
+172C  6E06     MOVWF 0x6, ACCESS
+172E  C017     MOVFF 0x17, 0x7
+1730  F007     NOP
+1732  C018     MOVFF 0x18, 0x9
+1734  F009     NOP
+1736  C019     MOVFF 0x19, 0xA
+1738  F00A     NOP
+173A  C01A     MOVFF 0x1A, 0xB
+173C  F00B     NOP
+173E  C01B     MOVFF 0x1B, 0xC
+1740  F00C     NOP
+1742  EC5D     CALL 0x20BA, 0
+1744  F010     NOP
+1746  C004     MOVFF u32Mul, __tmp_0
+1748  F010     NOP
+174A  C005     MOVFF 0x5, 0x11
+174C  F011     NOP
+174E  C006     MOVFF 0x6, 0x12
+1750  F012     NOP
+1752  C007     MOVFF 0x7, 0x13
+1754  F013     NOP
+1756  0610     DECF __tmp_0, F, ACCESS
+1758  0E00     MOVLW 0x0
+175A  5A11     SUBWFB 0x11, F, ACCESS
+175C  5A12     SUBWFB 0x12, F, ACCESS
+175E  5A13     SUBWFB 0x13, F, ACCESS
+1760  C010     MOVFF __tmp_0, POSTINC2
+1762  FFDE     NOP
+1764  C011     MOVFF 0x11, POSTDEC2
+1766  FFDD     NOP
+343:               return u16Baud;
+1768  CFDE     MOVFF POSTINC2, __tmp_0
+176A  F010     NOP
+176C  CFDD     MOVFF POSTDEC2, 0x11
+176E  F011     NOP
+1770  C010     MOVFF __tmp_0, PRODL
+1772  FFF3     NOP
+1774  C011     MOVFF 0x11, PRODH
+1776  FFF4     NOP
+344:           }
+1778  0E02     MOVLW 0x2
+177A  5CE1     SUBWF FSR1L, W, ACCESS
+177C  E202     BC 0x1782
+177E  6AE1     CLRF FSR1L, ACCESS
+1780  52E5     MOVF POSTDEC1, F, ACCESS
+1782  6EE1     MOVWF FSR1L, ACCESS
+1784  52E5     MOVF POSTDEC1, F, ACCESS
+1786  CFE7     MOVFF INDF1, FSR2L
+1788  FFD9     NOP
+178A  0012     RETURN 0
+345:           
+346:           /**-------------------------------------------------------------------------------------------------
+347:             \brief        Regresa el calculo del baud rate con un preescaler de 4
+348:             \param        u32BaudRate.- valor de baudrate deseado
+349:             \return       None
+350:             \warning      Valor del registro que ira en BAUDREG
+351:           --------------------------------------------------------------------------------------------------*/
+352:           static _U16 u16BaudRateH(const _U08 u8Uart, const _U32 u32BaudRate)
+178C  CFD9     MOVFF FSR2L, POSTINC1
+178E  FFE6     NOP
+1790  CFE1     MOVFF FSR1L, FSR2L
+1792  FFD9     NOP
+1794  0E02     MOVLW 0x2
+1796  26E1     ADDWF FSR1L, F, ACCESS
+353:           {
+354:               _U16 u16Baud;
+355:           
+356:               SET_8BIT(*gau8TXSTA[u8Uart], 2);
+1798  0EFE     MOVLW 0xFE
+179A  6AEA     CLRF FSR0H, ACCESS
+179C  34DB     RLCF PLUSW2, W, ACCESS
+179E  0BFE     ANDLW 0xFE
+17A0  36EA     RLCF FSR0H, F, ACCESS
+17A2  6EE9     MOVWF FSR0L, ACCESS
+17A4  0ED0     MOVLW 0xD0
+17A6  26E9     ADDWF FSR0L, F, ACCESS
+17A8  0E00     MOVLW 0x0
+17AA  22EA     ADDWFC FSR0H, F, ACCESS
+17AC  50EE     MOVF POSTINC0, W, ACCESS
+17AE  CFEF     MOVFF INDF0, FSR0H
+17B0  FFEA     NOP
+17B2  6EE9     MOVWF FSR0L, ACCESS
+17B4  84EF     BSF INDF0, 2, ACCESS
+357:               u16Baud = (_U16)((UART_CLOCK/(u32BaudRate*(_U32)4))-(_U32)1);
+17B6  0EFA     MOVLW 0xFA
+17B8  CFDB     MOVFF PLUSW2, 0x18
+17BA  F018     NOP
+17BC  0EFB     MOVLW 0xFB
+17BE  CFDB     MOVFF PLUSW2, 0x19
+17C0  F019     NOP
+17C2  0EFC     MOVLW 0xFC
+17C4  CFDB     MOVFF PLUSW2, 0x1A
+17C6  F01A     NOP
+17C8  0EFD     MOVLW 0xFD
+17CA  CFDB     MOVFF PLUSW2, 0x1B
+17CC  F01B     NOP
+17CE  0E02     MOVLW 0x2
+17D0  90D8     BCF STATUS, 0, ACCESS
+17D2  3618     RLCF 0x18, F, ACCESS
+17D4  3619     RLCF 0x19, F, ACCESS
+17D6  361A     RLCF 0x1A, F, ACCESS
+17D8  361B     RLCF 0x1B, F, ACCESS
+17DA  06E8     DECF WREG, F, ACCESS
+17DC  E1F9     BNZ 0x17D0
+17DE  6A14     CLRF 0x14, ACCESS
+17E0  0E1B     MOVLW 0x1B
+17E2  6E15     MOVWF 0x15, ACCESS
+17E4  0EB7     MOVLW 0xB7
+17E6  6E16     MOVWF 0x16, ACCESS
+17E8  6A17     CLRF 0x17, ACCESS
+17EA  C014     MOVFF 0x14, u32Mul
+17EC  F004     NOP
+17EE  C015     MOVFF 0x15, 0x5
+17F0  F005     NOP
+17F2  6E06     MOVWF 0x6, ACCESS
+17F4  C017     MOVFF 0x17, 0x7
+17F6  F007     NOP
+17F8  C018     MOVFF 0x18, 0x9
+17FA  F009     NOP
+17FC  C019     MOVFF 0x19, 0xA
+17FE  F00A     NOP
+1800  C01A     MOVFF 0x1A, 0xB
+1802  F00B     NOP
+1804  C01B     MOVFF 0x1B, 0xC
+1806  F00C     NOP
+1808  EC5D     CALL 0x20BA, 0
+180A  F010     NOP
+180C  C004     MOVFF u32Mul, __tmp_0
+180E  F010     NOP
+1810  C005     MOVFF 0x5, 0x11
+1812  F011     NOP
+1814  C006     MOVFF 0x6, 0x12
+1816  F012     NOP
+1818  C007     MOVFF 0x7, 0x13
+181A  F013     NOP
+181C  0610     DECF __tmp_0, F, ACCESS
+181E  0E00     MOVLW 0x0
+1820  5A11     SUBWFB 0x11, F, ACCESS
+1822  5A12     SUBWFB 0x12, F, ACCESS
+1824  5A13     SUBWFB 0x13, F, ACCESS
+1826  C010     MOVFF __tmp_0, POSTINC2
+1828  FFDE     NOP
+182A  C011     MOVFF 0x11, POSTDEC2
+182C  FFDD     NOP
+358:               return u16Baud;
+182E  CFDE     MOVFF POSTINC2, __tmp_0
+1830  F010     NOP
+1832  CFDD     MOVFF POSTDEC2, 0x11
+1834  F011     NOP
+1836  C010     MOVFF __tmp_0, PRODL
+1838  FFF3     NOP
+183A  C011     MOVFF 0x11, PRODH
+183C  FFF4     NOP
+359:           }
+183E  0E02     MOVLW 0x2
+1840  5CE1     SUBWF FSR1L, W, ACCESS
+1842  E202     BC 0x1848
+1844  6AE1     CLRF FSR1L, ACCESS
+1846  52E5     MOVF POSTDEC1, F, ACCESS
+1848  6EE1     MOVWF FSR1L, ACCESS
+184A  52E5     MOVF POSTDEC1, F, ACCESS
+184C  CFE7     MOVFF INDF1, FSR2L
+184E  FFD9     NOP
+1850  0012     RETURN 0
+360:           
+361:           /**-------------------------------------------------------------------------------------------------
+362:             \brief        Regresa el calculo del baud rate actual con los parametros establecidos
+363:             \param        None
+364:             \return       Baud rate actual generado
+365:             \warning      Valor actual del baud rate generado
+366:           --------------------------------------------------------------------------------------------------*/
+367:           static _U32 u32GetBaudRate(const _U08 u8Uart)
+1852  CFD9     MOVFF FSR2L, POSTINC1
+1854  FFE6     NOP
+1856  CFE1     MOVFF FSR1L, FSR2L
+1858  FFD9     NOP
+185A  0E0C     MOVLW 0xC
+185C  26E1     ADDWF FSR1L, F, ACCESS
+368:           {
+369:               _U32 u32BaudRate;
+370:               _U32 u32Mul;
+371:               _U32 u32BaudReg;
+372:           
+373:               if(QUERY_8BIT(*gau8TXSTA[u8Uart], 2) == 0)
+185E  0EFE     MOVLW 0xFE
+1860  6AEA     CLRF FSR0H, ACCESS
+1862  34DB     RLCF PLUSW2, W, ACCESS
+1864  0BFE     ANDLW 0xFE
+1866  36EA     RLCF FSR0H, F, ACCESS
+1868  6EE9     MOVWF FSR0L, ACCESS
+186A  0ED0     MOVLW 0xD0
+186C  26E9     ADDWF FSR0L, F, ACCESS
+186E  0E00     MOVLW 0x0
+1870  22EA     ADDWFC FSR0H, F, ACCESS
+1872  50EE     MOVF POSTINC0, W, ACCESS
+1874  CFEF     MOVFF INDF0, FSR0H
+1876  FFEA     NOP
+1878  6EE9     MOVWF FSR0L, ACCESS
+187A  50EF     MOVF INDF0, W, ACCESS
+187C  40E8     RRNCF WREG, W, ACCESS
+187E  40E8     RRNCF WREG, W, ACCESS
+1880  0B3F     ANDLW 0x3F
+1882  0B01     ANDLW 0x1
+1884  E104     BNZ 0x188E
+374:               {
+375:                   u32Mul = 16;
+1886  0E10     MOVLW 0x10
+1888  6EF3     MOVWF PRODL, ACCESS
+188A  0E04     MOVLW 0x4
+376:               }
+377:               else
+188C  D002     BRA 0x1892
+378:               {
+379:                   u32Mul = 4;
+188E  0E04     MOVLW 0x4
+1890  6EF3     MOVWF PRODL, ACCESS
+1892  CFF3     MOVFF PRODL, PLUSW2
+1894  FFDB     NOP
+1896  0E05     MOVLW 0x5
+1898  6ADB     CLRF PLUSW2, ACCESS
+189A  0E06     MOVLW 0x6
+189C  6ADB     CLRF PLUSW2, ACCESS
+189E  0E07     MOVLW 0x7
+18A0  6ADB     CLRF PLUSW2, ACCESS
+380:               }
+381:               u32BaudReg = ((_U16)*gau8SPBRGH[u8Uart]<<(_U16)8)|(_U16)*gau8SPBRG[u8Uart];
+18A2  0EFE     MOVLW 0xFE
+18A4  6AEA     CLRF FSR0H, ACCESS
+18A6  34DB     RLCF PLUSW2, W, ACCESS
+18A8  0BFE     ANDLW 0xFE
+18AA  36EA     RLCF FSR0H, F, ACCESS
+18AC  6EE9     MOVWF FSR0L, ACCESS
+18AE  0EC4     MOVLW 0xC4
+18B0  26E9     ADDWF FSR0L, F, ACCESS
+18B2  0E00     MOVLW 0x0
+18B4  22EA     ADDWFC FSR0H, F, ACCESS
+18B6  50EE     MOVF POSTINC0, W, ACCESS
+18B8  CFEF     MOVFF INDF0, FSR0H
+18BA  FFEA     NOP
+18BC  6EE9     MOVWF FSR0L, ACCESS
+18BE  CFEF     MOVFF INDF0, 0x12
+18C0  F012     NOP
+18C2  C012     MOVFF 0x12, 0x13
+18C4  F013     NOP
+18C6  6A12     CLRF 0x12, ACCESS
+18C8  0EFE     MOVLW 0xFE
+18CA  6AEA     CLRF FSR0H, ACCESS
+18CC  34DB     RLCF PLUSW2, W, ACCESS
+18CE  0BFE     ANDLW 0xFE
+18D0  36EA     RLCF FSR0H, F, ACCESS
+18D2  6EE9     MOVWF FSR0L, ACCESS
+18D4  0ECA     MOVLW 0xCA
+18D6  26E9     ADDWF FSR0L, F, ACCESS
+18D8  0E00     MOVLW 0x0
+18DA  22EA     ADDWFC FSR0H, F, ACCESS
+18DC  50EE     MOVF POSTINC0, W, ACCESS
+18DE  CFEF     MOVFF INDF0, FSR0H
+18E0  FFEA     NOP
+18E2  6EE9     MOVWF FSR0L, ACCESS
+18E4  50EF     MOVF INDF0, W, ACCESS
+18E6  0100     MOVLB 0x0
+18E8  1012     IORWF 0x12, W, ACCESS
+18EA  6E10     MOVWF __tmp_0, ACCESS
+18EC  C013     MOVFF 0x13, 0x11
+18EE  F011     NOP
+18F0  0E08     MOVLW 0x8
+18F2  C010     MOVFF __tmp_0, PLUSW2
+18F4  FFDB     NOP
+18F6  0E09     MOVLW 0x9
+18F8  C013     MOVFF 0x13, PLUSW2
+18FA  FFDB     NOP
+18FC  0E0A     MOVLW 0xA
+18FE  6ADB     CLRF PLUSW2, ACCESS
+1900  0E0B     MOVLW 0xB
+1902  6ADB     CLRF PLUSW2, ACCESS
+382:               u32BaudRate = UART_CLOCK/(u32Mul * (u32BaudReg + 1));
+1904  0E01     MOVLW 0x1
+1906  6E18     MOVWF 0x18, ACCESS
+1908  6A19     CLRF 0x19, ACCESS
+190A  6A1A     CLRF 0x1A, ACCESS
+190C  6A1B     CLRF 0x1B, ACCESS
+190E  50D9     MOVF FSR2L, W, ACCESS
+1910  0F08     ADDLW 0x8
+1912  6EE9     MOVWF FSR0L, ACCESS
+1914  CFDA     MOVFF FSR2H, FSR0H
+1916  FFEA     NOP
+1918  50EE     MOVF POSTINC0, W, ACCESS
+191A  2618     ADDWF 0x18, F, ACCESS
+191C  50EE     MOVF POSTINC0, W, ACCESS
+191E  2219     ADDWFC 0x19, F, ACCESS
+1920  50EE     MOVF POSTINC0, W, ACCESS
+1922  221A     ADDWFC 0x1A, F, ACCESS
+1924  50EE     MOVF POSTINC0, W, ACCESS
+1926  221B     ADDWFC 0x1B, F, ACCESS
+1928  C018     MOVFF 0x18, u32Mul
+192A  F004     NOP
+192C  C019     MOVFF 0x19, 0x5
+192E  F005     NOP
+1930  C01A     MOVFF 0x1A, 0x6
+1932  F006     NOP
+1934  C01B     MOVFF 0x1B, 0x7
+1936  F007     NOP
+1938  0E04     MOVLW 0x4
+193A  CFDB     MOVFF PLUSW2, 0x9
+193C  F009     NOP
+193E  0E05     MOVLW 0x5
+1940  CFDB     MOVFF PLUSW2, 0xA
+1942  F00A     NOP
+1944  0E06     MOVLW 0x6
+1946  CFDB     MOVFF PLUSW2, 0xB
+1948  F00B     NOP
+194A  0E07     MOVLW 0x7
+194C  CFDB     MOVFF PLUSW2, 0xC
+194E  F00C     NOP
+1950  EC25     CALL 0x204A, 0
+1952  F010     NOP
+1954  C000     MOVFF pll_startup_counter, 0x14
+1956  F014     NOP
+1958  C001     MOVFF 0x1, 0x15
+195A  F015     NOP
+195C  C002     MOVFF 0x2, 0x16
+195E  F016     NOP
+1960  C003     MOVFF 0x3, 0x17
+1962  F017     NOP
+1964  6A10     CLRF __tmp_0, ACCESS
+1966  0E1B     MOVLW 0x1B
+1968  6E11     MOVWF 0x11, ACCESS
+196A  0EB7     MOVLW 0xB7
+196C  6E12     MOVWF 0x12, ACCESS
+196E  6A13     CLRF 0x13, ACCESS
+1970  C010     MOVFF __tmp_0, u32Mul
+1972  F004     NOP
+1974  C011     MOVFF 0x11, 0x5
+1976  F005     NOP
+1978  6E06     MOVWF 0x6, ACCESS
+197A  C013     MOVFF 0x13, 0x7
+197C  F007     NOP
+197E  C000     MOVFF pll_startup_counter, 0x9
+1980  F009     NOP
+1982  C001     MOVFF 0x1, 0xA
+1984  F00A     NOP
+1986  C002     MOVFF 0x2, 0xB
+1988  F00B     NOP
+198A  C003     MOVFF 0x3, 0xC
+198C  F00C     NOP
+198E  EC5D     CALL 0x20BA, 0
+1990  F010     NOP
+1992  C004     MOVFF u32Mul, POSTINC2
+1994  FFDE     NOP
+1996  C005     MOVFF 0x5, POSTINC2
+1998  FFDE     NOP
+199A  C006     MOVFF 0x6, POSTINC2
+199C  FFDE     NOP
+199E  C007     MOVFF 0x7, POSTDEC2
+19A0  FFDD     NOP
+19A2  52DD     MOVF POSTDEC2, F, ACCESS
+19A4  52DD     MOVF POSTDEC2, F, ACCESS
+383:               return u32BaudRate;
+19A6  CFDE     MOVFF POSTINC2, u32Mul
+19A8  F004     NOP
+19AA  CFDE     MOVFF POSTINC2, 0x5
+19AC  F005     NOP
+19AE  CFDE     MOVFF POSTINC2, 0x6
+19B0  F006     NOP
+19B2  CFDD     MOVFF POSTDEC2, 0x7
+19B4  F007     NOP
+19B6  52DD     MOVF POSTDEC2, F, ACCESS
+19B8  52DD     MOVF POSTDEC2, F, ACCESS
+384:           }
+19BA  0E0C     MOVLW 0xC
+19BC  5CE1     SUBWF FSR1L, W, ACCESS
+19BE  E202     BC 0x19C4
+19C0  6AE1     CLRF FSR1L, ACCESS
+19C2  52E5     MOVF POSTDEC1, F, ACCESS
+19C4  6EE1     MOVWF FSR1L, ACCESS
+19C6  52E5     MOVF POSTDEC1, F, ACCESS
+19C8  CFE7     MOVFF INDF1, FSR2L
+19CA  FFD9     NOP
+19CC  0012     RETURN 0
+385:           
+---  H:/CodeBank8/bsp/Microchip/system/system.c  --------------------------------------------------------
+1:             /*--------------------------------------------------------------------------------------------------
+2:               "THE BEER-WARE LICENSE" (Revision 42):
+3:               <phk@FreeBSD.ORG> wrote this file. As long as you retain this notice you
+4:               can do whatever you want with this stuff. If we meet some day, and you think
+5:               this stuff is worth it, you can buy me a beer in return to Hotboards crew 
+6:               (Beer-ware license created by Poul-Henning Kamp)
+7:             
+8:               \file         system.c
+9:               \author       Diego
+10:              \email        diego.perez@hotboards.org
+11:              \ver          1.0
+12:              \date         August 20, 2013
+13:              \target       PIC18F series
+14:            
+15:              \brief        Este driver maneja operaciones internas realizadas por el CPU tales como activacion/
+16:                            desactivacion de interrupciones, reset del contador de watchdog, reset por software,
+17:                            y la activacion interna del PLL para que aumente la frecuencia de operacion a 48MHz
+18:             -------------------------------------------------------------------------------------------------*/
+19:            /*-- Includes --*/
+20:            #include "system.h"
+21:            #include <p18cxxx.h>
+22:            #include <string.h>
+23:            
+24:            
+25:            /*-- Private Definitions--*/
+26:            
+27:            
+28:            /*-- Global variables --*/
+29:            static volatile far _U08 *const guap8Inputs[] =
+30:            {
+31:                &RPINR1,
+32:                &RPINR2,
+33:                &RPINR3,
+34:                &RPINR4,
+35:                &RPINR6,
+36:                &RPINR7,
+37:                &RPINR8,
+38:                &RPINR12,
+39:                &RPINR13,
+40:                &RPINR16,
+41:                &RPINR17,
+42:                &RPINR21,
+43:                &RPINR22,
+44:                &RPINR23,
+45:                &RPINR24
+46:            };
+47:            
+48:            static volatile far _U08 *const guap8Outputs[] =
+49:            {
+50:                &RPOR0,
+51:                &RPOR1,
+52:                &RPOR2,
+53:                &RPOR3,
+54:                &RPOR4,
+55:                &RPOR5,
+56:                &RPOR6,
+57:                &RPOR7,
+58:                &RPOR8,
+59:                &RPOR9,
+60:                &RPOR10,
+61:                &RPOR11,
+62:                &RPOR12,
+63:                &RPOR13,
+64:                NULL,
+65:                NULL,
+66:                NULL,
+67:                &RPOR17,
+68:                &RPOR18,
+69:                &RPOR19,
+70:                &RPOR20,
+71:                &RPOR21,
+72:                &RPOR22,
+73:                &RPOR23,
+74:                &RPOR24
+75:            };
+76:            
+77:            
+78:            /*-- Private Macros --*/
+79:            
+80:            
+81:            /*-- Private functions prototypes --*/
+82:            static void unlock(void);
+83:            static void lock(void);
+84:            
+85:            
+86:            /*-- External functions --*/
+87:            /**-----------------------------------------------------------------------------------------------*/
+88:            void System_EnablePLL(void)
+1EB0  CFD9     MOVFF FSR2L, POSTINC1
+1EB2  FFE6     NOP
+1EB4  CFE1     MOVFF FSR1L, FSR2L
+1EB6  FFD9     NOP
+1EB8  0E02     MOVLW 0x2
+1EBA  26E1     ADDWF FSR1L, F, ACCESS
+89:            {
+90:                _U16 pll_startup_counter  = 600;
+1EBC  0E58     MOVLW 0x58
+1EBE  6EDE     MOVWF POSTINC2, ACCESS
+1EC0  0E02     MOVLW 0x2
+1EC2  6EDD     MOVWF POSTDEC2, ACCESS
+91:                SET_8BIT(OSCTUNE, 6); /*Enable the PLL and wait 2+ms until the PLL locks before enabling USB module*/
+1EC4  8C9B     BSF OSCTUNE, 6, ACCESS
+92:                while(pll_startup_counter--);
+1EC6  CFDF     MOVFF INDF2, __tmp_0
+1EC8  F010     NOP
+1ECA  06DF     DECF INDF2, F, ACCESS
+1ECC  0E01     MOVLW 0x1
+1ECE  CFDB     MOVFF PLUSW2, 0x11
+1ED0  F011     NOP
+1ED2  E201     BC 0x1ED6
+1ED4  06DB     DECF PLUSW2, F, ACCESS
+1ED6  5010     MOVF __tmp_0, W, ACCESS
+1ED8  1011     IORWF 0x11, W, ACCESS
+1EDA  E1F5     BNZ 0x1EC6
+93:            }
+1EDC  0E02     MOVLW 0x2
+1EDE  5CE1     SUBWF FSR1L, W, ACCESS
+1EE0  E202     BC 0x1EE6
+1EE2  6AE1     CLRF FSR1L, ACCESS
+1EE4  52E5     MOVF POSTDEC1, F, ACCESS
+1EE6  6EE1     MOVWF FSR1L, ACCESS
+1EE8  52E5     MOVF POSTDEC1, F, ACCESS
+1EEA  CFE7     MOVFF INDF1, FSR2L
+1EEC  FFD9     NOP
+1EEE  0012     RETURN 0
+94:            /**-----------------------------------------------------------------------------------------------*/
+95:            
+96:            /**-----------------------------------------------------------------------------------------------*/
+97:            void System_EnableInterrupts(void)
+98:            {
+99:                SET_8BIT(INTCON, 7);    /*enable high priority interrupts*/
+1EF0  8EF2     BSF INTCON, 7, ACCESS
+100:               SET_8BIT(INTCON, 6);    /*enable low priority interrupts*/
+1EF2  8CF2     BSF INTCON, 6, ACCESS
+101:               SET_8BIT(RCON, 7);      /*enable priority levels*/
+1EF4  8ED0     BSF RCON, 7, ACCESS
+102:           }
+1EF6  0012     RETURN 0
+103:           /**-----------------------------------------------------------------------------------------------*/
+104:           
+105:           /**-----------------------------------------------------------------------------------------------*/
+106:           void System_DisableInterrupts(void)
+107:           {
+108:               CLEAR_8BIT(INTCON, 7);    /*disable high priority interrupts*/
+1EF8  9EF2     BCF INTCON, 7, ACCESS
+109:               CLEAR_8BIT(INTCON, 6);    /*disable low priority interrupts*/
+1EFA  9CF2     BCF INTCON, 6, ACCESS
+110:               CLEAR_8BIT(RCON, 7);      /*disable priority levels*/
+1EFC  9ED0     BCF RCON, 7, ACCESS
+111:           }
+1EFE  0012     RETURN 0
+112:           /**-----------------------------------------------------------------------------------------------*/
+113:           
+114:           /**-----------------------------------------------------------------------------------------------*/
+115:           void System_PeripheralPinSelect(_ePPS ePeripheral, _U08 u8Pin)
+1F00  CFD9     MOVFF FSR2L, POSTINC1
+1F02  FFE6     NOP
+1F04  CFE1     MOVFF FSR1L, FSR2L
+1F06  FFD9     NOP
+116:           {
+117:               unlock();
+1F08  D842     RCALL unlock
+118:               if((_U08)ePeripheral <= (_U08)PWMFaultInput)
+1F0A  0EFE     MOVLW 0xFE
+1F0C  50DB     MOVF PLUSW2, W, ACCESS
+1F0E  080E     SUBLW 0xE
+1F10  E312     BNC 0x1F36
+119:               {
+120:                   *guap8Inputs[(_U08)ePeripheral] = u8Pin;
+1F12  0EFE     MOVLW 0xFE
+1F14  6AEA     CLRF FSR0H, ACCESS
+1F16  34DB     RLCF PLUSW2, W, ACCESS
+1F18  0BFE     ANDLW 0xFE
+1F1A  36EA     RLCF FSR0H, F, ACCESS
+1F1C  6EE9     MOVWF FSR0L, ACCESS
+1F1E  0E00     MOVLW 0x0
+1F20  26E9     ADDWF FSR0L, F, ACCESS
+1F22  0E0E     MOVLW 0xE
+1F24  22EA     ADDWFC FSR0H, F, ACCESS
+1F26  50EE     MOVF POSTINC0, W, ACCESS
+1F28  CFEF     MOVFF INDF0, FSR0H
+1F2A  FFEA     NOP
+1F2C  6EE9     MOVWF FSR0L, ACCESS
+1F2E  0EFD     MOVLW 0xFD
+1F30  CFDB     MOVFF PLUSW2, INDF0
+1F32  FFEF     NOP
+121:               }
+122:               else if(((_U08)ePeripheral >= (_U08)Comparator1Output) && ((_U08)ePeripheral <= (_U08)EnhancedPWMOutputChannel2D))
+1F34  D027     BRA 0x1F84
+1F36  0E65     MOVLW 0x65
+1F38  6EF3     MOVWF PRODL, ACCESS
+1F3A  0EFE     MOVLW 0xFE
+1F3C  CFDB     MOVFF PLUSW2, PRODH
+1F3E  FFF4     NOP
+1F40  50F3     MOVF PRODL, W, ACCESS
+1F42  5CF4     SUBWF PRODH, W, ACCESS
+1F44  E31F     BNC 0x1F84
+1F46  0EFE     MOVLW 0xFE
+1F48  50DB     MOVF PLUSW2, W, ACCESS
+1F4A  0879     SUBLW 0x79
+1F4C  E31B     BNC 0x1F84
+123:               {
+124:                   *guap8Outputs[u8Pin] = (_U08)ePeripheral % (_U08)100;
+1F4E  0E64     MOVLW 0x64
+1F50  6E10     MOVWF __tmp_0, ACCESS
+1F52  6E0C     MOVWF 0xC, ACCESS
+1F54  0EFE     MOVLW 0xFE
+1F56  CFDB     MOVFF PLUSW2, 0x7
+1F58  F007     NOP
+1F5A  ECB5     CALL 0x216A, 0
+1F5C  F010     NOP
+1F5E  5003     MOVF 0x3, W, ACCESS
+1F60  6EE6     MOVWF POSTINC1, ACCESS
+1F62  0EFD     MOVLW 0xFD
+1F64  6AEA     CLRF FSR0H, ACCESS
+1F66  34DB     RLCF PLUSW2, W, ACCESS
+1F68  0BFE     ANDLW 0xFE
+1F6A  36EA     RLCF FSR0H, F, ACCESS
+1F6C  6EE9     MOVWF FSR0L, ACCESS
+1F6E  0E1E     MOVLW 0x1E
+1F70  26E9     ADDWF FSR0L, F, ACCESS
+1F72  0E0E     MOVLW 0xE
+1F74  22EA     ADDWFC FSR0H, F, ACCESS
+1F76  50EE     MOVF POSTINC0, W, ACCESS
+1F78  CFEF     MOVFF INDF0, FSR0H
+1F7A  FFEA     NOP
+1F7C  6EE9     MOVWF FSR0L, ACCESS
+1F7E  52E5     MOVF POSTDEC1, F, ACCESS
+1F80  50E7     MOVF INDF1, W, ACCESS
+1F82  6EEF     MOVWF INDF0, ACCESS
+125:               }
+126:               lock();
+1F84  D80B     RCALL lock
+127:           }
+1F86  52E5     MOVF POSTDEC1, F, ACCESS
+1F88  CFE7     MOVFF INDF1, FSR2L
+1F8A  FFD9     NOP
+1F8C  0012     RETURN 0
+128:           /**-----------------------------------------------------------------------------------------------*/
+129:           
+130:           /*-- Private functions --*/
+131:           /**-------------------------------------------------------------------------------------------------    
+132:             \brief        desbloquea los regitros de remapeado de pines
+133:             \param        None
+134:             \return       None
+135:             \warning      None       
+136:           --------------------------------------------------------------------------------------------------*/
+137:           static void unlock(void)
+138:           {
+139:               _asm MOVLW 0x55 _endasm;
+1F8E  0E55     MOVLW 0x55
+140:               _asm MOVWF EECON2, 0 _endasm;
+1F90  6EA7     MOVWF EECON2, ACCESS
+141:               _asm MOVLW 0xAA _endasm;
+1F92  0EAA     MOVLW 0xAA
+142:               _asm MOVWF EECON2, 0 _endasm;
+1F94  6EA7     MOVWF EECON2, ACCESS
+143:               //Turn off PPS Write Protect
+144:               PPSCON = 0;//_asm BCF PPSCON, IOLOCK, BANKED _endasm;
+1F96  010E     MOVLB 0xE
+1F98  6BFF     CLRF 0xFF, BANKED
+145:           }
+1F9A  0012     RETURN 0
+146:           
+147:           /**-------------------------------------------------------------------------------------------------
+148:             \brief        bloquea los registros de remapeo de pines
+149:             \param        None
+150:             \return       None
+151:             \warning      None
+152:           --------------------------------------------------------------------------------------------------*/
+153:           static void lock(void)
+154:           {
+155:               _asm MOVLW 0x55 _endasm;
+1F9C  0E55     MOVLW 0x55
+156:               _asm MOVWF EECON2, 0 _endasm;
+1F9E  6EA7     MOVWF EECON2, ACCESS
+157:               _asm MOVLW 0xAA _endasm;
+1FA0  0EAA     MOVLW 0xAA
+158:               _asm MOVWF EECON2, 0 _endasm;
+1FA2  6EA7     MOVWF EECON2, ACCESS
+159:               // Write Protect PPS (if desired)
+160:               PPSCON = 1;//_asm BSF PPSCON, IOLOCK, BANKED _endasm;
+1FA4  010E     MOVLB 0xE
+1FA6  0E01     MOVLW 0x1
+1FA8  6FFF     MOVWF 0xFF, BANKED
+161:           }
+1FAA  0012     RETURN 0
+162:           
+---  H:/CodeBank8/bsp/Microchip/gpios/gpios.c  ----------------------------------------------------------
+1:             /*--------------------------------------------------------------------------------------------------
+2:               "THE BEER-WARE LICENSE" (Revision 42):
+3:               <phk@FreeBSD.ORG> wrote this file. As long as you retain this notice you
+4:               can do whatever you want with this stuff. If we meet some day, and you think
+5:               this stuff is worth it, you can buy me a beer in return to Hotboards crew 
+6:               (Beer-ware license created by Poul-Henning Kamp)
+7:             
+8:               \file         gpios.c
+9:               \author       Diego
+10:              \email        diego.perez@hotboards.org
+11:              \ver          1.0
+12:              \date         July 25, 2013
+13:              \target       PIC18F series
+14:            
+15:              \brief        El driver de bajo nivel gpios agrupa una colección de funciones que permiten manejar 
+16:                            los puertos de una manera más manejable y portable. Mediante las funciones descritas 
+17:                            en el archivo gpios.h, podrás establecer la dirección, escribir y/o leer, ya sea el 
+18:                            puerto entero o pin a pin.
+19:             -------------------------------------------------------------------------------------------------*/
+20:            /*-- Includes --*/
+21:            #include "gpios.h"
+22:            #include <p18cxxx.h>
+23:            
+24:            
+25:            /*-- Private Definitions--*/
+26:            
+27:            
+28:            /*-- Global variables --*/
+29:            static volatile near _U08 *const guap8Direction[] =
+30:            {
+31:                &TRISA,
+32:                &TRISB,
+33:                &TRISC,
+34:                &TRISD,
+35:                &TRISE
+36:            }; /* tris */
+37:            static volatile near _U08 *const guap8Input[]     =
+38:            {
+39:                &PORTA,
+40:                &PORTB,
+41:                &PORTC,
+42:                &PORTD,
+43:                &PORTE
+44:            }; /* input */
+45:            static volatile near _U08 *const guap8Output[]    =
+46:            {
+47:                &LATA,
+48:                &LATB,
+49:                &LATC,
+50:                &LATD,
+51:                &LATE 
+52:            };  /* output */
+53:            
+54:            /*-- Private Macros --*/
+55:            
+56:            
+57:            /*-- Private functions prototypes --*/
+58:            
+59:            
+60:            /*-- External functions --*/
+61:            /**-----------------------------------------------------------------------------------------------*/
+62:            void Gpios_PinDirection(_eGPIOS_PORT ePort, _U08 u8Pin, _BOOL bDirection)
+19CE  CFD9     MOVFF FSR2L, POSTINC1
+19D0  FFE6     NOP
+19D2  CFE1     MOVFF FSR1L, FSR2L
+19D4  FFD9     NOP
+63:            {
+64:                u8Pin &= (_U08)0x07; /*just to be sure you didn't write a value bigger than 7*/
+19D6  0EFD     MOVLW 0xFD
+19D8  96DB     BCF PLUSW2, 3, ACCESS
+19DA  98DB     BCF PLUSW2, 4, ACCESS
+19DC  9ADB     BCF PLUSW2, 5, ACCESS
+19DE  9CDB     BCF PLUSW2, 6, ACCESS
+19E0  9EDB     BCF PLUSW2, 7, ACCESS
+65:                bDirection &= (_BOOL)0x01; /*just to be sure you didn't write a value bigger than 1*/
+19E2  0EFC     MOVLW 0xFC
+19E4  92DB     BCF PLUSW2, 1, ACCESS
+19E6  94DB     BCF PLUSW2, 2, ACCESS
+19E8  96DB     BCF PLUSW2, 3, ACCESS
+19EA  98DB     BCF PLUSW2, 4, ACCESS
+19EC  9ADB     BCF PLUSW2, 5, ACCESS
+19EE  9CDB     BCF PLUSW2, 6, ACCESS
+19F0  9EDB     BCF PLUSW2, 7, ACCESS
+66:                
+67:                if(GPIOS_OUTPUT == bDirection)
+19F2  50DB     MOVF PLUSW2, W, ACCESS
+19F4  E11D     BNZ 0x1A30
+68:                {/*pin as output*/
+69:                    CLEAR_8BIT(*guap8Direction[(_U08)ePort], u8Pin);
+19F6  0E01     MOVLW 0x1
+19F8  6EF3     MOVWF PRODL, ACCESS
+19FA  0EFD     MOVLW 0xFD
+19FC  50DB     MOVF PLUSW2, W, ACCESS
+19FE  E004     BZ 0x1A08
+1A00  90D8     BCF STATUS, 0, ACCESS
+1A02  36F3     RLCF PRODL, F, ACCESS
+1A04  06E8     DECF WREG, F, ACCESS
+1A06  E1FC     BNZ 0x1A00
+1A08  50F3     MOVF PRODL, W, ACCESS
+1A0A  1CF3     COMF PRODL, W, ACCESS
+1A0C  6E10     MOVWF __tmp_0, ACCESS
+1A0E  0EFE     MOVLW 0xFE
+1A10  6AEA     CLRF FSR0H, ACCESS
+1A12  34DB     RLCF PLUSW2, W, ACCESS
+1A14  0BFE     ANDLW 0xFE
+1A16  36EA     RLCF FSR0H, F, ACCESS
+1A18  6EE9     MOVWF FSR0L, ACCESS
+1A1A  0E50     MOVLW 0x50
+1A1C  26E9     ADDWF FSR0L, F, ACCESS
+1A1E  0E0E     MOVLW 0xE
+1A20  22EA     ADDWFC FSR0H, F, ACCESS
+1A22  50EE     MOVF POSTINC0, W, ACCESS
+1A24  CFEF     MOVFF INDF0, FSR0H
+1A26  FFEA     NOP
+1A28  6EE9     MOVWF FSR0L, ACCESS
+1A2A  5010     MOVF __tmp_0, W, ACCESS
+1A2C  16EF     ANDWF INDF0, F, ACCESS
+70:                }
+71:                else
+1A2E  D01A     BRA 0x1A64
+72:                {/*pin as input*/
+73:                    SET_8BIT(*guap8Direction[(_U08)ePort], u8Pin);
+1A30  0E01     MOVLW 0x1
+1A32  6EF3     MOVWF PRODL, ACCESS
+1A34  0EFD     MOVLW 0xFD
+1A36  50DB     MOVF PLUSW2, W, ACCESS
+1A38  E004     BZ 0x1A42
+1A3A  90D8     BCF STATUS, 0, ACCESS
+1A3C  36F3     RLCF PRODL, F, ACCESS
+1A3E  06E8     DECF WREG, F, ACCESS
+1A40  E1FC     BNZ 0x1A3A
+1A42  50F3     MOVF PRODL, W, ACCESS
+1A44  0EFE     MOVLW 0xFE
+1A46  6AEA     CLRF FSR0H, ACCESS
+1A48  34DB     RLCF PLUSW2, W, ACCESS
+1A4A  0BFE     ANDLW 0xFE
+1A4C  36EA     RLCF FSR0H, F, ACCESS
+1A4E  6EE9     MOVWF FSR0L, ACCESS
+1A50  0E50     MOVLW 0x50
+1A52  26E9     ADDWF FSR0L, F, ACCESS
+1A54  0E0E     MOVLW 0xE
+1A56  22EA     ADDWFC FSR0H, F, ACCESS
+1A58  50EE     MOVF POSTINC0, W, ACCESS
+1A5A  CFEF     MOVFF INDF0, FSR0H
+1A5C  FFEA     NOP
+1A5E  6EE9     MOVWF FSR0L, ACCESS
+1A60  50F3     MOVF PRODL, W, ACCESS
+1A62  12EF     IORWF INDF0, F, ACCESS
+74:                }
+75:            }
+1A64  52E5     MOVF POSTDEC1, F, ACCESS
+1A66  CFE7     MOVFF INDF1, FSR2L
+1A68  FFD9     NOP
+1A6A  0012     RETURN 0
+76:            /**-----------------------------------------------------------------------------------------------*/
+77:            
+78:            /**-----------------------------------------------------------------------------------------------*/
+79:            void Gpios_WritePin(_eGPIOS_PORT ePort, _U08 u8Pin, _BOOL bValue)
+1A6C  CFD9     MOVFF FSR2L, POSTINC1
+1A6E  FFE6     NOP
+1A70  CFE1     MOVFF FSR1L, FSR2L
+1A72  FFD9     NOP
+80:            {
+81:                u8Pin &= (_U08)0x07; /*just to be sure you didn't write a value bigger than 7*/
+1A74  0EFD     MOVLW 0xFD
+1A76  96DB     BCF PLUSW2, 3, ACCESS
+1A78  98DB     BCF PLUSW2, 4, ACCESS
+1A7A  9ADB     BCF PLUSW2, 5, ACCESS
+1A7C  9CDB     BCF PLUSW2, 6, ACCESS
+1A7E  9EDB     BCF PLUSW2, 7, ACCESS
+82:                bValue &= (_BOOL)0x01; /*just to be sure you didn't write a value bigger than 1*/
+1A80  0EFC     MOVLW 0xFC
+1A82  92DB     BCF PLUSW2, 1, ACCESS
+1A84  94DB     BCF PLUSW2, 2, ACCESS
+1A86  96DB     BCF PLUSW2, 3, ACCESS
+1A88  98DB     BCF PLUSW2, 4, ACCESS
+1A8A  9ADB     BCF PLUSW2, 5, ACCESS
+1A8C  9CDB     BCF PLUSW2, 6, ACCESS
+1A8E  9EDB     BCF PLUSW2, 7, ACCESS
+83:                
+84:                if((_BOOL)1 == bValue)
+1A90  04DB     DECF PLUSW2, W, ACCESS
+1A92  E11B     BNZ 0x1ACA
+85:                {/*set pin to high*/
+86:                    SET_8BIT(*guap8Output[(_U08)ePort], u8Pin);
+1A94  0E01     MOVLW 0x1
+1A96  6EF3     MOVWF PRODL, ACCESS
+1A98  0EFD     MOVLW 0xFD
+1A9A  50DB     MOVF PLUSW2, W, ACCESS
+1A9C  E004     BZ 0x1AA6
+1A9E  90D8     BCF STATUS, 0, ACCESS
+1AA0  36F3     RLCF PRODL, F, ACCESS
+1AA2  06E8     DECF WREG, F, ACCESS
+1AA4  E1FC     BNZ 0x1A9E
+1AA6  50F3     MOVF PRODL, W, ACCESS
+1AA8  0EFE     MOVLW 0xFE
+1AAA  6AEA     CLRF FSR0H, ACCESS
+1AAC  34DB     RLCF PLUSW2, W, ACCESS
+1AAE  0BFE     ANDLW 0xFE
+1AB0  36EA     RLCF FSR0H, F, ACCESS
+1AB2  6EE9     MOVWF FSR0L, ACCESS
+1AB4  0E64     MOVLW 0x64
+1AB6  26E9     ADDWF FSR0L, F, ACCESS
+1AB8  0E0E     MOVLW 0xE
+1ABA  22EA     ADDWFC FSR0H, F, ACCESS
+1ABC  50EE     MOVF POSTINC0, W, ACCESS
+1ABE  CFEF     MOVFF INDF0, FSR0H
+1AC0  FFEA     NOP
+1AC2  6EE9     MOVWF FSR0L, ACCESS
+1AC4  50F3     MOVF PRODL, W, ACCESS
+1AC6  12EF     IORWF INDF0, F, ACCESS
+87:                }
+88:                else
+1AC8  D01C     BRA 0x1B02
+89:                {/*set pin to low*/
+90:                    CLEAR_8BIT(*guap8Output[(_U08)ePort], u8Pin);
+1ACA  0E01     MOVLW 0x1
+1ACC  6EF3     MOVWF PRODL, ACCESS
+1ACE  0EFD     MOVLW 0xFD
+1AD0  50DB     MOVF PLUSW2, W, ACCESS
+1AD2  E004     BZ 0x1ADC
+1AD4  90D8     BCF STATUS, 0, ACCESS
+1AD6  36F3     RLCF PRODL, F, ACCESS
+1AD8  06E8     DECF WREG, F, ACCESS
+1ADA  E1FC     BNZ 0x1AD4
+1ADC  50F3     MOVF PRODL, W, ACCESS
+1ADE  1CF3     COMF PRODL, W, ACCESS
+1AE0  6E10     MOVWF __tmp_0, ACCESS
+1AE2  0EFE     MOVLW 0xFE
+1AE4  6AEA     CLRF FSR0H, ACCESS
+1AE6  34DB     RLCF PLUSW2, W, ACCESS
+1AE8  0BFE     ANDLW 0xFE
+1AEA  36EA     RLCF FSR0H, F, ACCESS
+1AEC  6EE9     MOVWF FSR0L, ACCESS
+1AEE  0E64     MOVLW 0x64
+1AF0  26E9     ADDWF FSR0L, F, ACCESS
+1AF2  0E0E     MOVLW 0xE
+1AF4  22EA     ADDWFC FSR0H, F, ACCESS
+1AF6  50EE     MOVF POSTINC0, W, ACCESS
+1AF8  CFEF     MOVFF INDF0, FSR0H
+1AFA  FFEA     NOP
+1AFC  6EE9     MOVWF FSR0L, ACCESS
+1AFE  5010     MOVF __tmp_0, W, ACCESS
+1B00  16EF     ANDWF INDF0, F, ACCESS
+91:                }
+92:            }
+1B02  52E5     MOVF POSTDEC1, F, ACCESS
+1B04  CFE7     MOVFF INDF1, FSR2L
+1B06  FFD9     NOP
+1B08  0012     RETURN 0
+93:            /**-----------------------------------------------------------------------------------------------*/
+94:            
+95:            /**-----------------------------------------------------------------------------------------------*/
+96:            void Gpios_PullupPin(_eGPIOS_PORT ePort, _U08 u8Pin, _BOOL bValue)
+1B0A  CFD9     MOVFF FSR2L, POSTINC1
+1B0C  FFE6     NOP
+97:            {
+98:                /*this function is only here for compatibility.
+99:                Microchip use another mechanism for pullup activation*/
+100:           }
+1B0E  52E5     MOVF POSTDEC1, F, ACCESS
+1B10  CFE7     MOVFF INDF1, FSR2L
+1B12  FFD9     NOP
+1B14  0012     RETURN 0
+101:           /**-----------------------------------------------------------------------------------------------*/
+102:           
+103:           /**-----------------------------------------------------------------------------------------------*/
+104:           void Gpios_TogglePin(_eGPIOS_PORT ePort, _U08 u8Pin)
+1B16  CFD9     MOVFF FSR2L, POSTINC1
+1B18  FFE6     NOP
+1B1A  CFE1     MOVFF FSR1L, FSR2L
+1B1C  FFD9     NOP
+105:           {
+106:               u8Pin &= (_U08)0x07; /*just to be sure you didn't write a value bigger than 7*/
+1B1E  0EFD     MOVLW 0xFD
+1B20  96DB     BCF PLUSW2, 3, ACCESS
+1B22  98DB     BCF PLUSW2, 4, ACCESS
+1B24  9ADB     BCF PLUSW2, 5, ACCESS
+1B26  9CDB     BCF PLUSW2, 6, ACCESS
+1B28  9EDB     BCF PLUSW2, 7, ACCESS
+107:               TOGGLE_8BIT(*guap8Output[(_U08)ePort], u8Pin);
+1B2A  0E01     MOVLW 0x1
+1B2C  6EF3     MOVWF PRODL, ACCESS
+1B2E  0EFD     MOVLW 0xFD
+1B30  50DB     MOVF PLUSW2, W, ACCESS
+1B32  E004     BZ 0x1B3C
+1B34  90D8     BCF STATUS, 0, ACCESS
+1B36  36F3     RLCF PRODL, F, ACCESS
+1B38  06E8     DECF WREG, F, ACCESS
+1B3A  E1FC     BNZ 0x1B34
+1B3C  50F3     MOVF PRODL, W, ACCESS
+1B3E  0EFE     MOVLW 0xFE
+1B40  6AEA     CLRF FSR0H, ACCESS
+1B42  34DB     RLCF PLUSW2, W, ACCESS
+1B44  0BFE     ANDLW 0xFE
+1B46  36EA     RLCF FSR0H, F, ACCESS
+1B48  6EE9     MOVWF FSR0L, ACCESS
+1B4A  0E64     MOVLW 0x64
+1B4C  26E9     ADDWF FSR0L, F, ACCESS
+1B4E  0E0E     MOVLW 0xE
+1B50  22EA     ADDWFC FSR0H, F, ACCESS
+1B52  50EE     MOVF POSTINC0, W, ACCESS
+1B54  CFEF     MOVFF INDF0, FSR0H
+1B56  FFEA     NOP
+1B58  6EE9     MOVWF FSR0L, ACCESS
+1B5A  50F3     MOVF PRODL, W, ACCESS
+1B5C  1AEF     XORWF INDF0, F, ACCESS
+108:           }
+1B5E  52E5     MOVF POSTDEC1, F, ACCESS
+1B60  CFE7     MOVFF INDF1, FSR2L
+1B62  FFD9     NOP
+1B64  0012     RETURN 0
+109:           /**-----------------------------------------------------------------------------------------------*/
+110:           
+111:           /**-----------------------------------------------------------------------------------------------*/
+112:           _BOOL Gpios_bReadPin(_eGPIOS_PORT ePort, _U08 u8Pin)
+1B66  CFD9     MOVFF FSR2L, POSTINC1
+1B68  FFE6     NOP
+1B6A  CFE1     MOVFF FSR1L, FSR2L
+1B6C  FFD9     NOP
+113:           {
+114:               u8Pin &= (_U08)0x07; /*just to be sure you didn't write a value bigger than 7*/
+1B6E  0EFD     MOVLW 0xFD
+1B70  96DB     BCF PLUSW2, 3, ACCESS
+1B72  98DB     BCF PLUSW2, 4, ACCESS
+1B74  9ADB     BCF PLUSW2, 5, ACCESS
+1B76  9CDB     BCF PLUSW2, 6, ACCESS
+1B78  9EDB     BCF PLUSW2, 7, ACCESS
+115:               return QUERY_8BIT(*guap8Input[(_U08)ePort], u8Pin);
+1B7A  CFDB     MOVFF PLUSW2, __tmp_0
+1B7C  F010     NOP
+1B7E  0EFE     MOVLW 0xFE
+1B80  6AEA     CLRF FSR0H, ACCESS
+1B82  34DB     RLCF PLUSW2, W, ACCESS
+1B84  0BFE     ANDLW 0xFE
+1B86  36EA     RLCF FSR0H, F, ACCESS
+1B88  6EE9     MOVWF FSR0L, ACCESS
+1B8A  0E5A     MOVLW 0x5A
+1B8C  26E9     ADDWF FSR0L, F, ACCESS
+1B8E  0E0E     MOVLW 0xE
+1B90  22EA     ADDWFC FSR0H, F, ACCESS
+1B92  50EE     MOVF POSTINC0, W, ACCESS
+1B94  CFEF     MOVFF INDF0, FSR0H
+1B96  FFEA     NOP
+1B98  6EE9     MOVWF FSR0L, ACCESS
+1B9A  50EF     MOVF INDF0, W, ACCESS
+1B9C  C010     MOVFF __tmp_0, INDF1
+1B9E  FFE7     NOP
+1BA0  52E7     MOVF INDF1, F, ACCESS
+1BA2  E004     BZ 0x1BAC
+1BA4  42E8     RRNCF WREG, F, ACCESS
+1BA6  0B7F     ANDLW 0x7F
+1BA8  06E7     DECF INDF1, F, ACCESS
+1BAA  E1FC     BNZ 0x1BA4
+1BAC  0B01     ANDLW 0x1
+116:           }
+1BAE  52E5     MOVF POSTDEC1, F, ACCESS
+1BB0  CFE7     MOVFF INDF1, FSR2L
+1BB2  FFD9     NOP
+1BB4  0012     RETURN 0
+117:           /**-----------------------------------------------------------------------------------------------*/
+118:           
+119:           /**-----------------------------------------------------------------------------------------------*/
+120:           void Gpios_WritePort(_eGPIOS_PORT ePort, _U08 u8Value)
+1BB6  CFD9     MOVFF FSR2L, POSTINC1
+1BB8  FFE6     NOP
+1BBA  CFE1     MOVFF FSR1L, FSR2L
+1BBC  FFD9     NOP
+121:           {
+122:               *guap8Output[(_U08)ePort] = u8Value;
+1BBE  0EFE     MOVLW 0xFE
+1BC0  6AEA     CLRF FSR0H, ACCESS
+1BC2  34DB     RLCF PLUSW2, W, ACCESS
+1BC4  0BFE     ANDLW 0xFE
+1BC6  36EA     RLCF FSR0H, F, ACCESS
+1BC8  6EE9     MOVWF FSR0L, ACCESS
+1BCA  0E64     MOVLW 0x64
+1BCC  26E9     ADDWF FSR0L, F, ACCESS
+1BCE  0E0E     MOVLW 0xE
+1BD0  22EA     ADDWFC FSR0H, F, ACCESS
+1BD2  50EE     MOVF POSTINC0, W, ACCESS
+1BD4  CFEF     MOVFF INDF0, FSR0H
+1BD6  FFEA     NOP
+1BD8  6EE9     MOVWF FSR0L, ACCESS
+1BDA  0EFD     MOVLW 0xFD
+1BDC  CFDB     MOVFF PLUSW2, INDF0
+1BDE  FFEF     NOP
+123:           }
+1BE0  52E5     MOVF POSTDEC1, F, ACCESS
+1BE2  CFE7     MOVFF INDF1, FSR2L
+1BE4  FFD9     NOP
+1BE6  0012     RETURN 0
+124:           /**-----------------------------------------------------------------------------------------------*/
+125:           
+126:           /**-----------------------------------------------------------------------------------------------*/
+127:           _U08 Gpios_u8ReadPort(_eGPIOS_PORT ePort)
+1BE8  CFD9     MOVFF FSR2L, POSTINC1
+1BEA  FFE6     NOP
+1BEC  CFE1     MOVFF FSR1L, FSR2L
+1BEE  FFD9     NOP
+128:           {
+129:               return *guap8Input[(_U08)ePort];
+1BF0  0EFE     MOVLW 0xFE
+1BF2  6AEA     CLRF FSR0H, ACCESS
+1BF4  34DB     RLCF PLUSW2, W, ACCESS
+1BF6  0BFE     ANDLW 0xFE
+1BF8  36EA     RLCF FSR0H, F, ACCESS
+1BFA  6EE9     MOVWF FSR0L, ACCESS
+1BFC  0E5A     MOVLW 0x5A
+1BFE  26E9     ADDWF FSR0L, F, ACCESS
+1C00  0E0E     MOVLW 0xE
+1C02  22EA     ADDWFC FSR0H, F, ACCESS
+1C04  50EE     MOVF POSTINC0, W, ACCESS
+1C06  CFEF     MOVFF INDF0, FSR0H
+1C08  FFEA     NOP
+1C0A  6EE9     MOVWF FSR0L, ACCESS
+1C0C  50EF     MOVF INDF0, W, ACCESS
+130:           }
+1C0E  52E5     MOVF POSTDEC1, F, ACCESS
+1C10  CFE7     MOVFF INDF1, FSR2L
+1C12  FFD9     NOP
+1C14  0012     RETURN 0
+131:           /**-----------------------------------------------------------------------------------------------*/
+132:           
+133:           /**-----------------------------------------------------------------------------------------------*/
+134:           void Gpios_WriteTris(_eGPIOS_PORT ePort, _U08 u8Value)
+1C16  CFD9     MOVFF FSR2L, POSTINC1
+1C18  FFE6     NOP
+1C1A  CFE1     MOVFF FSR1L, FSR2L
+1C1C  FFD9     NOP
+135:           {
+136:               *guap8Direction[(_U08)ePort] = u8Value;
+1C1E  0EFE     MOVLW 0xFE
+1C20  6AEA     CLRF FSR0H, ACCESS
+1C22  34DB     RLCF PLUSW2, W, ACCESS
+1C24  0BFE     ANDLW 0xFE
+1C26  36EA     RLCF FSR0H, F, ACCESS
+1C28  6EE9     MOVWF FSR0L, ACCESS
+1C2A  0E50     MOVLW 0x50
+1C2C  26E9     ADDWF FSR0L, F, ACCESS
+1C2E  0E0E     MOVLW 0xE
+1C30  22EA     ADDWFC FSR0H, F, ACCESS
+1C32  50EE     MOVF POSTINC0, W, ACCESS
+1C34  CFEF     MOVFF INDF0, FSR0H
+1C36  FFEA     NOP
+1C38  6EE9     MOVWF FSR0L, ACCESS
+1C3A  0EFD     MOVLW 0xFD
+1C3C  CFDB     MOVFF PLUSW2, INDF0
+1C3E  FFEF     NOP
+137:           }
+1C40  52E5     MOVF POSTDEC1, F, ACCESS
+1C42  CFE7     MOVFF INDF1, FSR2L
+1C44  FFD9     NOP
+1C46  0012     RETURN 0
+138:           /**-----------------------------------------------------------------------------------------------*/
+139:           
+140:           /**-----------------------------------------------------------------------------------------------*/
+141:           _U08 Gpios_u8ReadTris(_eGPIOS_PORT ePort)
+1C48  CFD9     MOVFF FSR2L, POSTINC1
+1C4A  FFE6     NOP
+1C4C  CFE1     MOVFF FSR1L, FSR2L
+1C4E  FFD9     NOP
+142:           {
+143:               return *guap8Direction[(_U08)ePort];
+1C50  0EFE     MOVLW 0xFE
+1C52  6AEA     CLRF FSR0H, ACCESS
+1C54  34DB     RLCF PLUSW2, W, ACCESS
+1C56  0BFE     ANDLW 0xFE
+1C58  36EA     RLCF FSR0H, F, ACCESS
+1C5A  6EE9     MOVWF FSR0L, ACCESS
+1C5C  0E50     MOVLW 0x50
+1C5E  26E9     ADDWF FSR0L, F, ACCESS
+1C60  0E0E     MOVLW 0xE
+1C62  22EA     ADDWFC FSR0H, F, ACCESS
+1C64  50EE     MOVF POSTINC0, W, ACCESS
+1C66  CFEF     MOVFF INDF0, FSR0H
+1C68  FFEA     NOP
+1C6A  6EE9     MOVWF FSR0L, ACCESS
+1C6C  50EF     MOVF INDF0, W, ACCESS
+144:           }
+1C6E  52E5     MOVF POSTDEC1, F, ACCESS
+1C70  CFE7     MOVFF INDF1, FSR2L
+1C72  FFD9     NOP
+1C74  0012     RETURN 0
+145:           /**-----------------------------------------------------------------------------------------------*/
+146:           
+147:           /**-----------------------------------------------------------------------------------------------*/
+148:           void Gpios_SetPullups(_eGPIOS_PORT ePort, _U08 u8Value)
+1C76  CFD9     MOVFF FSR2L, POSTINC1
+1C78  FFE6     NOP
+149:           {
+150:               /*this function is only here for compatibility.
+151:               Microchip uses another mechanism for pullup activation*/
+152:           }
+1C7A  52E5     MOVF POSTDEC1, F, ACCESS
+1C7C  CFE7     MOVFF INDF1, FSR2L
+1C7E  FFD9     NOP
+1C80  0012     RETURN 0
+153:           /**-----------------------------------------------------------------------------------------------*/
+154:           
+155:           /**-----------------------------------------------------------------------------------------------*/
+156:           _U08 Gpios_u8ReadPullups(_eGPIOS_PORT ePort)
+1C82  CFD9     MOVFF FSR2L, POSTINC1
+1C84  FFE6     NOP
+157:           {
+158:               /*this function is only here for compatibility.
+159:               Microchip uses another mechanism for pullup activation*/
+160:               return 0x00;
+1C86  0E00     MOVLW 0x0
+161:           }
+1C88  52E5     MOVF POSTDEC1, F, ACCESS
+1C8A  CFE7     MOVFF INDF1, FSR2L
+1C8C  FFD9     NOP
+1C8E  0012     RETURN 0
+162:           /**-----------------------------------------------------------------------------------------------*/
+163:           
+164:           
+165:           /*-- Private functions --*/
+166:           /**-------------------------------------------------------------------------------------------------    
+167:             \brief        None
+168:             \param        None
+169:             \return       None
+170:             \warning      None   	
+171:           --------------------------------------------------------------------------------------------------*/
+---  E:/3.46/pic18-lt/cxx-framework/src/traditional/stdclib/scmpp2r.asm  --------------------------------
+2102  0EFB     MOVLW 0xFB
+2104  CFE3     MOVFF PLUSW1, TBLPTRL
+2106  FFF6     NOP
+2108  0EFC     MOVLW 0xFC
+210A  CFE3     MOVFF PLUSW1, TBLPTRH
+210C  FFF7     NOP
+210E  0EFD     MOVLW 0xFD
+2110  CFE3     MOVFF PLUSW1, TBLPTRU
+2112  FFF8     NOP
+2114  0EFE     MOVLW 0xFE
+2116  CFE3     MOVFF PLUSW1, FSR0L
+2118  FFE9     NOP
+211A  0EFF     MOVLW 0xFF
+211C  CFE3     MOVFF PLUSW1, FSR0H
+211E  FFEA     NOP
+2120  0009     TBLRD*+
+2122  50F5     MOVF TABLAT, W, ACCESS
+2124  5CEF     SUBWF INDF0, W, ACCESS
+2126  E102     BNZ jEnd
+2128  66EE     TSTFSZ POSTINC0, ACCESS
+212A  D7FA     BRA jLoop
+212C  0012     RETURN 0
+---  E:/3.46/pic18-lt/cxx-framework/src/traditional/stdclib/__init.c  -----------------------------------
+2192  0012     RETURN 0
+---  E:/3.46/pic18-lt/cxx-framework/src/traditional/startup/c018i.c  ------------------------------------
+0000  EFA7     GOTO 0x214E
+0002  F010     NOP
+0004  0012     RETURN 0
+214E  EE1D     LFSR 1, 0xD00
+2150  F000     NOP
+2152  EE2D     LFSR 2, 0xD00
+2154  F000     NOP
+2156  6AF8     CLRF TBLPTRU, ACCESS
+2158  9C0F     BCF 0xF, 6, ACCESS
+215A  ECD6     CALL 0x1FAC, 0
+215C  F00F     NOP
+215E  ECC9     CALL 0x2192, 0
+2160  F010     NOP
+2162  EC48     CALL 0x1C90, 0
+2164  F00E     NOP
+2166  D7FB     BRA 0x215E
+2168  0012     RETURN 0
+1FAC  0E2A     MOVLW 0x2A
+1FAE  6EF6     MOVWF TBLPTRL, ACCESS
+1FB0  0E10     MOVLW 0x10
+1FB2  6EF7     MOVWF TBLPTRH, ACCESS
+1FB4  0E00     MOVLW 0x0
+1FB6  6EF8     MOVWF TBLPTRU, ACCESS
+1FB8  0100     MOVLB 0x0
+1FBA  0009     TBLRD*+
+1FBC  50F5     MOVF TABLAT, W, ACCESS
+1FBE  6FF3     MOVWF curr_entry, BANKED
+1FC0  0009     TBLRD*+
+1FC2  50F5     MOVF TABLAT, W, ACCESS
+1FC4  6FF4     MOVWF 0xF4, BANKED
+1FC6  E103     BNZ 0x1FCE
+1FC8  67F3     TSTFSZ curr_entry, BANKED
+1FCA  D001     BRA 0x1FCE
+1FCC  D03D     BRA 0x2048
+1FCE  0009     TBLRD*+
+1FD0  50F5     MOVF TABLAT, W, ACCESS
+1FD2  6FEE     MOVWF prom, BANKED
+1FD4  0009     TBLRD*+
+1FD6  50F5     MOVF TABLAT, W, ACCESS
+1FD8  6FEF     MOVWF 0xEF, BANKED
+1FDA  0009     TBLRD*+
+1FDC  50F5     MOVF TABLAT, W, ACCESS
+1FDE  6FF0     MOVWF 0xF0, BANKED
+1FE0  0009     TBLRD*+
+1FE2  0009     TBLRD*+
+1FE4  50F5     MOVF TABLAT, W, ACCESS
+1FE6  6EE9     MOVWF FSR0L, ACCESS
+1FE8  0009     TBLRD*+
+1FEA  50F5     MOVF TABLAT, W, ACCESS
+1FEC  6EEA     MOVWF FSR0H, ACCESS
+1FEE  0009     TBLRD*+
+1FF0  0009     TBLRD*+
+1FF2  0009     TBLRD*+
+1FF4  50F5     MOVF TABLAT, W, ACCESS
+1FF6  6FF1     MOVWF curr_byte, BANKED
+1FF8  0009     TBLRD*+
+1FFA  50F5     MOVF TABLAT, W, ACCESS
+1FFC  6FF2     MOVWF 0xF2, BANKED
+1FFE  0009     TBLRD*+
+2000  0009     TBLRD*+
+2002  CFF6     MOVFF TBLPTRL, data_ptr
+2004  F0F5     NOP
+2006  CFF7     MOVFF TBLPTRH, 0xF6
+2008  F0F6     NOP
+200A  CFF8     MOVFF TBLPTRU, 0xF7
+200C  F0F7     NOP
+200E  C0EE     MOVFF prom, TBLPTRL
+2010  FFF6     NOP
+2012  C0EF     MOVFF 0xEF, TBLPTRH
+2014  FFF7     NOP
+2016  C0F0     MOVFF 0xF0, TBLPTRU
+2018  FFF8     NOP
+201A  0100     MOVLB 0x0
+201C  53F1     MOVF curr_byte, F, BANKED
+201E  E102     BNZ 0x2024
+2020  53F2     MOVF 0xF2, F, BANKED
+2022  E007     BZ 0x2032
+2024  0009     TBLRD*+
+2026  50F5     MOVF TABLAT, W, ACCESS
+2028  6EEE     MOVWF POSTINC0, ACCESS
+202A  07F1     DECF curr_byte, F, BANKED
+202C  E2F8     BC 0x201E
+202E  07F2     DECF 0xF2, F, BANKED
+2030  D7F9     BRA 0x2024
+2032  C0F5     MOVFF data_ptr, TBLPTRL
+2034  FFF6     NOP
+2036  C0F6     MOVFF 0xF6, TBLPTRH
+2038  FFF7     NOP
+203A  C0F7     MOVFF 0xF7, TBLPTRU
+203C  FFF8     NOP
+203E  0100     MOVLB 0x0
+2040  07F3     DECF curr_entry, F, BANKED
+2042  0E00     MOVLW 0x0
+2044  5BF4     SUBWFB 0xF4, F, BANKED
+2046  D7BF     BRA 0x1FC6
+2048  0012     RETURN 0
+---  E:/3.46/pic18-lt/cxx-framework/src/traditional/proc/p18f45j50.asm  ---------------------------------
+212E  0EC0     MOVLW 0xC0
+2130  6EF3     MOVWF PRODL, ACCESS
+2132  EE00     LFSR 0, 0x0
+2134  F000     NOP
+2136  0E0E     MOVLW 0xE
+2138  D801     RCALL zero_block
+213A  0012     RETURN 0
+213C  60EA     CPFSLT FSR0H, ACCESS
+213E  D002     BRA compare_l
+2140  6AEE     CLRF POSTINC0, ACCESS
+2142  D7FC     BRA zero_block
+2144  50F3     MOVF PRODL, W, ACCESS
+2146  60E9     CPFSLT FSR0L, ACCESS
+2148  0012     RETURN 0
+214A  6AEE     CLRF POSTINC0, ACCESS
+214C  D7FC     BRA loop_l
+---  E:/3.46/pic18-lt/cxx-framework/src/traditional/math/fxm3232.c  -------------------------------------
+204A  5004     MOVF u32Mul, W, ACCESS
+204C  0209     MULWF 0x9, ACCESS
+204E  CFF3     MOVFF PRODL, pll_startup_counter
+2050  F000     NOP
+2052  CFF4     MOVFF PRODH, 0x1
+2054  F001     NOP
+2056  020A     MULWF 0xA, ACCESS
+2058  50F3     MOVF PRODL, W, ACCESS
+205A  2601     ADDWF 0x1, F, ACCESS
+205C  0E00     MOVLW 0x0
+205E  20F4     ADDWFC PRODH, W, ACCESS
+2060  6E02     MOVWF 0x2, ACCESS
+2062  5004     MOVF u32Mul, W, ACCESS
+2064  020B     MULWF 0xB, ACCESS
+2066  50F3     MOVF PRODL, W, ACCESS
+2068  2602     ADDWF 0x2, F, ACCESS
+206A  0E00     MOVLW 0x0
+206C  20F4     ADDWFC PRODH, W, ACCESS
+206E  6E03     MOVWF 0x3, ACCESS
+2070  5004     MOVF u32Mul, W, ACCESS
+2072  020C     MULWF 0xC, ACCESS
+2074  50F3     MOVF PRODL, W, ACCESS
+2076  2603     ADDWF 0x3, F, ACCESS
+2078  5005     MOVF 0x5, W, ACCESS
+207A  0209     MULWF 0x9, ACCESS
+207C  50F3     MOVF PRODL, W, ACCESS
+207E  2601     ADDWF 0x1, F, ACCESS
+2080  50F4     MOVF PRODH, W, ACCESS
+2082  2202     ADDWFC 0x2, F, ACCESS
+2084  0E00     MOVLW 0x0
+2086  2203     ADDWFC 0x3, F, ACCESS
+2088  5005     MOVF 0x5, W, ACCESS
+208A  020A     MULWF 0xA, ACCESS
+208C  50F3     MOVF PRODL, W, ACCESS
+208E  2602     ADDWF 0x2, F, ACCESS
+2090  50F4     MOVF PRODH, W, ACCESS
+2092  2203     ADDWFC 0x3, F, ACCESS
+2094  5005     MOVF 0x5, W, ACCESS
+2096  020B     MULWF 0xB, ACCESS
+2098  50F3     MOVF PRODL, W, ACCESS
+209A  2603     ADDWF 0x3, F, ACCESS
+209C  5006     MOVF 0x6, W, ACCESS
+209E  0209     MULWF 0x9, ACCESS
+20A0  50F3     MOVF PRODL, W, ACCESS
+20A2  2602     ADDWF 0x2, F, ACCESS
+20A4  50F4     MOVF PRODH, W, ACCESS
+20A6  2203     ADDWFC 0x3, F, ACCESS
+20A8  5006     MOVF 0x6, W, ACCESS
+20AA  020A     MULWF 0xA, ACCESS
+20AC  50F3     MOVF PRODL, W, ACCESS
+20AE  2603     ADDWF 0x3, F, ACCESS
+20B0  5007     MOVF 0x7, W, ACCESS
+20B2  0209     MULWF 0x9, ACCESS
+20B4  50F3     MOVF PRODL, W, ACCESS
+20B6  2603     ADDWF 0x3, F, ACCESS
+20B8  0012     RETURN 0
+---  E:/3.46/pic18-lt/cxx-framework/src/traditional/math/fxd3232u.c  ------------------------------------
+20BA  6A03     CLRF 0x3, ACCESS
+20BC  6A02     CLRF 0x2, ACCESS
+20BE  6A01     CLRF 0x1, ACCESS
+20C0  6A00     CLRF pll_startup_counter, ACCESS
+20C2  0E20     MOVLW 0x20
+20C4  6EE7     MOVWF INDF1, ACCESS
+20C6  90D8     BCF STATUS, 0, ACCESS
+20C8  3604     RLCF u32Mul, F, ACCESS
+20CA  3605     RLCF 0x5, F, ACCESS
+20CC  3606     RLCF 0x6, F, ACCESS
+20CE  3607     RLCF 0x7, F, ACCESS
+20D0  3600     RLCF pll_startup_counter, F, ACCESS
+20D2  3601     RLCF 0x1, F, ACCESS
+20D4  3602     RLCF 0x2, F, ACCESS
+20D6  3603     RLCF 0x3, F, ACCESS
+20D8  5009     MOVF 0x9, W, ACCESS
+20DA  5C00     SUBWF pll_startup_counter, W, ACCESS
+20DC  500A     MOVF 0xA, W, ACCESS
+20DE  5801     SUBWFB 0x1, W, ACCESS
+20E0  500B     MOVF 0xB, W, ACCESS
+20E2  5802     SUBWFB 0x2, W, ACCESS
+20E4  500C     MOVF 0xC, W, ACCESS
+20E6  5803     SUBWFB 0x3, W, ACCESS
+20E8  E309     BNC 0x20FC
+20EA  5009     MOVF 0x9, W, ACCESS
+20EC  5E00     SUBWF pll_startup_counter, F, ACCESS
+20EE  500A     MOVF 0xA, W, ACCESS
+20F0  5A01     SUBWFB 0x1, F, ACCESS
+20F2  500B     MOVF 0xB, W, ACCESS
+20F4  5A02     SUBWFB 0x2, F, ACCESS
+20F6  500C     MOVF 0xC, W, ACCESS
+20F8  5A03     SUBWFB 0x3, F, ACCESS
+20FA  2A04     INCF u32Mul, F, ACCESS
+20FC  2EE7     DECFSZ INDF1, F, ACCESS
+20FE  D7E4     BRA 0x20C8
+2100  0012     RETURN 0
+---  E:/3.46/pic18-lt/cxx-framework/src/traditional/math/fxd0808u.c  ------------------------------------
+216A  6A03     CLRF 0x3, ACCESS
+216C  0E08     MOVLW 0x8
+216E  6EE7     MOVWF INDF1, ACCESS
+2170  90D8     BCF STATUS, 0, ACCESS
+2172  3607     RLCF 0x7, F, ACCESS
+2174  3603     RLCF 0x3, F, ACCESS
+2176  500C     MOVF 0xC, W, ACCESS
+2178  5C03     SUBWF 0x3, W, ACCESS
+217A  E302     BNC 0x2180
+217C  6E03     MOVWF 0x3, ACCESS
+217E  2A07     INCF 0x7, F, ACCESS
+2180  2EE7     DECFSZ INDF1, F, ACCESS
+2182  D7F7     BRA 0x2172
+2184  0012     RETURN 0

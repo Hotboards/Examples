@@ -1,8 +1,10 @@
 /*
- * Simple programa que retrasmite un eco cada que presionas una tecla,
- * para correr este demo debes habrir en tu PC una terminal por serial y setear su velocidad a 9600
- * no flow control y transferencia de 8 bits sin paridad
- * en bsp_profile se indica que se usara la Rx del puerto serial
+ * Simple programa que espera por recivir una cadena de caracteres, cuando recive
+ * la cadena led1 invierte el eatdo del led conectado a B1 y cuando recive led3
+ * invierte le estado del led B3
+ * para correr este demo debes habrir en tu PC una terminal por serial y setear 
+ * su velocidad a 9600 no flow control y transferencia de 8 bits sin paridad
+ * en hardware_profile se indica que se usara la Rx del puerto serial
  * #define UART_ENABLE_RX1      1
  * recuerda que dentro de tu aplicacion debes definir lo que hara la funcion
  * void Uart1_CallbackRx(_U08 u8Data)
@@ -22,6 +24,7 @@ static _BOOL gbFlag = _FALSE;
 #pragma code
 void main(void)
 {
+    _asm    _endasm;
     _U32 baudrate;
 
     ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
