@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=../../../CodeBank8/bsp/Microchip/adc/adc.c ../../../CodeBank8/bsp/Microchip/gpios/gpios.c ../../../CodeBank8/bsp/Microchip/delays/delays.c ../../../CodeBank8/middleware/printf/printf.c main.c ../../../CodeBank8/bsp/Microchip/uart/uart.c
+SOURCEFILES_QUOTED_IF_SPACED=../../../CodeBank8/bsp/Microchip/adc/adc.c ../../../CodeBank8/bsp/Microchip/gpios/gpios.c ../../../CodeBank8/bsp/Microchip/delays/delays.c ../../../CodeBank8/bsp/Microchip/uart/uart.c ../../../CodeBank8/middleware/printf/printf.c main.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1984359010/adc.o ${OBJECTDIR}/_ext/9437126/gpios.o ${OBJECTDIR}/_ext/196580942/delays.o ${OBJECTDIR}/_ext/1475586649/printf.o ${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/1386180684/uart.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1984359010/adc.o.d ${OBJECTDIR}/_ext/9437126/gpios.o.d ${OBJECTDIR}/_ext/196580942/delays.o.d ${OBJECTDIR}/_ext/1475586649/printf.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/_ext/1386180684/uart.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1984359010/adc.o ${OBJECTDIR}/_ext/9437126/gpios.o ${OBJECTDIR}/_ext/196580942/delays.o ${OBJECTDIR}/_ext/1386180684/uart.o ${OBJECTDIR}/_ext/1475586649/printf.o ${OBJECTDIR}/main.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1984359010/adc.o.d ${OBJECTDIR}/_ext/9437126/gpios.o.d ${OBJECTDIR}/_ext/196580942/delays.o.d ${OBJECTDIR}/_ext/1386180684/uart.o.d ${OBJECTDIR}/_ext/1475586649/printf.o.d ${OBJECTDIR}/main.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/1984359010/adc.o ${OBJECTDIR}/_ext/9437126/gpios.o ${OBJECTDIR}/_ext/196580942/delays.o ${OBJECTDIR}/_ext/1475586649/printf.o ${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/1386180684/uart.o
+OBJECTFILES=${OBJECTDIR}/_ext/1984359010/adc.o ${OBJECTDIR}/_ext/9437126/gpios.o ${OBJECTDIR}/_ext/196580942/delays.o ${OBJECTDIR}/_ext/1386180684/uart.o ${OBJECTDIR}/_ext/1475586649/printf.o ${OBJECTDIR}/main.o
 
 # Source Files
-SOURCEFILES=../../../CodeBank8/bsp/Microchip/adc/adc.c ../../../CodeBank8/bsp/Microchip/gpios/gpios.c ../../../CodeBank8/bsp/Microchip/delays/delays.c ../../../CodeBank8/middleware/printf/printf.c main.c ../../../CodeBank8/bsp/Microchip/uart/uart.c
+SOURCEFILES=../../../CodeBank8/bsp/Microchip/adc/adc.c ../../../CodeBank8/bsp/Microchip/gpios/gpios.c ../../../CodeBank8/bsp/Microchip/delays/delays.c ../../../CodeBank8/bsp/Microchip/uart/uart.c ../../../CodeBank8/middleware/printf/printf.c main.c
 
 
 CFLAGS=
@@ -110,6 +110,14 @@ ${OBJECTDIR}/_ext/196580942/delays.o: ../../../CodeBank8/bsp/Microchip/delays/de
 	@${DEP_GEN} -d ${OBJECTDIR}/_ext/196580942/delays.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/196580942/delays.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
+${OBJECTDIR}/_ext/1386180684/uart.o: ../../../CodeBank8/bsp/Microchip/uart/uart.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1386180684 
+	@${RM} ${OBJECTDIR}/_ext/1386180684/uart.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1386180684/uart.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/1386180684/uart.o   ../../../CodeBank8/bsp/Microchip/uart/uart.c 
+	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1386180684/uart.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1386180684/uart.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
+	
 ${OBJECTDIR}/_ext/1475586649/printf.o: ../../../CodeBank8/middleware/printf/printf.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1475586649 
 	@${RM} ${OBJECTDIR}/_ext/1475586649/printf.o.d 
@@ -125,14 +133,6 @@ ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
 	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-${OBJECTDIR}/_ext/1386180684/uart.o: ../../../CodeBank8/bsp/Microchip/uart/uart.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1386180684 
-	@${RM} ${OBJECTDIR}/_ext/1386180684/uart.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1386180684/uart.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/1386180684/uart.o   ../../../CodeBank8/bsp/Microchip/uart/uart.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1386180684/uart.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1386180684/uart.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
 else
 ${OBJECTDIR}/_ext/1984359010/adc.o: ../../../CodeBank8/bsp/Microchip/adc/adc.c  nbproject/Makefile-${CND_CONF}.mk
@@ -159,6 +159,14 @@ ${OBJECTDIR}/_ext/196580942/delays.o: ../../../CodeBank8/bsp/Microchip/delays/de
 	@${DEP_GEN} -d ${OBJECTDIR}/_ext/196580942/delays.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/196580942/delays.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
+${OBJECTDIR}/_ext/1386180684/uart.o: ../../../CodeBank8/bsp/Microchip/uart/uart.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1386180684 
+	@${RM} ${OBJECTDIR}/_ext/1386180684/uart.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1386180684/uart.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/1386180684/uart.o   ../../../CodeBank8/bsp/Microchip/uart/uart.c 
+	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1386180684/uart.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1386180684/uart.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
+	
 ${OBJECTDIR}/_ext/1475586649/printf.o: ../../../CodeBank8/middleware/printf/printf.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/1475586649 
 	@${RM} ${OBJECTDIR}/_ext/1475586649/printf.o.d 
@@ -174,14 +182,6 @@ ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
 	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-${OBJECTDIR}/_ext/1386180684/uart.o: ../../../CodeBank8/bsp/Microchip/uart/uart.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1386180684 
-	@${RM} ${OBJECTDIR}/_ext/1386180684/uart.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1386180684/uart.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/1386180684/uart.o   ../../../CodeBank8/bsp/Microchip/uart/uart.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1386180684/uart.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1386180684/uart.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
 endif
 

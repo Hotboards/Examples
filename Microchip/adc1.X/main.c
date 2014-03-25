@@ -1,5 +1,5 @@
 /*
- * Se muestre al canal 3 con una resolucion por default de 10 bits. despues de samplear se manda el
+ * Se muestre al canal 2 con una resolucion por default de 10 bits. despues de samplear se manda el
  * resultado por serial y se muestra en una terminal. Entre toma de mediciones se deja esperando un
  * tiempo de 100ms
  * por default la velocidad de ejecucion seria de 12MHz
@@ -14,7 +14,7 @@
 #include "adc/adc.h"
 #include "delays/delays.h"
 
-void putc(unsigned char c)
+void putc(const _U08 c)
 {
     Uart_PutChar(UART_PORT1, c);
 }
@@ -35,7 +35,7 @@ void main(void)
 
     while (1)
     {
-        adc = Adc_u16Read(3);                   /*Se lee la lectura del canal 3 en el adc*/
+        adc = Adc_u16Read(2);                   /*Se lee la lectura del canal 2 en el adc*/
         xprintf("valor analogo: %5d\r", adc);   /*se imprime el valor por serial*/
         Delays_ms(100);                         /*Retardo de 100ms*/
     }
