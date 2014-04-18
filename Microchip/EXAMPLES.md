@@ -107,6 +107,13 @@ Middleware
 - [Ejemplo 2: Transmicion de una cadena formateada con xsprintf por interrupciones](http://github.com/Hotboards/Examples/blob/master/Microchip/printf2.X/main.c)
 - [Ejemplo 3: Printf como herramienta de depuración](http://github.com/Hotboards/Examples/blob/master/Microchip/printf3.X/main.c)
 
+**(7segments) Display de 7 segmentos**
+
+- [Ejemplo 1: Simple despliegue de 4 numeros ](http://github.com/Hotboards/Examples/blob/master/Microchip/7segments_1.X/main.c)
+- [Ejemplo 2: Contador de 0 a 255 con tres display](http://github.com/Hotboards/Examples/blob/master/Microchip/7segments_2.X/main.c)
+- [Ejemplo 3: Despliegue de voltaje (0 a 3.3) con punto decimal](http://github.com/Hotboards/Examples/blob/master/Microchip/7segments_3.X/main.c)
+
+
 Modules
 ------
 
