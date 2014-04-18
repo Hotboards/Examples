@@ -5,6 +5,7 @@
 # Libraries
 *.lib
 *.a
+*.err
 
-Microchip/spi1.X
-Microchip/spi2.X
+#Microchip/*.X/dist
+#Microchip/*.X/build
