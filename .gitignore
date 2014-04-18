@@ -5,7 +5,8 @@
 # Libraries
 *.lib
 *.a
-#*.err
+*.err
 
-#Microchip/*.X/dist
-#Microchip/*.X/build
+Microchip/*.X/dist
+Microchip/*.X/build
+Microchip/*.X/disassembly
