@@ -6,13 +6,12 @@
  * posteriormente escribirl el valor en el puerto B
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "gpios/gpios.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
     _U08 port;      /*declaramos variable para leer el puerto D*/
 
@@ -28,17 +27,4 @@ void main(void)
         RIGHT_8SHIFT(port, 4);
         Gpios_WritePort(GPIOS_PORTB, port);          /*escribimos el valor de "port" en el puerto B*/
     }
-}
-
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
 }

@@ -4,37 +4,23 @@
  * Por default la velocidad de ejecucion es de 12MHz
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "gpios/gpios.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
     _U16 i;         /*declaramos variable para contar*/
 
-    ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
-    ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
+    ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
+    ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
 
     Gpios_PinDirection(GPIOS_PORTA, 1, GPIOS_OUTPUT);          /*puerto RA1 como salida*/
 
     while (1)
     {
-        Gpios_TogglePin(GPIOS_PORTA, 1);        /*invierto el estado del led conectado al puerto A pin 1*/
+        Gpios_TogglePin(GPIOS_PORTA, 1);    /*invierto el estado del led conectado al puerto A pin 1*/
         for(i=0;i<50000;i++);               /*ciclamos el procesador para observar el estado del led*/
     }
-}
-
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
 }

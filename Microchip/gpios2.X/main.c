@@ -6,13 +6,12 @@
  * Por default la velocidad de ejecucion es de 12MHz
 */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "gpios/gpios.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
     _U16 i;
     _U08 port;      /*declaro variable de 8 bits*/
@@ -35,17 +34,4 @@ void main(void)
             port = 1;                           /*vuelvo a comenzar la rotacion*/
         }
     }
-}
-
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
 }

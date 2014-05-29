@@ -1,6 +1,7 @@
 # Object files
 *.o
 *.d
+*.obj
 
 # Libraries
 *.lib
@@ -10,3 +11,4 @@
 Microchip/*.X/dist
 Microchip/*.X/build
 Microchip/*.X/disassembly
+Microchip/*.X/funclist
