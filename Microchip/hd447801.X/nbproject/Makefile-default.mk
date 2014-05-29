@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=main.c ../../../CodeBank8/bsp/Microchip/gpios/gpios.c ../../../CodeBank8/bsp/Microchip/delays/delays.c ../../../CodeBank8/middleware/6800/_6800.c ../../../CodeBank8/modules/hd44780/hd44780.c
+SOURCEFILES_QUOTED_IF_SPACED=../../../CodeBank8/bsp/Microchip/gpios/gpios.c ../../../CodeBank8/bsp/Microchip/delays/delays.c ../../../CodeBank8/middleware/6800/_6800.c ../../../CodeBank8/modules/hd44780/hd44780.c main.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/9437126/gpios.o ${OBJECTDIR}/_ext/196580942/delays.o ${OBJECTDIR}/_ext/1230197264/_6800.o ${OBJECTDIR}/_ext/1775757404/hd44780.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/_ext/9437126/gpios.o.d ${OBJECTDIR}/_ext/196580942/delays.o.d ${OBJECTDIR}/_ext/1230197264/_6800.o.d ${OBJECTDIR}/_ext/1775757404/hd44780.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/9437126/gpios.o ${OBJECTDIR}/_ext/196580942/delays.o ${OBJECTDIR}/_ext/1230197264/_6800.o ${OBJECTDIR}/_ext/1775757404/hd44780.o ${OBJECTDIR}/main.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/9437126/gpios.o.d ${OBJECTDIR}/_ext/196580942/delays.o.d ${OBJECTDIR}/_ext/1230197264/_6800.o.d ${OBJECTDIR}/_ext/1775757404/hd44780.o.d ${OBJECTDIR}/main.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/9437126/gpios.o ${OBJECTDIR}/_ext/196580942/delays.o ${OBJECTDIR}/_ext/1230197264/_6800.o ${OBJECTDIR}/_ext/1775757404/hd44780.o
+OBJECTFILES=${OBJECTDIR}/_ext/9437126/gpios.o ${OBJECTDIR}/_ext/196580942/delays.o ${OBJECTDIR}/_ext/1230197264/_6800.o ${OBJECTDIR}/_ext/1775757404/hd44780.o ${OBJECTDIR}/main.o
 
 # Source Files
-SOURCEFILES=main.c ../../../CodeBank8/bsp/Microchip/gpios/gpios.c ../../../CodeBank8/bsp/Microchip/delays/delays.c ../../../CodeBank8/middleware/6800/_6800.c ../../../CodeBank8/modules/hd44780/hd44780.c
+SOURCEFILES=../../../CodeBank8/bsp/Microchip/gpios/gpios.c ../../../CodeBank8/bsp/Microchip/delays/delays.c ../../../CodeBank8/middleware/6800/_6800.c ../../../CodeBank8/modules/hd44780/hd44780.c main.c
 
 
 CFLAGS=
@@ -76,7 +76,7 @@ FIXDEPS=fixDeps
 
 MP_PROCESSOR_OPTION=18F45J50
 MP_PROCESSOR_OPTION_LD=18f45j50
-MP_LINKER_DEBUG_OPTION=
+MP_LINKER_DEBUG_OPTION=  -u_DEBUGSTACK
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: assemble
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
@@ -86,14 +86,6 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/main.o.d 
-	@${RM} ${OBJECTDIR}/main.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
-	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
 ${OBJECTDIR}/_ext/9437126/gpios.o: ../../../CodeBank8/bsp/Microchip/gpios/gpios.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/9437126 
 	@${RM} ${OBJECTDIR}/_ext/9437126/gpios.o.d 
@@ -126,15 +118,15 @@ ${OBJECTDIR}/_ext/1775757404/hd44780.o: ../../../CodeBank8/modules/hd44780/hd447
 	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1775757404/hd44780.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1775757404/hd44780.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
-else
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/main.o.d 
 	@${RM} ${OBJECTDIR}/main.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
 	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
+else
 ${OBJECTDIR}/_ext/9437126/gpios.o: ../../../CodeBank8/bsp/Microchip/gpios/gpios.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/_ext/9437126 
 	@${RM} ${OBJECTDIR}/_ext/9437126/gpios.o.d 
@@ -166,6 +158,14 @@ ${OBJECTDIR}/_ext/1775757404/hd44780.o: ../../../CodeBank8/modules/hd44780/hd447
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/1775757404/hd44780.o   ../../../CodeBank8/modules/hd44780/hd44780.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1775757404/hd44780.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/1775757404/hd44780.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
+	
+${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/main.o.d 
+	@${RM} ${OBJECTDIR}/main.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"." -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
+	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
+	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
 endif
 
