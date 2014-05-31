@@ -4,18 +4,17 @@
  * por default la velocidad de ejecucion seria de 12MHz
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "gpios/gpios.h"
 #include "system/system.h"
 #include "swtimers/swtimers.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
-    ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
-    ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
+    ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
+    ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
 
     Timers_Init();                      /*inicializamos el driver para genere una interrupcion cada 5ms*/
     Timers_SetTime(0, 100/timers_ms);          /*recargamos el canal 0 con un valor de 100ms*/
@@ -34,14 +33,7 @@ void main(void)
 }
 
 
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
+void interrupt low_priority low_isr( void )
 {
     Timers_Isr();
 }

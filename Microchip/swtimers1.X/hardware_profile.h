@@ -6,5 +6,4 @@ nivel dentro de la carpeta "bsp"
 #define	__HARDWARE_PROFILE_H__
 
 
-
 #endif	

@@ -8,21 +8,19 @@
  * #define TIMERS_BASE_TIME        10
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "gpios/gpios.h"
 #include "system/system.h"
 #include "swtimers/swtimers.h"
 
-
-#pragma code
-void main(void)
+int main(void)
 {
     System_EnablePLL();     /*aumentamos la frecuencia de operacion del uC a 48MHz*/
     
-    ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
-    ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
+    ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
+    ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
 
     Timers_Init();                      /*inicializamos el driver para genere una interrupcion cada 10ms*/
     Timers_InterruptPriority(_HIGH);    /*colocamos la interrupcion en prioridad alta*/
@@ -43,15 +41,7 @@ void main(void)
     }
 }
 
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
+void interrupt high_isr( void )
 {
     Timers_Isr();/*como se le asigna una prioridad alta, la funcion de interrupcion se llama en este vector*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
 }
