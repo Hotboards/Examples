@@ -5,19 +5,18 @@
  * por default la velocidad de ejecucion seria de 12MHz
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "gpios/gpios.h"
 #include "delays/delays.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
     _U08 port = 0;  /*declaro variable para escribir en el puerto*/
 
-    ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
-    ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
+    ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
+    ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
 
     Gpios_WriteTris(GPIOS_PORTB, 0x00);         /*puerto B completo como salida*/
 
@@ -28,17 +27,4 @@ void main(void)
         Delays_ms(500);                         /*retardo 500 ms para observar el estado de los leds*/
 
     }
-}
-
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
 }
