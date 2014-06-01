@@ -9,31 +9,26 @@
  * #define TIMERS_BASE_TIME     10
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "uart/uart.h"
 #include "system/system.h"
 #include "swtimers/swtimers.h"
 #include "gpios/gpios.h"
 
-_U08 hola[] = "Hola ram\n\r";
-
-#pragma code
-void main(void)
+int main(void)
 {
-    _U32 baudrate;
-
     System_EnablePLL();/*colocamos el procesador a 48MHz*/
-    ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
-    ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
+    ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
+    ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
 
     Timers_Init();  /*incializamos los timer por software con 10ms de tiempo base*/
     Timers_InterruptPriority(_HIGH);    /*le damos asu interrupcion prioridad alta*/
     Timers_SetTime(0, 1000/timers_ms);  /*cargamos el canal 0 con un tiempo de 1 seg*/
     Gpios_PinDirection(GPIOS_PORTC, 6, GPIOS_OUTPUT); /*pin de tx como salida*/
 
-    baudrate = Uart_Init(UART_PORT1, 9600);   /*se iniclaiza el puerto serial a 115200 baudios*/
+    Uart_Init(UART_PORT1, 9600);   /*se iniclaiza el puerto serial a 115200 baudios*/
     __ENABLE_INTERRUPTS();          /*habilitamos interrupciones globales*/
 
     while (1)
@@ -44,23 +39,20 @@ void main(void)
             if(Uart_TxBusy(UART_PORT1) == _FALSE)              /*preguntamos si esta libre para transmitir*/
             {
                 /*transmitimos una cadena de datos almacenada en flash*/
-                //Uart_TxBuffer(UART_PORT1, &hola[0], sizeof(hola)-1);
-                Uart_TxFlashBuffer(UART_PORT1, (rom _U08*)"Hola mundo\n\r", sizeof("Hola mundo\n\r")-1);
+                Uart_TxBuffer(UART_PORT1, "Hola mundo\n\r", sizeof("Hola mundo\n\r")-1);
             }
         }
     }
 }
 
 
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
+void interrupt high_isr(void)
 {
     Timers_Isr();/*interrupciones por timers cada 10ms*/
     /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
 }
 
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
+void interrupt low_priority low_isr (void)
 {
     Uart1_TxIsr();/*se transmite los datos seriales en esta interrupcion*/
     /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/

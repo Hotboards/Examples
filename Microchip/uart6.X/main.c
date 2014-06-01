@@ -8,19 +8,16 @@
  * en el driver system.h se encuentran funciones que facilitan esta operacion.
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "uart/uart.h"
 #include "delays/delays.h"
 #include "gpios/gpios.h"
 #include "system/system.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
-    _U32 baudrate;
-    
     ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
     ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
 
@@ -29,25 +26,11 @@ void main(void)
     System_PeripheralPinSelect(AsynchronousReceive2, 20);  /*asignamos uart2 rx a RD3*/
     
     Gpios_PinDirection(GPIOS_PORTD, 2, GPIOS_OUTPUT); /*pin de tx2 como salida*/
-
-    baudrate = Uart_Init(UART_PORT2, 115200); /*se iniclaiza el puerto serial a 115200 baudios*/
+    (void)Uart_Init(UART_PORT2, 115200); /*se iniclaiza el puerto serial a 115200 baudios*/
     
     while (1)
     {
         Uart_PutString(UART_PORT2, "Hola mundo\n\r");   /*se manda mensaje por puerto serial*/
         Delays_ms(1000);                    /*se cicla por 1 seg*/
     }
-}
-
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
 }

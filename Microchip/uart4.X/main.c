@@ -8,8 +8,8 @@
  * void Uart1_CallbackRx(_U08 u8Data)
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "uart/uart.h"
 #include "system/system.h"
@@ -18,18 +18,15 @@
 static _U08 gu8RxData;
 static _BOOL gbFlag = 0;
 
-#pragma code
-void main(void)
+int main(void)
 {
-    _U32 baudrate;
-
-    ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
-    ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
+    ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
+    ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
 
     Gpios_PinDirection(GPIOS_PORTC, 6, GPIOS_OUTPUT); /*pin de tx como salida*/
     Gpios_PinDirection(GPIOS_PORTC, 7, GPIOS_INPUT); /*pin de rx como entrada*/
-    baudrate = Uart_Init(UART_PORT1, 9600);   /*se iniclaiza el puerto serial a 9600 baudios*/
-    __ENABLE_INTERRUPTS();          /*habilitamos interrupciones globales*/
+    (void)Uart_Init(UART_PORT1, 9600);   /*se iniclaiza el puerto serial a 9600 baudios*/
+    __ENABLE_INTERRUPTS();               /*habilitamos interrupciones globales*/
 
     while (1)
     {
@@ -42,14 +39,7 @@ void main(void)
 }
 
 
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
+void interrupt low_priority low_isr(void)
 {
     Uart1_RxIsr();/*en esta funcion se capturan los datos de llegada*/
     /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/

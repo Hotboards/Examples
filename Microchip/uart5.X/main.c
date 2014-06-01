@@ -10,8 +10,8 @@
  * void Uart1_CallbackRx(_U08 u8Data)
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "uart/uart.h"
 #include "system/system.h"
@@ -21,20 +21,16 @@
 static _U08 gu8Buffer[100];
 static _BOOL gbFlag = _FALSE;
 
-#pragma code
-void main(void)
+int main(void)
 {
-    _asm    _endasm;
-    _U32 baudrate;
-
-    ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
-    ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
+    ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
+    ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
 
     Gpios_PinDirection(GPIOS_PORTC, 6, GPIOS_OUTPUT); /*pin de tx como salida*/
     Gpios_PinDirection(GPIOS_PORTC, 7, GPIOS_INPUT); /*pin de rx como entrada*/
     Gpios_PinDirection(GPIOS_PORTB, 1, GPIOS_OUTPUT); /*pin de rx como entrada*/
     Gpios_PinDirection(GPIOS_PORTB, 3, GPIOS_OUTPUT); /*pin de rx como entrada*/
-    baudrate = Uart_Init(UART_PORT1, 9600);   /*se iniclaiza el puerto serial a 9600 baudios*/
+    (void)Uart_Init(UART_PORT1, 9600);   /*se iniclaiza el puerto serial a 9600 baudios*/
     __ENABLE_INTERRUPTS();          /*habilitamos interrupciones globales*/
 
     while (1)
@@ -42,11 +38,11 @@ void main(void)
         if(gbFlag == _TRUE) /*llego un caracter por teclado*/
         {
             gbFlag = _FALSE; /*limpiamos la bandera*/
-            if(strcmppgm2ram(&gu8Buffer[0], "led1\r") == 0)
+            if(strcmp(&gu8Buffer[0], "led1\r") == 0)
             {
                 Gpios_TogglePin(GPIOS_PORTB, 1);
             }
-            else if(strcmppgm2ram(&gu8Buffer[0], "led3\r") == 0)
+            else if(strcmp(&gu8Buffer[0], "led3\r") == 0)
             {
                 Gpios_TogglePin(GPIOS_PORTB, 3);
             }
@@ -55,14 +51,7 @@ void main(void)
 }
 
 
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
+void interrupt low_priority low_isr(void)
 {
     Uart1_RxIsr();/*en esta funcion se capturan los datos de llegada*/
     /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/

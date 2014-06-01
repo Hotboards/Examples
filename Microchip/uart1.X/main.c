@@ -5,24 +5,20 @@
  * por default la velocidad de ejecucion seria de 12MHz
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "uart/uart.h"
 #include "delays/delays.h"
 #include "gpios/gpios.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
-    _U32 baudrate;
-    
-    ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
-    ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
+    ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
+    ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
 
     Gpios_PinDirection(GPIOS_PORTC, 6, GPIOS_OUTPUT); /*pin de tx como salida*/
-
-    baudrate = Uart_Init(UART_PORT1, 115200); /*se iniclaiza el puerto serial a 115200 baudios*/
+    (void)Uart_Init(UART_PORT1, 115200); /*se iniclaiza el puerto serial a 115200 baudios*/
     
     while (1)
     {
@@ -31,15 +27,3 @@ void main(void)
     }
 }
 
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
-}
