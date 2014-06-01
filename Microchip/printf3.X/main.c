@@ -8,30 +8,34 @@
  * por default la velocidad de ejecucion seria de 12MHz
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "gpios/gpios.h"
-#include "uart/uart1.h"
+#include "uart/uart.h"
 #include "printf/printf.h"
 #include <stdlib.h>
+
+void putc(unsigned char c)
+{
+    Uart_PutChar(UART_PORT1, c);
+}
 
 /*macro assert el cual revisa que el parametro pasado no sea verdadero, en caso de serlo trabara el
  * programa y mandara un msj de error junto con el nombre del archivo y la linea donde esta el
  * supuesto error. */
 #define xassert(statement)          if(!(statement)){xprintf("Error en archivo %s, linea %d", __FILE__, (_U16)__LINE__) ;while(1);}
 
-#pragma code
-void main(void)
+int main(void)
 {
     _U16 x, i;
-    ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
-    ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
+    ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
+    ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
 
     Gpios_PinDirection(GPIOS_PORTC, 6, GPIOS_OUTPUT); /*puerto de tx como salida*/
     
-    (void)Uart1_Init(115200); /*velocidad a 115200 bauds*/
-    xdev_out(Uart1_PutChar);  /*se redirecciona la salida printf via serial*/
+    (void)Uart_Init(UART_PORT1, 115200); /*velocidad a 115200 bauds*/
+    xdev_out(putc);  /*se redirecciona la salida printf via serial*/
 
     /*Se recomienda manejar siempre parametros arriba de 16 bits para un correcto funcionamiento*/
     /*cuando se usan constantes se debe forzosamente realizar un castaje*/
@@ -43,24 +47,9 @@ void main(void)
         xprintf("En iteracion %3d, x vale: %d\n", i, x);/*si no es cero se imprime el valor de x*/
     }
     
-
     while (1)
     {
-        /*aqui se trasnmiten los datos por la interrupcion de tx del uart*/
+        
     }
 }
-
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
-}
-
 
