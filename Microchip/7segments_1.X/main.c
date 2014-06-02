@@ -5,17 +5,14 @@
  * El micro tiene una velocidad de 12MHz, cristal externo
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "gpios/gpios.h"
 #include "swtimers/swtimers.h"
 #include "system/system.h"
 #include "7segments/_7segments.h"
 
-void task(void);
-
-#pragma code
-void main(void)
+int main(void)
 {
     ANCON0 = 0xff;
     ANCON1 = 0xff;
@@ -39,14 +36,7 @@ void main(void)
 }
 
 
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
+void interrupt low_priority low_isr(void)
 {
     Timers_Isr();
 }
