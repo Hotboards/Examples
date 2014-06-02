@@ -5,14 +5,13 @@
  * Es necesario revisar el archivo hardware_profile.h para revisar las conexiones al controlador
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "delays/delays.h"
 #include "6800/_6800.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
     ANCON0 = 0XFF;  /*Desativamos las entradas analogicas*/
     ANCON1 = 0XFF;  /*Desativamos las entradas analogicas*/
@@ -46,17 +45,4 @@ void main(void)
     {
 
     }
-}
-
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
 }

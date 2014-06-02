@@ -4,14 +4,12 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>vectors.h</itemPath>
       <itemPath>../../../CodeBank8/types.h</itemPath>
       <itemPath>hardware_profile.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
                    projectFiles="true">
-      <itemPath>rm18f45j50_g.lkr</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -21,6 +19,8 @@
         <itemPath>../../../CodeBank8/bsp/Microchip/gpios/gpios.h</itemPath>
         <itemPath>../../../CodeBank8/bsp/Microchip/delays/delays.c</itemPath>
         <itemPath>../../../CodeBank8/bsp/Microchip/delays/delays.h</itemPath>
+        <itemPath>../../../CodeBank8/bsp/Microchip/system/system.c</itemPath>
+        <itemPath>../../../CodeBank8/bsp/Microchip/system/system.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="middleware" projectFiles="true">
         <itemPath>../../../CodeBank8/middleware/6800/_6800.c</itemPath>
@@ -46,8 +46,8 @@
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
         <platformTool>Simulator</platformTool>
-        <languageToolchain>C18</languageToolchain>
-        <languageToolchainVersion>3.45</languageToolchainVersion>
+        <languageToolchain>XC8</languageToolchain>
+        <languageToolchainVersion>1.31</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <compileType>
@@ -113,6 +113,69 @@
         <property key="stack-analysis-mcc18" value="false"/>
         <property key="stack-analysis-mplink" value="false"/>
       </C18LanguageToolchain>
+      <HI-TECH-COMP>
+        <property key="asmlist" value="true"/>
+        <property key="define-macros" value=""/>
+        <property key="extra-include-directories"
+                  value="..\..\..\CodeBank8;..\..\..\CodeBank8\middleware;..\..\..\CodeBank8\modules;..\..\..\CodeBank8\bsp\Microchip;."/>
+        <property key="identifier-length" value="255"/>
+        <property key="operation-mode" value="demo"/>
+        <property key="opt-xc8-compiler-strict_ansi" value="false"/>
+        <property key="optimization-assembler" value="true"/>
+        <property key="optimization-assembler-files" value="false"/>
+        <property key="optimization-debug" value="false"/>
+        <property key="optimization-global" value="true"/>
+        <property key="optimization-level" value="9"/>
+        <property key="optimization-set" value="default"/>
+        <property key="optimization-speed" value="true"/>
+        <property key="preprocess-assembler" value="true"/>
+        <property key="undefine-macros" value=""/>
+        <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
+        <property key="verbose" value="false"/>
+        <property key="warning-level" value="0"/>
+        <property key="what-to-do" value="ignore"/>
+      </HI-TECH-COMP>
+      <HI-TECH-LINK>
+        <property key="additional-options-checksum" value=""/>
+        <property key="additional-options-code-offset" value="0x1000"/>
+        <property key="additional-options-command-line" value=""/>
+        <property key="additional-options-errata" value=""/>
+        <property key="additional-options-extend-address" value="false"/>
+        <property key="additional-options-trace-type" value=""/>
+        <property key="additional-options-use-response-files" value="false"/>
+        <property key="backup-reset-condition-flags" value="false"/>
+        <property key="calibrate-oscillator" value="true"/>
+        <property key="calibrate-oscillator-value" value=""/>
+        <property key="clear-bss" value="true"/>
+        <property key="code-model-external" value="wordwrite"/>
+        <property key="code-model-rom" value="default,-0-FFF,-1006-1007,-1016-1017"/>
+        <property key="create-html-files" value="false"/>
+        <property key="data-model-ram" value=""/>
+        <property key="data-model-size-of-double" value="24"/>
+        <property key="data-model-size-of-float" value="24"/>
+        <property key="display-class-usage" value="false"/>
+        <property key="display-hex-usage" value="false"/>
+        <property key="display-overall-usage" value="true"/>
+        <property key="display-psect-usage" value="false"/>
+        <property key="fill-flash-options-addr" value=""/>
+        <property key="fill-flash-options-const" value=""/>
+        <property key="fill-flash-options-how" value="0"/>
+        <property key="fill-flash-options-inc-const" value="1"/>
+        <property key="fill-flash-options-increment" value=""/>
+        <property key="fill-flash-options-seq" value=""/>
+        <property key="fill-flash-options-what" value="0"/>
+        <property key="format-hex-file-for-download" value="false"/>
+        <property key="initialize-data" value="true"/>
+        <property key="keep-generated-startup.as" value="false"/>
+        <property key="link-in-c-library" value="true"/>
+        <property key="link-in-peripheral-library" value="true"/>
+        <property key="managed-stack" value="false"/>
+        <property key="opt-xc8-linker-file" value="false"/>
+        <property key="opt-xc8-linker-link_startup" value="false"/>
+        <property key="opt-xc8-linker-serial" value=""/>
+        <property key="program-the-device-with-default-config-words" value="true"/>
+      </HI-TECH-LINK>
       <Simulator>
         <property key="breakoptions.coreerrors" value="Ignore"/>
         <property key="breakoptions.corewarnings" value="Ignore"/>
@@ -146,10 +209,45 @@
         <property key="tracecontrol.tracefile"
                   value="C:\hotboards\Examples\Microchip\68002.X\defmplabxtrace.log"/>
         <property key="tracecontrol.traceresetonrun" value="false"/>
+        <property key="uart10io.output" value="window"/>
+        <property key="uart10io.outputfile" value=""/>
+        <property key="uart10io.uartioenabled" value="false"/>
         <property key="uart1io.output" value="window"/>
         <property key="uart1io.outputfile" value=""/>
         <property key="uart1io.uartioenabled" value="false"/>
+        <property key="uart2io.output" value="window"/>
+        <property key="uart2io.outputfile" value=""/>
+        <property key="uart2io.uartioenabled" value="false"/>
+        <property key="uart3io.output" value="window"/>
+        <property key="uart3io.outputfile" value=""/>
+        <property key="uart3io.uartioenabled" value="false"/>
+        <property key="uart4io.output" value="window"/>
+        <property key="uart4io.outputfile" value=""/>
+        <property key="uart4io.uartioenabled" value="false"/>
+        <property key="uart5io.output" value="window"/>
+        <property key="uart5io.outputfile" value=""/>
+        <property key="uart5io.uartioenabled" value="false"/>
+        <property key="uart6io.output" value="window"/>
+        <property key="uart6io.outputfile" value=""/>
+        <property key="uart6io.uartioenabled" value="false"/>
+        <property key="uart7io.output" value="window"/>
+        <property key="uart7io.outputfile" value=""/>
+        <property key="uart7io.uartioenabled" value="false"/>
+        <property key="uart8io.output" value="window"/>
+        <property key="uart8io.outputfile" value=""/>
+        <property key="uart8io.uartioenabled" value="false"/>
+        <property key="uart9io.output" value="window"/>
+        <property key="uart9io.outputfile" value=""/>
+        <property key="uart9io.uartioenabled" value="false"/>
       </Simulator>
+      <XC8-config-global>
+        <property key="advanced-elf" value="true"/>
+        <property key="output-file-format" value="-mcof,+elf"/>
+        <property key="stack-size-high" value="auto"/>
+        <property key="stack-size-low" value="auto"/>
+        <property key="stack-size-main" value="auto"/>
+        <property key="stack-type" value="compiled"/>
+      </XC8-config-global>
     </conf>
   </confs>
 </configurationDescriptor>

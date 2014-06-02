@@ -8,18 +8,17 @@
  * Es necesario revisar el archivo hardware_profile.h para revisar las conexiones al controlador
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "delays/delays.h"
 #include "system/system.h"
 #include "6800/_6800.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
-    ANCON0 = 0XFF;  /*Desativamos las entradas analogicas*/
-    ANCON1 = 0XFF;  /*Desativamos las entradas analogicas*/
+    ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
+    ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
 
     System_EnablePLL();
     _6800_Init();
@@ -53,24 +52,11 @@ void main(void)
 
     _6800_WriteData('4');               /*Se imprime la letra 'e' en el lcd, nibble alto*/
     _6800_WriteData('4'<<4);            /*nibble bajo */
-    /*a partir de este punto se pueden amndar caracteres al lcd, solo se requiere
+    /*a partir de este punto se pueden mandar caracteres al lcd, solo se requiere
      esperar 40us entre cada caracter o comando*/
 
     while (1)
     {
 
     }
-}
-
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
 }
