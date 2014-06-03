@@ -4,13 +4,12 @@
  * por default la velocidad de ejecucion seria de 12MHz
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "hd44780/hd44780.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
     ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
     ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
@@ -28,17 +27,4 @@ void main(void)
     {
 
     }
-}
-
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
 }
