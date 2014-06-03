@@ -5,8 +5,8 @@
  * por default la velocidad de ejecucion seria de 12MHz
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "gpios/gpios.h"
 #include "uart/uart.h"
@@ -19,8 +19,7 @@ void putc(const _U08 c)
     Uart_PutChar(UART_PORT1, c);
 }
 
-#pragma code
-void main(void)
+int main(void)
 {
     _U16 adc;                       /*variable que almacenara el resultado del adc (canal 3)*/
 
@@ -40,18 +39,3 @@ void main(void)
         Delays_ms(100);                         /*Retardo de 100ms*/
     }
 }
-
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
-}
-
-

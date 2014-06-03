@@ -4,16 +4,15 @@
  * por default la velocidad de ejecucion seria de 12MHz
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "gpios/gpios.h"
 #include "adc/adc.h"
 #include "system/system.h"
 #include "swtimers/swtimers.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
     _U16 adc; /*variable que almacenara el resultado del adc (canal 3)*/
 
@@ -40,18 +39,8 @@ void main(void)
     }
 }
 
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
+void interrupt low_priority low_isr(void)
 {
     Timers_Isr();
     /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
 }
-
-
