@@ -7,8 +7,8 @@
  * datos.
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "system/system.h"
 #include "delays/delays.h"
 #include "uart/uart.h"
@@ -18,8 +18,7 @@
 
 void putChar(_U08 u8Char);
 
-#pragma code
-void main(void)
+int main(void)
 {
     _U08 u8Byte;
 
@@ -79,16 +78,4 @@ void main(void)
 void putChar(_U08 u8Char)
 {
     Uart_PutChar(UART_PORT1, u8Char);
-}
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
 }
