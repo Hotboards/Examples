@@ -5,8 +5,8 @@
  * el dato leido del sensor. 
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "i2c/i2c.h"
 #include "gpios/gpios.h"
 #include "uart/uart.h"
@@ -16,8 +16,7 @@
 
 void putChar(const _U08 u8Char);
 
-#pragma code
-void main(void)
+int main(void)
 {
     _S08 i8Temp;
 
@@ -45,16 +44,4 @@ void main(void)
 void putChar(const _U08 u8Char)
 {
     Uart_PutChar(UART_PORT1, u8Char);
-}
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
 }
