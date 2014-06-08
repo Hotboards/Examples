@@ -6,14 +6,13 @@
  * El micro corre a 3MHz y el divisor del timer del PWM es de 16
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "system/system.h"
 #include "gpios/gpios.h"
 #include "pwm/pwm.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
     ANCON0 = 0XFF;  /*Desativamos las entradas analógicas*/
     ANCON1 = 0XFF;  /*Desativamos las entradas analógicas*/
@@ -38,15 +37,3 @@ void main(void)
     }
 }
 
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
-}

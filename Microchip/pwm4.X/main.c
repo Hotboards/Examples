@@ -5,15 +5,14 @@
  * El micro corre a 3MHz y el divisor del timer del PWM es de 16
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "system/system.h"
 #include "gpios/gpios.h"
 #include "pwm/pwm.h"
 #include "delays/delays.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
     _U08 i;
     _U08 u8Array[] = {99,95,90,85,80,75,70,65,60,55,50,45};
@@ -47,15 +46,3 @@ void main(void)
     }
 }
 
-
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción de baja prioridad en caso de usarla*/
-}
