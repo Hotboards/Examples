@@ -9,16 +9,15 @@
  * #define GPIS_B0_B            0
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "gpios/gpios.h"
 #include "system/system.h"
 #include "swtimers/swtimers.h"
 #include "gpis/gpis.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
     _BOOL flag = 0;
     _U08 tiempo[2] = {5, 200}; /*teimpo de debounce 50ms y 2 seg*/
@@ -52,14 +51,7 @@ void main(void)
 }
 
 
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
+void interrupt low_priority low_isr(void)
 {
     Timers_Isr();/*esta es la funcion de interrupcion de los timers (cada 5ms)*/
 }
