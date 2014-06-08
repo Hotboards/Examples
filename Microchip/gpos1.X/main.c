@@ -9,15 +9,14 @@
  * la velocidad de reloj a 48MHz
  */
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "system/system.h"
 #include "swtimers/swtimers.h"
 #include "gpos/gpos.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
     System_EnablePLL();                 /*Elevamos la frecuencia de operacion a 48MHz*/
     ANCON0 = 0XFF;                      /*Desativamos las salidas analogicas*/
@@ -41,14 +40,7 @@ void main(void)
 }
 
 
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
+void interrupt low_priority low_isr(void)
 {
     Timers_Isr();   
 }

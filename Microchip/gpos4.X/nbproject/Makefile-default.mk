@@ -28,13 +28,13 @@ CP=cp
 CND_CONF=default
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 IMAGE_TYPE=debug
-OUTPUT_SUFFIX=cof
-DEBUGGABLE_SUFFIX=cof
+OUTPUT_SUFFIX=elf
+DEBUGGABLE_SUFFIX=elf
 FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/gpos4.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 else
 IMAGE_TYPE=production
 OUTPUT_SUFFIX=hex
-DEBUGGABLE_SUFFIX=cof
+DEBUGGABLE_SUFFIX=elf
 FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/gpos4.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 endif
 
@@ -48,11 +48,11 @@ DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 SOURCEFILES_QUOTED_IF_SPACED=C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c C:/hotboards/CodeBank8/bsp/Microchip/system/system.c C:/hotboards/CodeBank8/middleware/gpos/gpos.c C:/hotboards/Examples/Microchip/gpos4.X/main.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1251158516/gpios.o ${OBJECTDIR}/_ext/1092064318/swtimers.o ${OBJECTDIR}/_ext/483372223/system.o ${OBJECTDIR}/_ext/503702409/gpos.o ${OBJECTDIR}/_ext/1566208051/main.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1251158516/gpios.o.d ${OBJECTDIR}/_ext/1092064318/swtimers.o.d ${OBJECTDIR}/_ext/483372223/system.o.d ${OBJECTDIR}/_ext/503702409/gpos.o.d ${OBJECTDIR}/_ext/1566208051/main.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1251158516/gpios.p1 ${OBJECTDIR}/_ext/1092064318/swtimers.p1 ${OBJECTDIR}/_ext/483372223/system.p1 ${OBJECTDIR}/_ext/503702409/gpos.p1 ${OBJECTDIR}/_ext/1566208051/main.p1
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1251158516/gpios.p1.d ${OBJECTDIR}/_ext/1092064318/swtimers.p1.d ${OBJECTDIR}/_ext/483372223/system.p1.d ${OBJECTDIR}/_ext/503702409/gpos.p1.d ${OBJECTDIR}/_ext/1566208051/main.p1.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/1251158516/gpios.o ${OBJECTDIR}/_ext/1092064318/swtimers.o ${OBJECTDIR}/_ext/483372223/system.o ${OBJECTDIR}/_ext/503702409/gpos.o ${OBJECTDIR}/_ext/1566208051/main.o
+OBJECTFILES=${OBJECTDIR}/_ext/1251158516/gpios.p1 ${OBJECTDIR}/_ext/1092064318/swtimers.p1 ${OBJECTDIR}/_ext/483372223/system.p1 ${OBJECTDIR}/_ext/503702409/gpos.p1 ${OBJECTDIR}/_ext/1566208051/main.p1
 
 # Source Files
 SOURCEFILES=C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c C:/hotboards/CodeBank8/bsp/Microchip/system/system.c C:/hotboards/CodeBank8/middleware/gpos/gpos.c C:/hotboards/Examples/Microchip/gpos4.X/main.c
@@ -75,8 +75,92 @@ FIXDEPS=fixDeps
 	${MAKE} ${MAKE_OPTIONS} -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/gpos4.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 
 MP_PROCESSOR_OPTION=18F45J50
-MP_PROCESSOR_OPTION_LD=18f45j50
-MP_LINKER_DEBUG_OPTION=
+# ------------------------------------------------------------------------------------
+# Rules for buildStep: compile
+ifeq ($(TYPE_IMAGE), DEBUG_RUN)
+${OBJECTDIR}/_ext/1251158516/gpios.p1: C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1251158516 
+	@${RM} ${OBJECTDIR}/_ext/1251158516/gpios.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1251158516/gpios.p1 
+	${MP_CC} --pass1 $(MP_EXTRA_CC_PRE) --chip=$(MP_PROCESSOR_OPTION) -Q -G  -D__DEBUG=1 --debugger=none  --double=24 --float=24 --emi=wordwrite --rom=default,-0-FFF,-1006-1007,-1016-1017 --opt=default,+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 -I"../../../CodeBank8" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -I"../../../CodeBank8/bsp/Microchip" -I"." --warn=0 --asmlist --summary=default,-psect,-class,+mem,-hex,-file --codeoffset=0x1000 --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%%f:%%l: error: (%%n) %%s" "--warnformat=%%f:%%l: warning: (%%n) %%s" "--msgformat=%%f:%%l: advisory: (%%n) %%s"    -o${OBJECTDIR}/_ext/1251158516/gpios.p1  C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c 
+	@-${MV} ${OBJECTDIR}/_ext/1251158516/gpios.d ${OBJECTDIR}/_ext/1251158516/gpios.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1251158516/gpios.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/1092064318/swtimers.p1: C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1092064318 
+	@${RM} ${OBJECTDIR}/_ext/1092064318/swtimers.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1092064318/swtimers.p1 
+	${MP_CC} --pass1 $(MP_EXTRA_CC_PRE) --chip=$(MP_PROCESSOR_OPTION) -Q -G  -D__DEBUG=1 --debugger=none  --double=24 --float=24 --emi=wordwrite --rom=default,-0-FFF,-1006-1007,-1016-1017 --opt=default,+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 -I"../../../CodeBank8" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -I"../../../CodeBank8/bsp/Microchip" -I"." --warn=0 --asmlist --summary=default,-psect,-class,+mem,-hex,-file --codeoffset=0x1000 --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%%f:%%l: error: (%%n) %%s" "--warnformat=%%f:%%l: warning: (%%n) %%s" "--msgformat=%%f:%%l: advisory: (%%n) %%s"    -o${OBJECTDIR}/_ext/1092064318/swtimers.p1  C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c 
+	@-${MV} ${OBJECTDIR}/_ext/1092064318/swtimers.d ${OBJECTDIR}/_ext/1092064318/swtimers.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1092064318/swtimers.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/483372223/system.p1: C:/hotboards/CodeBank8/bsp/Microchip/system/system.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/483372223 
+	@${RM} ${OBJECTDIR}/_ext/483372223/system.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/483372223/system.p1 
+	${MP_CC} --pass1 $(MP_EXTRA_CC_PRE) --chip=$(MP_PROCESSOR_OPTION) -Q -G  -D__DEBUG=1 --debugger=none  --double=24 --float=24 --emi=wordwrite --rom=default,-0-FFF,-1006-1007,-1016-1017 --opt=default,+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 -I"../../../CodeBank8" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -I"../../../CodeBank8/bsp/Microchip" -I"." --warn=0 --asmlist --summary=default,-psect,-class,+mem,-hex,-file --codeoffset=0x1000 --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%%f:%%l: error: (%%n) %%s" "--warnformat=%%f:%%l: warning: (%%n) %%s" "--msgformat=%%f:%%l: advisory: (%%n) %%s"    -o${OBJECTDIR}/_ext/483372223/system.p1  C:/hotboards/CodeBank8/bsp/Microchip/system/system.c 
+	@-${MV} ${OBJECTDIR}/_ext/483372223/system.d ${OBJECTDIR}/_ext/483372223/system.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/483372223/system.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/503702409/gpos.p1: C:/hotboards/CodeBank8/middleware/gpos/gpos.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/503702409 
+	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.p1 
+	${MP_CC} --pass1 $(MP_EXTRA_CC_PRE) --chip=$(MP_PROCESSOR_OPTION) -Q -G  -D__DEBUG=1 --debugger=none  --double=24 --float=24 --emi=wordwrite --rom=default,-0-FFF,-1006-1007,-1016-1017 --opt=default,+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 -I"../../../CodeBank8" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -I"../../../CodeBank8/bsp/Microchip" -I"." --warn=0 --asmlist --summary=default,-psect,-class,+mem,-hex,-file --codeoffset=0x1000 --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%%f:%%l: error: (%%n) %%s" "--warnformat=%%f:%%l: warning: (%%n) %%s" "--msgformat=%%f:%%l: advisory: (%%n) %%s"    -o${OBJECTDIR}/_ext/503702409/gpos.p1  C:/hotboards/CodeBank8/middleware/gpos/gpos.c 
+	@-${MV} ${OBJECTDIR}/_ext/503702409/gpos.d ${OBJECTDIR}/_ext/503702409/gpos.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/503702409/gpos.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/1566208051/main.p1: C:/hotboards/Examples/Microchip/gpos4.X/main.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1566208051 
+	@${RM} ${OBJECTDIR}/_ext/1566208051/main.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1566208051/main.p1 
+	${MP_CC} --pass1 $(MP_EXTRA_CC_PRE) --chip=$(MP_PROCESSOR_OPTION) -Q -G  -D__DEBUG=1 --debugger=none  --double=24 --float=24 --emi=wordwrite --rom=default,-0-FFF,-1006-1007,-1016-1017 --opt=default,+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 -I"../../../CodeBank8" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -I"../../../CodeBank8/bsp/Microchip" -I"." --warn=0 --asmlist --summary=default,-psect,-class,+mem,-hex,-file --codeoffset=0x1000 --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%%f:%%l: error: (%%n) %%s" "--warnformat=%%f:%%l: warning: (%%n) %%s" "--msgformat=%%f:%%l: advisory: (%%n) %%s"    -o${OBJECTDIR}/_ext/1566208051/main.p1  C:/hotboards/Examples/Microchip/gpos4.X/main.c 
+	@-${MV} ${OBJECTDIR}/_ext/1566208051/main.d ${OBJECTDIR}/_ext/1566208051/main.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1566208051/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+else
+${OBJECTDIR}/_ext/1251158516/gpios.p1: C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1251158516 
+	@${RM} ${OBJECTDIR}/_ext/1251158516/gpios.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1251158516/gpios.p1 
+	${MP_CC} --pass1 $(MP_EXTRA_CC_PRE) --chip=$(MP_PROCESSOR_OPTION) -Q -G  --double=24 --float=24 --emi=wordwrite --rom=default,-0-FFF,-1006-1007,-1016-1017 --opt=default,+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 -I"../../../CodeBank8" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -I"../../../CodeBank8/bsp/Microchip" -I"." --warn=0 --asmlist --summary=default,-psect,-class,+mem,-hex,-file --codeoffset=0x1000 --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%%f:%%l: error: (%%n) %%s" "--warnformat=%%f:%%l: warning: (%%n) %%s" "--msgformat=%%f:%%l: advisory: (%%n) %%s"    -o${OBJECTDIR}/_ext/1251158516/gpios.p1  C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c 
+	@-${MV} ${OBJECTDIR}/_ext/1251158516/gpios.d ${OBJECTDIR}/_ext/1251158516/gpios.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1251158516/gpios.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/1092064318/swtimers.p1: C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1092064318 
+	@${RM} ${OBJECTDIR}/_ext/1092064318/swtimers.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1092064318/swtimers.p1 
+	${MP_CC} --pass1 $(MP_EXTRA_CC_PRE) --chip=$(MP_PROCESSOR_OPTION) -Q -G  --double=24 --float=24 --emi=wordwrite --rom=default,-0-FFF,-1006-1007,-1016-1017 --opt=default,+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 -I"../../../CodeBank8" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -I"../../../CodeBank8/bsp/Microchip" -I"." --warn=0 --asmlist --summary=default,-psect,-class,+mem,-hex,-file --codeoffset=0x1000 --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%%f:%%l: error: (%%n) %%s" "--warnformat=%%f:%%l: warning: (%%n) %%s" "--msgformat=%%f:%%l: advisory: (%%n) %%s"    -o${OBJECTDIR}/_ext/1092064318/swtimers.p1  C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c 
+	@-${MV} ${OBJECTDIR}/_ext/1092064318/swtimers.d ${OBJECTDIR}/_ext/1092064318/swtimers.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1092064318/swtimers.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/483372223/system.p1: C:/hotboards/CodeBank8/bsp/Microchip/system/system.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/483372223 
+	@${RM} ${OBJECTDIR}/_ext/483372223/system.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/483372223/system.p1 
+	${MP_CC} --pass1 $(MP_EXTRA_CC_PRE) --chip=$(MP_PROCESSOR_OPTION) -Q -G  --double=24 --float=24 --emi=wordwrite --rom=default,-0-FFF,-1006-1007,-1016-1017 --opt=default,+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 -I"../../../CodeBank8" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -I"../../../CodeBank8/bsp/Microchip" -I"." --warn=0 --asmlist --summary=default,-psect,-class,+mem,-hex,-file --codeoffset=0x1000 --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%%f:%%l: error: (%%n) %%s" "--warnformat=%%f:%%l: warning: (%%n) %%s" "--msgformat=%%f:%%l: advisory: (%%n) %%s"    -o${OBJECTDIR}/_ext/483372223/system.p1  C:/hotboards/CodeBank8/bsp/Microchip/system/system.c 
+	@-${MV} ${OBJECTDIR}/_ext/483372223/system.d ${OBJECTDIR}/_ext/483372223/system.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/483372223/system.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/503702409/gpos.p1: C:/hotboards/CodeBank8/middleware/gpos/gpos.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/503702409 
+	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.p1 
+	${MP_CC} --pass1 $(MP_EXTRA_CC_PRE) --chip=$(MP_PROCESSOR_OPTION) -Q -G  --double=24 --float=24 --emi=wordwrite --rom=default,-0-FFF,-1006-1007,-1016-1017 --opt=default,+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 -I"../../../CodeBank8" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -I"../../../CodeBank8/bsp/Microchip" -I"." --warn=0 --asmlist --summary=default,-psect,-class,+mem,-hex,-file --codeoffset=0x1000 --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%%f:%%l: error: (%%n) %%s" "--warnformat=%%f:%%l: warning: (%%n) %%s" "--msgformat=%%f:%%l: advisory: (%%n) %%s"    -o${OBJECTDIR}/_ext/503702409/gpos.p1  C:/hotboards/CodeBank8/middleware/gpos/gpos.c 
+	@-${MV} ${OBJECTDIR}/_ext/503702409/gpos.d ${OBJECTDIR}/_ext/503702409/gpos.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/503702409/gpos.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/1566208051/main.p1: C:/hotboards/Examples/Microchip/gpos4.X/main.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1566208051 
+	@${RM} ${OBJECTDIR}/_ext/1566208051/main.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1566208051/main.p1 
+	${MP_CC} --pass1 $(MP_EXTRA_CC_PRE) --chip=$(MP_PROCESSOR_OPTION) -Q -G  --double=24 --float=24 --emi=wordwrite --rom=default,-0-FFF,-1006-1007,-1016-1017 --opt=default,+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 -I"../../../CodeBank8" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -I"../../../CodeBank8/bsp/Microchip" -I"." --warn=0 --asmlist --summary=default,-psect,-class,+mem,-hex,-file --codeoffset=0x1000 --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%%f:%%l: error: (%%n) %%s" "--warnformat=%%f:%%l: warning: (%%n) %%s" "--msgformat=%%f:%%l: advisory: (%%n) %%s"    -o${OBJECTDIR}/_ext/1566208051/main.p1  C:/hotboards/Examples/Microchip/gpos4.X/main.c 
+	@-${MV} ${OBJECTDIR}/_ext/1566208051/main.d ${OBJECTDIR}/_ext/1566208051/main.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1566208051/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+endif
+
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: assemble
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
@@ -84,101 +168,18 @@ else
 endif
 
 # ------------------------------------------------------------------------------------
-# Rules for buildStep: compile
-ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/_ext/1251158516/gpios.o: C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1251158516 
-	@${RM} ${OBJECTDIR}/_ext/1251158516/gpios.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1251158516/gpios.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/1251158516/gpios.o   C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1251158516/gpios.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1251158516/gpios.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-${OBJECTDIR}/_ext/1092064318/swtimers.o: C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1092064318 
-	@${RM} ${OBJECTDIR}/_ext/1092064318/swtimers.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1092064318/swtimers.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/1092064318/swtimers.o   C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1092064318/swtimers.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1092064318/swtimers.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-${OBJECTDIR}/_ext/483372223/system.o: C:/hotboards/CodeBank8/bsp/Microchip/system/system.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/483372223 
-	@${RM} ${OBJECTDIR}/_ext/483372223/system.o.d 
-	@${RM} ${OBJECTDIR}/_ext/483372223/system.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/483372223/system.o   C:/hotboards/CodeBank8/bsp/Microchip/system/system.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/483372223/system.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/483372223/system.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-${OBJECTDIR}/_ext/503702409/gpos.o: C:/hotboards/CodeBank8/middleware/gpos/gpos.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/503702409 
-	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.o.d 
-	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/503702409/gpos.o   C:/hotboards/CodeBank8/middleware/gpos/gpos.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/503702409/gpos.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/503702409/gpos.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-${OBJECTDIR}/_ext/1566208051/main.o: C:/hotboards/Examples/Microchip/gpos4.X/main.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1566208051 
-	@${RM} ${OBJECTDIR}/_ext/1566208051/main.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1566208051/main.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG  -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/1566208051/main.o   C:/hotboards/Examples/Microchip/gpos4.X/main.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1566208051/main.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1566208051/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-else
-${OBJECTDIR}/_ext/1251158516/gpios.o: C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1251158516 
-	@${RM} ${OBJECTDIR}/_ext/1251158516/gpios.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1251158516/gpios.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/1251158516/gpios.o   C:/hotboards/CodeBank8/bsp/Microchip/gpios/gpios.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1251158516/gpios.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1251158516/gpios.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-${OBJECTDIR}/_ext/1092064318/swtimers.o: C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1092064318 
-	@${RM} ${OBJECTDIR}/_ext/1092064318/swtimers.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1092064318/swtimers.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/1092064318/swtimers.o   C:/hotboards/CodeBank8/bsp/Microchip/swtimers/swtimers.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1092064318/swtimers.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1092064318/swtimers.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-${OBJECTDIR}/_ext/483372223/system.o: C:/hotboards/CodeBank8/bsp/Microchip/system/system.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/483372223 
-	@${RM} ${OBJECTDIR}/_ext/483372223/system.o.d 
-	@${RM} ${OBJECTDIR}/_ext/483372223/system.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/483372223/system.o   C:/hotboards/CodeBank8/bsp/Microchip/system/system.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/483372223/system.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/483372223/system.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-${OBJECTDIR}/_ext/503702409/gpos.o: C:/hotboards/CodeBank8/middleware/gpos/gpos.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/503702409 
-	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.o.d 
-	@${RM} ${OBJECTDIR}/_ext/503702409/gpos.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/503702409/gpos.o   C:/hotboards/CodeBank8/middleware/gpos/gpos.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/503702409/gpos.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/503702409/gpos.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-${OBJECTDIR}/_ext/1566208051/main.o: C:/hotboards/Examples/Microchip/gpos4.X/main.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1566208051 
-	@${RM} ${OBJECTDIR}/_ext/1566208051/main.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1566208051/main.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -I"../../../CodeBank8" -I"../../../CodeBank8/bsp/Microchip" -I"../../../CodeBank8/middleware" -I"." -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/_ext/1566208051/main.o   C:/hotboards/Examples/Microchip/gpos4.X/main.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/_ext/1566208051/main.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1566208051/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-endif
-
-# ------------------------------------------------------------------------------------
 # Rules for buildStep: link
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 dist/${CND_CONF}/${IMAGE_TYPE}/gpos4.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_LD} $(MP_EXTRA_LD_PRE)   -p$(MP_PROCESSOR_OPTION_LD)  -w -x -u_DEBUG -m"${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"  -z__MPLAB_BUILD=1  -u_CRUNTIME -z__MPLAB_DEBUG=1 $(MP_LINKER_DEBUG_OPTION) -l ${MP_CC_DIR}\\..\\lib  -o dist/${CND_CONF}/${IMAGE_TYPE}/gpos4.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}   
+	${MP_CC} $(MP_EXTRA_LD_PRE) --chip=$(MP_PROCESSOR_OPTION) -G -mdist/${CND_CONF}/${IMAGE_TYPE}/gpos4.X.${IMAGE_TYPE}.map  -D__DEBUG=1 --debugger=none  --double=24 --float=24 --emi=wordwrite --rom=default,-0-FFF,-1006-1007,-1016-1017 --opt=default,+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 -I"../../../CodeBank8" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -I"../../../CodeBank8/bsp/Microchip" -I"." --warn=0 --asmlist --summary=default,-psect,-class,+mem,-hex,-file --codeoffset=0x1000 --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%%f:%%l: error: %%s" "--warnformat=%%f:%%l: warning: (%%n) %%s" "--msgformat=%%f:%%l: advisory: (%%n) %%s"        -odist/${CND_CONF}/${IMAGE_TYPE}/gpos4.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
+	@${RM} dist/${CND_CONF}/${IMAGE_TYPE}/gpos4.X.${IMAGE_TYPE}.hex 
+	
 else
 dist/${CND_CONF}/${IMAGE_TYPE}/gpos4.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_LD} $(MP_EXTRA_LD_PRE)   -p$(MP_PROCESSOR_OPTION_LD)  -w  -m"${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"  -z__MPLAB_BUILD=1  -u_CRUNTIME -l ${MP_CC_DIR}\\..\\lib  -o dist/${CND_CONF}/${IMAGE_TYPE}/gpos4.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}   
+	${MP_CC} $(MP_EXTRA_LD_PRE) --chip=$(MP_PROCESSOR_OPTION) -G -mdist/${CND_CONF}/${IMAGE_TYPE}/gpos4.X.${IMAGE_TYPE}.map  --double=24 --float=24 --emi=wordwrite --rom=default,-0-FFF,-1006-1007,-1016-1017 --opt=default,+asm,+asmfile,-speed,+space,-debug --addrqual=ignore --mode=free -P -N255 -I"../../../CodeBank8" -I"../../../CodeBank8/middleware" -I"../../../CodeBank8/modules" -I"../../../CodeBank8/bsp/Microchip" -I"." --warn=0 --asmlist --summary=default,-psect,-class,+mem,-hex,-file --codeoffset=0x1000 --output=default,-inhx032 --runtime=default,+clear,+init,-keep,-no_startup,-download,+config,+clib,+plib --output=-mcof,+elf:multilocs --stack=compiled:auto:auto:auto "--errformat=%%f:%%l: error: %%s" "--warnformat=%%f:%%l: warning: (%%n) %%s" "--msgformat=%%f:%%l: advisory: (%%n) %%s"     -odist/${CND_CONF}/${IMAGE_TYPE}/gpos4.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
+	
 endif
 
 
