@@ -20,16 +20,15 @@
 
 
 
-#include <p18cxxx.h>
-#include "vectors.h"
+#include <xc.h>
+#include "fuses.h"
 #include "types.h"
 #include "gpios/gpios.h"
 #include "system/system.h"
 #include "swtimers/swtimers.h"
 #include "keyboard/keyboard.h"
 
-#pragma code
-void main(void)
+int main(void)
 {
     _U08 key;
 
@@ -65,14 +64,7 @@ void main(void)
 }
 
 
-#pragma interrupt YourHighPriorityISRCode
-void YourHighPriorityISRCode(void)
-{
-    /*coloca aquí el código que llevará tu interrupción en caso de usarla*/
-}
-
-#pragma interruptlow YourLowPriorityISRCode
-void YourLowPriorityISRCode(void)
+void interrupt low_priority low_isr(void)
 {
     Timers_Isr();
 }
