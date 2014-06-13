@@ -13,7 +13,6 @@ Microchip/*.X/build
 Microchip/*.X/disassembly
 Microchip/*.X/funclist
 
-Atmel
-Atmel/Debug
-Atmel/Release
+Atmel/*/*/Debug
+Atmel/*/*/Release
 
