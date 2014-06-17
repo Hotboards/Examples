@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "swtimers4", "swtimers4\swtimers4.cproj", "{A885ACA7-EE2B-4E11-87B7-3638ED8C2B58}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A885ACA7-EE2B-4E11-87B7-3638ED8C2B58}.Debug|AVR.ActiveCfg = Debug|AVR
+		{A885ACA7-EE2B-4E11-87B7-3638ED8C2B58}.Debug|AVR.Build.0 = Debug|AVR
+		{A885ACA7-EE2B-4E11-87B7-3638ED8C2B58}.Release|AVR.ActiveCfg = Release|AVR
+		{A885ACA7-EE2B-4E11-87B7-3638ED8C2B58}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
