@@ -15,8 +15,17 @@
 #include "system/system.h"
 #include "6800/_6800.h"
 
+_BOOL bBusyFlag(void)
+{
+    _U08 bFlag;
+    bFlag = _6800_u8ReadAddr();
+    bFlag |= (_6800_u8ReadAddr()>>4);
+    return QUERY_8BIT(bFlag, 7);
+}
+
 int main(void)
 {
+
     ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
     ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
 
@@ -27,29 +36,29 @@ int main(void)
     _6800_WriteCommand((_U08)0x30);	/* Secuecia de encendido en modo 8 bits */
     Delays_ms((_U08)5);
     _6800_WriteCommand((_U08)0x30);
-    Delays_10us((_U08)20);
+    Delays_ms((_U08)2);
     _6800_WriteCommand((_U08)0x30);
-    Delays_10us((_U08)4);
-
+    while(bBusyFlag());
+    
     _6800_WriteCommand(0x20);           /*modo 4 bits y una linea activa*/
-    Delays_10us((_U08)4);
-
+    while(bBusyFlag());
+    
     _6800_WriteCommand(0x04);           /*Se apaga el controlador, nibble alto*/
     _6800_WriteCommand(0x04<<4);        /*nibble bajo*/
-    Delays_10us((_U08)4);
-
+    while(bBusyFlag());
+    
     _6800_WriteCommand((_U08)0x01);     /*se enciende y limpia el display, nibble alto*/
     _6800_WriteCommand((_U08)0x01<<4);  /*nibble bajo */
     Delays_ms((_U08)2);                 /*para el comando clear screen se debe esperar 1.52ms*/
 
     _6800_WriteCommand(0x06);           /*incremento de cursor a la derecha, nibble alto*/
     _6800_WriteCommand(0x06<<4);        /*nibble bajo */
-    Delays_10us((_U08)4);
+    while(bBusyFlag());
     
     _6800_WriteCommand(0x0c);           /*se apaga el cursor y el parpadeo, nibble alto*/
     _6800_WriteCommand(0x0c<<4);        /*nibble bajo */
-    Delays_10us((_U08)4);
-
+    while(bBusyFlag());
+    
     _6800_WriteData('4');               /*Se imprime la letra 'e' en el lcd, nibble alto*/
     _6800_WriteData('4'<<4);            /*nibble bajo */
     /*a partir de este punto se pueden mandar caracteres al lcd, solo se requiere

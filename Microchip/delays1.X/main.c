@@ -15,12 +15,11 @@ int main(void)
 {
     ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
     ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
-
     Gpios_PinDirection(GPIOS_PORTA, 1, GPIOS_OUTPUT);          /*puerto RA1 como salida*/
 
     while (1)
     {
-        Delays_ms(100);                         /*retardo 100 ms para observar el estado del led*/
+        Delays_us(40);                         /*retardo 100 ms para observar el estado del led*/
         Gpios_TogglePin(GPIOS_PORTA, 1);        /*invierto el estado del led conectado al puerto A pin 1*/
     }
 }

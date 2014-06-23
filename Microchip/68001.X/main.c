@@ -21,18 +21,18 @@ int main(void)
     _6800_WriteCommand((_U08)0x30);	/* Secuecia de encendido en modo 8 bits */
     Delays_ms((_U08)5);
     _6800_WriteCommand((_U08)0x30);
-    Delays_10us((_U08)200);
+    Delays_ms((_U08)2);
     _6800_WriteCommand((_U08)0x30);
-    Delays_10us((_U08)4);
+    Delays_us((_U08)40);
 
     _6800_WriteCommand(0x30);           /*modo 8 bits y una linea activa*/
-    Delays_10us((_U08)4);
+    Delays_us((_U08)40);
     _6800_WriteCommand(0x04);           /*Se apaga el controlador*/
-    Delays_10us((_U08)4);
+    Delays_us((_U08)40);
     _6800_WriteCommand((_U08)0x01);     /*se enciende y limpia el display*/
     Delays_ms((_U08)2);
     _6800_WriteCommand(0x06);           /*incremento de cursor a la derecha*/
-    Delays_10us((_U08)4);
+    Delays_us((_U08)40);
     _6800_WriteCommand(0x0f);           /*se despliega cursor y parpadeo*/
     
     while (1)
