@@ -16,7 +16,6 @@ _BOOL bBusyFlag(void)
 {
     _U08 bFlag;
     bFlag = _6800_u8ReadAddr();
-    bFlag |= (_6800_u8ReadAddr()>>4);
     return QUERY_8BIT(bFlag, 7);
 }
 

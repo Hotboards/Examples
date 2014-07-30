@@ -11,8 +11,8 @@
 
 int main(void)
 {
-    ANCON0 = 0XFF;  /*Desativamos las salidas analogicas*/
-    ANCON1 = 0XFF;  /*Desativamos las salidas analogicas*/
+    ANCON0 = 0XFF;  /*Desactivamos las entradas analogicas*/
+    ANCON1 = 0XFF;  /*Desactivamos las entradas analogicas*/
 
     HD44780_Init();
 

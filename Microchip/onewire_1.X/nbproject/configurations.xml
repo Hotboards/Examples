@@ -4,9 +4,8 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>hardware_profile.h</itemPath>
-      <itemPath>H:/CodeBank8/types.h</itemPath>
       <itemPath>fuses.h</itemPath>
+      <itemPath>hardware_profile.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -16,12 +15,18 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="bsp" projectFiles="true">
-        <itemPath>H:/CodeBank8/bsp/Microchip/gpios/gpios.c</itemPath>
-        <itemPath>H:/CodeBank8/bsp/Microchip/gpios/gpios.h</itemPath>
-        <itemPath>H:/CodeBank8/bsp/Microchip/delays/delays.c</itemPath>
-        <itemPath>H:/CodeBank8/bsp/Microchip/delays/delays.h</itemPath>
-        <itemPath>H:/CodeBank8/bsp/Microchip/uart/uart.c</itemPath>
-        <itemPath>H:/CodeBank8/bsp/Microchip/uart/uart.h</itemPath>
+        <itemPath>../../../CodeBank8/bsp/Microchip/gpios/gpios.c</itemPath>
+        <itemPath>../../../CodeBank8/bsp/Microchip/gpios/gpios.h</itemPath>
+        <itemPath>../../../CodeBank8/bsp/Microchip/delays/delays.c</itemPath>
+        <itemPath>../../../CodeBank8/bsp/Microchip/delays/delays.h</itemPath>
+        <itemPath>../../../CodeBank8/bsp/Microchip/system/system.c</itemPath>
+        <itemPath>../../../CodeBank8/bsp/Microchip/system/system.h</itemPath>
+        <itemPath>../../../CodeBank8/bsp/Microchip/uart/uart.c</itemPath>
+        <itemPath>../../../CodeBank8/bsp/Microchip/uart/uart.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f2" displayName="middleware" projectFiles="true">
+        <itemPath>../../../CodeBank8/middleware/onewire/onewire.c</itemPath>
+        <itemPath>../../../CodeBank8/middleware/onewire/onewire.h</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
     </logicalFolder>
@@ -32,8 +37,11 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
-    <Elem>../../CodeBank8</Elem>
-    <Elem>H:/CodeBank8</Elem>
+    <Elem>../../../CodeBank8/bsp/Microchip/gpios</Elem>
+    <Elem>../../../CodeBank8/bsp/Microchip/delays</Elem>
+    <Elem>../../../CodeBank8/bsp/Microchip/system</Elem>
+    <Elem>../../../CodeBank8/middleware/onewire</Elem>
+    <Elem>../../../CodeBank8/bsp/Microchip/uart</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -71,17 +79,17 @@
         <property key="asmlist" value="true"/>
         <property key="define-macros" value=""/>
         <property key="extra-include-directories"
-                  value="..\..\..\CodeBank8;..\..\..\CodeBank8\middleware;..\..\..\CodeBank8\modules;..\..\..\CodeBank8\bsp\Microchip;."/>
+                  value="..\..\..\CodeBank8;..\..\..\CodeBank8\bsp\Microchip;..\..\..\CodeBank8\middleware;..\..\..\CodeBank8\modules;."/>
         <property key="identifier-length" value="255"/>
-        <property key="operation-mode" value="demo"/>
+        <property key="operation-mode" value="free"/>
         <property key="opt-xc8-compiler-strict_ansi" value="false"/>
         <property key="optimization-assembler" value="true"/>
-        <property key="optimization-assembler-files" value="false"/>
+        <property key="optimization-assembler-files" value="true"/>
         <property key="optimization-debug" value="false"/>
         <property key="optimization-global" value="true"/>
         <property key="optimization-level" value="9"/>
         <property key="optimization-set" value="default"/>
-        <property key="optimization-speed" value="true"/>
+        <property key="optimization-speed" value="false"/>
         <property key="preprocess-assembler" value="true"/>
         <property key="undefine-macros" value=""/>
         <property key="use-cci" value="false"/>
@@ -92,7 +100,7 @@
       </HI-TECH-COMP>
       <HI-TECH-LINK>
         <property key="additional-options-checksum" value=""/>
-        <property key="additional-options-code-offset" value="0x1000"/>
+        <property key="additional-options-code-offset" value=""/>
         <property key="additional-options-command-line" value=""/>
         <property key="additional-options-errata" value=""/>
         <property key="additional-options-extend-address" value="false"/>
@@ -103,7 +111,7 @@
         <property key="calibrate-oscillator-value" value=""/>
         <property key="clear-bss" value="true"/>
         <property key="code-model-external" value="wordwrite"/>
-        <property key="code-model-rom" value="default,-0-FFF,-1006-1007,-1016-1017"/>
+        <property key="code-model-rom" value=""/>
         <property key="create-html-files" value="false"/>
         <property key="data-model-ram" value=""/>
         <property key="data-model-size-of-double" value="24"/>
@@ -161,7 +169,7 @@
         <property key="tracecontrol.timestamp" value="2"/>
         <property key="tracecontrol.tracebufmax" value="546000"/>
         <property key="tracecontrol.tracefile"
-                  value="C:\hotboards\Examples\uart1.X\defmplabxtrace.log"/>
+                  value="H:\Examples\Microchip\onewire_1.X\defmplabxtrace.log"/>
         <property key="tracecontrol.traceresetonrun" value="false"/>
         <property key="uart10io.output" value="window"/>
         <property key="uart10io.outputfile" value=""/>
